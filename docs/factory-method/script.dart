@@ -48,7 +48,15 @@ class GameSelector {
       return SailorGame(gameContainer);
     }
 
-    return TicTacToeGame(gameContainer);
+    if (title == "Chess") {
+      return ChessGame(gameContainer);
+    }
+
+    if (title == "Checkers") {
+      return CheckersGame(gameContainer);
+    }
+
+    return ChessGame(gameContainer);
   }
 }
 
@@ -92,6 +100,8 @@ abstract class Game {
     container.children.clear();
   }
 
+  void submitMove(int i, int j);
+
   GameBoard createBoard();
 
   void setupPieces();
@@ -125,6 +135,34 @@ class SailorGame extends Game {
   void setupPieces() {}
 }
 
+class ChessGame extends Game {
+  ChessGame(Element container) : super(container) {}
+
+  GameBoard createBoard() {
+    return ChessBoard(this, container);
+  }
+
+  void submitMove(int i, int j) {
+    print("Chess: move was made at board[${i}][${j}]");
+  }
+
+  void setupPieces() {}
+}
+
+class CheckersGame extends Game {
+  CheckersGame(Element container) : super(container) {}
+
+  GameBoard createBoard() {
+    return ChessBoard(this, container);
+  }
+
+  void submitMove(int i, int j) {
+    print("Checkers: move was made at board[${i}][${j}]");
+  }
+
+  void setupPieces() {}
+}
+
 abstract class GameBoard {
   Game game;
   Element container;
@@ -140,6 +178,42 @@ abstract class GameBoard {
   }
 
   void insertTiles();
+}
+
+class ChessBoard extends GameBoard {
+  ChessBoard(Game game, Element container) : super(game, container) {}
+
+  void insertTiles() {
+    bool dark = false;
+
+    for (int i = 0; i < 8; i++) {
+      dark = !dark;
+      Element row = createRow();
+
+      for (int j = 0; j < 8; j++) {
+        dark = !dark;
+        Element tile = createTile(i, j, dark);
+        row.children.add(tile);
+      }
+
+      container.children.add(row);
+    }
+  }
+
+  Element createTile(int i, int j, bool dark) {
+    Element tile = document.createElement("div");
+    tile.classes.add("chess-tile");
+
+    if (dark) {
+      tile.classes.add("dark");
+    }
+
+    tile.addEventListener("click", (event) {
+      game.submitMove(i, j);
+    });
+
+    return tile;
+  }
 }
 
 class SailorBoard extends GameBoard {

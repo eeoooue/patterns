@@ -52,6 +52,7 @@ body {
 }
 
 .chess-tile {
+    background-color: #e0c46e;
     margin: 0px;
     width: 100px;
     height: 100px;
@@ -59,8 +60,4 @@ body {
 
 .chess-tile.dark {
     background-color: #735e47;
-}
-
-.chess-tile.light {
-    background-color: #e0c46e;
 }
