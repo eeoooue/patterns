@@ -4334,16 +4334,19 @@
       }
     },
     getGame$1(title) {
-      var _this = this;
-      if (title === "Tic-Tac-Toe")
-        return new A.TicTacToeGame(_this.gameContainer);
-      if (title === "Connect 4")
-        return new A.SailorGame(_this.gameContainer);
-      if (title === "Chess")
-        return new A.ChessGame(_this.gameContainer);
-      if (title === "Checkers")
-        return new A.CheckersGame(_this.gameContainer);
-      return new A.ChessGame(_this.gameContainer);
+      var t1 = this.gameContainer;
+      switch (title) {
+        case "Checkers":
+          return new A.CheckersGame(t1);
+        case "Chess":
+          return new A.ChessGame(t1);
+        case "Connect 4":
+          return new A.SailorGame(t1);
+        case "Tic-Tac-Toe":
+          return new A.TicTacToeGame(t1);
+        default:
+          return new A.TicTacToeGame(t1);
+      }
     }
   };
   A.GameSelector_armButton_closure.prototype = {

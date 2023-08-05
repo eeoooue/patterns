@@ -40,23 +40,18 @@ class GameSelector {
   }
 
   Game getGame(String title) {
-    if (title == "Tic-Tac-Toe") {
-      return TicTacToeGame(gameContainer);
+    switch (title) {
+      case "Checkers":
+        return CheckersGame(gameContainer);
+      case "Chess":
+        return ChessGame(gameContainer);
+      case "Connect 4":
+        return SailorGame(gameContainer);
+      case "Tic-Tac-Toe":
+        return TicTacToeGame(gameContainer);
+      default:
+        return TicTacToeGame(gameContainer);
     }
-
-    if (title == "Connect 4") {
-      return SailorGame(gameContainer);
-    }
-
-    if (title == "Chess") {
-      return ChessGame(gameContainer);
-    }
-
-    if (title == "Checkers") {
-      return CheckersGame(gameContainer);
-    }
-
-    return ChessGame(gameContainer);
   }
 }
 
