@@ -20,3 +20,24 @@ body {
     display: none;
 }  
 
+#choices-container {
+    display: flex;
+    flex-direction: row;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.board-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.ttt-tile {
+    background-color: #999;
+    margin: 10px;
+    width: 100px;
+    height: 100px;
+}
