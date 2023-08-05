@@ -46,7 +46,7 @@ class GameSelector {
       case "Chess":
         return ChessGame(gameContainer);
       case "Connect 4":
-        return SailorGame(gameContainer);
+        return ConnectGame(gameContainer);
       case "Tic-Tac-Toe":
         return TicTacToeGame(gameContainer);
       default:
@@ -116,15 +116,15 @@ class TicTacToeGame extends Game {
   void setupPieces() {}
 }
 
-class SailorGame extends Game {
-  SailorGame(Element container) : super(container) {}
+class ConnectGame extends Game {
+  ConnectGame(Element container) : super(container) {}
 
   GameBoard createBoard() {
-    return SailorBoard(this, container);
+    return ConnectBoard(this, container);
   }
 
   void submitMove(int i, int j) {
-    print("Sailor Game: move was made at board[${i}][${j}]");
+    print("Connect Game: move was made at board[${i}][${j}]");
   }
 
   void setupPieces() {}
@@ -211,8 +211,8 @@ class ChessBoard extends GameBoard {
   }
 }
 
-class SailorBoard extends GameBoard {
-  SailorBoard(SailorGame game, Element container) : super(game, container) {}
+class ConnectBoard extends GameBoard {
+  ConnectBoard(ConnectGame game, Element container) : super(game, container) {}
 
   void insertTiles() {
     for (int i = 0; i < 6; i++) {
@@ -228,12 +228,12 @@ class SailorBoard extends GameBoard {
 
   Element createTile(int i, int j) {
     Element tile = document.createElement("div");
-    tile.classes.add("sailor-tile");
+    tile.classes.add("Connect-tile");
 
-    Game sailorGame = game;
-    if (sailorGame is SailorGame) {
+    Game connectGame = game;
+    if (ConnectGame is ConnectGame) {
       tile.addEventListener("click", (event) {
-        sailorGame.submitMove(i, j);
+        connectGame.submitMove(i, j);
       });
     }
 
