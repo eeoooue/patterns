@@ -6,7 +6,7 @@ class GameSelector {
   Element gameContainer;
 
   List<String> gameChoices =
-      List.from({"Chess", "Checkers", "Tic-Tac-Toe", "Connect 4"});
+      List.from({"Checkers", "Chess", "Connect 4", "Tic-Tac-Toe"});
 
   GameSelector(this.button, this.choicesContainer, this.gameContainer) {
     armButton();

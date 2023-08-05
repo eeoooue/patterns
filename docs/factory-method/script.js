@@ -2839,7 +2839,7 @@
       if (type$.ButtonElement._is(optionBtn)) {
         t1 = type$.Element;
         if (t1._is(choicesContainer) && t1._is(gameContainer))
-          new A.GameSelector(optionBtn, choicesContainer, gameContainer, A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal(["Chess", "Checkers", "Tic-Tac-Toe", "Connect 4"], type$.dynamic), true, type$.String)).armButton$0();
+          new A.GameSelector(optionBtn, choicesContainer, gameContainer, A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal(["Checkers", "Chess", "Connect 4", "Tic-Tac-Toe"], type$.dynamic), true, type$.String)).armButton$0();
       }
     },
     GameSelector: function GameSelector(t0, t1, t2, t3) {
