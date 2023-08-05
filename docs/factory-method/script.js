@@ -2889,6 +2889,11 @@
       this.game = t0;
       this.container = t1;
     },
+    ConnectBoard_createTile_closure: function ConnectBoard_createTile_closure(t0, t1, t2) {
+      this.connectGame = t0;
+      this.i = t1;
+      this.j = t2;
+    },
     TicTacToeBoard: function TicTacToeBoard(t0, t1) {
       this.game = t0;
       this.container = t1;
@@ -4458,20 +4463,35 @@
   };
   A.ConnectBoard.prototype = {
     insertTiles$0() {
-      var t1, t2, i, t3, row, t4, j, tile;
+      var t1, t2, i, row, t3, j, tile;
       for (t1 = this.container, t2 = J.getInterceptor$x(t1), i = 0; i < 6; ++i) {
-        t3 = document;
-        row = t3.createElement("div");
-        t4 = J.getInterceptor$x(row);
-        t4.get$classes(row).add$1(0, "board-row");
+        row = document.createElement("div");
+        t3 = J.getInterceptor$x(row);
+        t3.get$classes(row).add$1(0, "board-row");
         for (j = 0; j < 7; ++j) {
-          tile = t3.createElement("div");
-          J.get$classes$x(tile).add$1(0, "Connect-tile");
-          t4.get$children(row).add$1(0, tile);
+          tile = this.createTile$2(i, j);
+          t3.get$children(row).add$1(0, tile);
         }
         t2.get$children(t1).add$1(0, row);
       }
+    },
+    createTile$2(i, j) {
+      var connectGame,
+        tile = document.createElement("div"),
+        t1 = J.getInterceptor$x(tile);
+      t1.get$classes(tile).add$1(0, "connect-tile");
+      connectGame = this.game;
+      if (connectGame instanceof A.ConnectGame)
+        t1.addEventListener$2(tile, "click", new A.ConnectBoard_createTile_closure(connectGame, i, j));
+      return tile;
     }
+  };
+  A.ConnectBoard_createTile_closure.prototype = {
+    call$1($event) {
+      type$.Event._as($event);
+      A.print("Connect Game: move was made at board[" + this.i + "][" + this.j + "]");
+    },
+    $signature: 0
   };
   A.TicTacToeBoard.prototype = {
     insertTiles$0() {
@@ -4524,7 +4544,7 @@
     _inheritMany(J.JSNumber, [J.JSInt, J.JSNumNotInt]);
     _inheritMany(A.Error, [A.LateError, A._CyclicInitializationError, A.RuntimeError, A.AssertionError, A._Error, A.TypeError, A.ArgumentError, A.UnsupportedError, A.UnimplementedError, A.ConcurrentModificationError]);
     _inheritMany(A.Iterable, [A.MappedIterable, A.WhereIterable]);
-    _inheritMany(A.Closure, [A.Closure2Args, A.TearOffClosure, A.initHooks_closure, A.initHooks_closure1, A.CssClassSetImpl_add_closure, A.FilteredElementList__iterable_closure, A.FilteredElementList__iterable_closure0, A.GameSelector_armButton_closure, A.GameChoice_armElement_closure, A.ChessBoard_createTile_closure, A.TicTacToeBoard_createTile_closure]);
+    _inheritMany(A.Closure, [A.Closure2Args, A.TearOffClosure, A.initHooks_closure, A.initHooks_closure1, A.CssClassSetImpl_add_closure, A.FilteredElementList__iterable_closure, A.FilteredElementList__iterable_closure0, A.GameSelector_armButton_closure, A.GameChoice_armElement_closure, A.ChessBoard_createTile_closure, A.ConnectBoard_createTile_closure, A.TicTacToeBoard_createTile_closure]);
     _inheritMany(A.TearOffClosure, [A.StaticClosure, A.BoundClosure]);
     _inherit(A._AssertionError, A.AssertionError);
     _inherit(A.initHooks_closure0, A.Closure2Args);

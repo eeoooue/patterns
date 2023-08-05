@@ -228,10 +228,10 @@ class ConnectBoard extends GameBoard {
 
   Element createTile(int i, int j) {
     Element tile = document.createElement("div");
-    tile.classes.add("Connect-tile");
+    tile.classes.add("connect-tile");
 
     Game connectGame = game;
-    if (ConnectGame is ConnectGame) {
+    if (connectGame is ConnectGame) {
       tile.addEventListener("click", (event) {
         connectGame.submitMove(i, j);
       });
