@@ -40,7 +40,15 @@ class GameSelector {
   }
 
   Game getGame(String title) {
-    return TicTacToeGame(this.gameContainer);
+    if (title == "Tic-Tac-Toe") {
+      return TicTacToeGame(gameContainer);
+    }
+
+    if (title == "Connect 4") {
+      return SailorGame(gameContainer);
+    }
+
+    return TicTacToeGame(gameContainer);
   }
 }
 
@@ -103,6 +111,20 @@ class TicTacToeGame extends Game {
   void setupPieces() {}
 }
 
+class SailorGame extends Game {
+  SailorGame(Element container) : super(container) {}
+
+  GameBoard createBoard() {
+    return SailorBoard(this, container);
+  }
+
+  void submitMove(int i, int j) {
+    print("Sailor Game: move was made at board[${i}][${j}]");
+  }
+
+  void setupPieces() {}
+}
+
 abstract class GameBoard {
   Game game;
   Element container;
@@ -118,6 +140,36 @@ abstract class GameBoard {
   }
 
   void insertTiles();
+}
+
+class SailorBoard extends GameBoard {
+  SailorBoard(SailorGame game, Element container) : super(game, container) {}
+
+  void insertTiles() {
+    for (int i = 0; i < 6; i++) {
+      Element row = createRow();
+      for (int j = 0; j < 7; j++) {
+        Element tile = createTile(i, j);
+        row.children.add(tile);
+      }
+
+      container.children.add(row);
+    }
+  }
+
+  Element createTile(int i, int j) {
+    Element tile = document.createElement("div");
+    tile.classes.add("sailor-tile");
+
+    Game sailorGame = game;
+    if (sailorGame is SailorGame) {
+      tile.addEventListener("click", (event) {
+        sailorGame.submitMove(i, j);
+      });
+    }
+
+    return tile;
+  }
 }
 
 class TicTacToeBoard extends GameBoard {

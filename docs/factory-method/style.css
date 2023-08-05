@@ -40,4 +40,27 @@ body {
     margin: 10px;
     width: 100px;
     height: 100px;
+    border-radius: 10%;
+}
+
+.sailor-tile {
+    background-color: #333;
+    margin: 10px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}
+
+.chess-tile {
+    margin: 0px;
+    width: 100px;
+    height: 100px;
+}
+
+.chess-tile.dark {
+    background-color: #735e47;
+}
+
+.chess-tile.light {
+    background-color: #e0c46e;
 }
