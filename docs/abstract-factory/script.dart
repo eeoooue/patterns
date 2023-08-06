@@ -1,19 +1,32 @@
 import 'dart:html';
 
-// board games
-import 'boardgames.dart';
 // game-specific classes
 import 'chess.dart';
 
-void main() {
-  createGame();
+class PieceBox {
+  ChessGame game;
+  Element container;
+  ButtonElement button;
+
+  PieceBox(this.game, this.container, this.button) {}
 }
 
-void createGame() {
+void main() {
+  setupBox();
+}
+
+void setupBox() {
   Element? gameContainer = document.getElementById("game-container");
 
   if (gameContainer is Element) {
-    Game game = ChessGame(gameContainer);
-    game.startGame();
+    ChessGame game = ChessGame(gameContainer);
+    game.createBoard();
+
+    Element? switchBtn = document.querySelector(".colour-switcher");
+    Element? pieceContainer = document.getElementById("piece-box");
+
+    if (switchBtn is ButtonElement && pieceContainer is Element) {
+      PieceBox(game, pieceContainer, switchBtn);
+    }
   }
 }
