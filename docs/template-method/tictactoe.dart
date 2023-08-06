@@ -1,5 +1,5 @@
 import 'dart:html';
-import 'script.dart';
+import 'boardgames.dart';
 
 class TicTacToeGame extends Game {
   int turnPlayer = 0;

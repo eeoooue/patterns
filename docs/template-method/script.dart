@@ -1,7 +1,12 @@
 import 'dart:html';
 
+// board games
+import 'boardgames.dart';
 // game-specific classes
 import 'tictactoe.dart';
+import 'chess.dart';
+import 'checkers.dart';
+import 'connect.dart';
 
 class GameSelector {
   ButtonElement button;
@@ -79,185 +84,6 @@ class GameChoice {
     element.addEventListener("click", (event) {
       parent.selectGame(title);
     });
-  }
-}
-
-abstract class Game {
-  Element container;
-  late GameBoard board;
-
-  Game(this.container) {}
-
-  void startGame() {
-    clearPlayArea();
-    board = createBoard();
-    setupPieces();
-  }
-
-  void clearPlayArea() {
-    container.children.clear();
-  }
-
-  void submitMove(int i, int j);
-
-  GameBoard createBoard();
-
-  void setupPieces();
-}
-
-class ConnectGame extends Game {
-  ConnectGame(Element container) : super(container) {}
-
-  GameBoard createBoard() {
-    return ConnectBoard(this, container);
-  }
-
-  void submitMove(int i, int j) {
-    print("Connect Game: move was made at board[${i}][${j}]");
-  }
-
-  void setupPieces() {}
-}
-
-class ChessGame extends Game {
-  ChessGame(Element container) : super(container) {}
-
-  GameBoard createBoard() {
-    return ChessBoard(this, container);
-  }
-
-  void submitMove(int i, int j) {
-    print("Chess: move was made at board[${i}][${j}]");
-  }
-
-  void setupPieces() {}
-}
-
-class CheckersGame extends Game {
-  CheckersGame(Element container) : super(container) {}
-
-  GameBoard createBoard() {
-    return ChessBoard(this, container);
-  }
-
-  void submitMove(int i, int j) {
-    print("Checkers: move was made at board[${i}][${j}]");
-  }
-
-  void setupPieces() {}
-}
-
-abstract class GameBoard {
-  Game game;
-  Element container;
-
-  GameBoard(this.game, this.container) {
-    insertTiles();
-  }
-
-  Element createRow() {
-    Element row = document.createElement("div");
-    row.classes.add("board-row");
-    return row;
-  }
-
-  void insertTiles();
-
-  bool tileIsEmpty(int i, int j);
-}
-
-class ChessBoard extends GameBoard {
-  ChessBoard(Game game, Element container) : super(game, container) {}
-
-  void insertTiles() {
-    bool dark = false;
-
-    for (int i = 0; i < 8; i++) {
-      dark = !dark;
-      Element row = createRow();
-
-      for (int j = 0; j < 8; j++) {
-        dark = !dark;
-        Element tile = createTile(i, j, dark);
-        row.children.add(tile);
-      }
-
-      container.children.add(row);
-    }
-  }
-
-  Element createTile(int i, int j, bool dark) {
-    Element tile = document.createElement("div");
-    tile.classes.add("chess-tile");
-
-    if (dark) {
-      tile.classes.add("dark");
-    }
-
-    tile.addEventListener("click", (event) {
-      game.submitMove(i, j);
-    });
-
-    return tile;
-  }
-
-  bool tileIsEmpty(int i, int j) {
-    return false;
-  }
-}
-
-class ConnectBoard extends GameBoard {
-  ConnectBoard(ConnectGame game, Element container) : super(game, container) {}
-
-  void insertTiles() {
-    for (int i = 0; i < 6; i++) {
-      Element row = createRow();
-      for (int j = 0; j < 7; j++) {
-        Element tile = createTile(i, j);
-        row.children.add(tile);
-      }
-
-      container.children.add(row);
-    }
-  }
-
-  Element createTile(int i, int j) {
-    Element tile = document.createElement("div");
-    tile.classes.add("connect-tile");
-
-    Game connectGame = game;
-    if (connectGame is ConnectGame) {
-      tile.addEventListener("click", (event) {
-        connectGame.submitMove(i, j);
-      });
-    }
-
-    return tile;
-  }
-
-  bool tileIsEmpty(int i, int j) {
-    return false;
-  }
-}
-
-abstract class GamePiece {
-  late String src;
-  late ImageElement element;
-
-  GamePiece() {}
-
-  void setSource(String address) {
-    src = address;
-    buildElement();
-  }
-
-  void buildElement() {
-    Element img = document.createElement("img");
-    img.classes.add("piece-img");
-    if (img is ImageElement) {
-      img.src = src;
-      element = img;
-    }
   }
 }
 
