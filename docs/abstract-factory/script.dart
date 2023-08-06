@@ -13,6 +13,7 @@ class PieceBox {
 
   PieceBox(this.game, this.container, this.button) {
     armButton();
+    switchColour();
   }
 
   void armButton() {

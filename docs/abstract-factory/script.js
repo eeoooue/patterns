@@ -2884,8 +2884,11 @@
         new A.ChessBoard(t3, new A.ChessGame(gameContainer), gameContainer).insertTiles$0();
         switchBtn = t1.querySelector(".colour-switcher");
         pieceContainer = t1.getElementById("piece-box");
-        if (type$.ButtonElement._is(switchBtn) && t2._is(pieceContainer))
-          new A.PieceBox(pieceContainer, switchBtn, new A.BlackPieceFactory("black")).armButton$0();
+        if (type$.ButtonElement._is(switchBtn) && t2._is(pieceContainer)) {
+          t1 = new A.PieceBox(pieceContainer, switchBtn, new A.BlackPieceFactory("black"));
+          t1.armButton$0();
+          t1.switchColour$0();
+        }
       }
     },
     PieceBox: function PieceBox(t0, t1, t2) {
@@ -4468,6 +4471,22 @@
     armButton$0() {
       B.ButtonElement_methods.addEventListener$2(this.button, "click", new A.PieceBox_armButton_closure(this));
     },
+    switchColour$0() {
+      var t1, t2, list, _this = this,
+        current = _this.factory.colour;
+      _this.factory = current === "black" ? new A.WhitePieceFactory("white") : new A.BlackPieceFactory("black");
+      t1 = _this.button;
+      t2 = current + "-btn";
+      list = t1.classList;
+      list.contains(t2).toString;
+      list.remove(t2);
+      t2 = _this.factory.colour + "-btn";
+      list = t1.classList;
+      list.contains(t2).toString;
+      list.add(t2);
+      t1.innerText = _this.factory.colour;
+      _this.presentPieces$0();
+    },
     presentPieces$0() {
       var options, t3, _i, piece, t4, t5, _this = this,
         t1 = _this.container,
@@ -4493,22 +4512,8 @@
   };
   A.PieceBox_armButton_closure.prototype = {
     call$1($event) {
-      var t1, current, t2, t3, list;
       type$.Event._as($event);
-      t1 = this.$this;
-      current = t1.factory.colour;
-      t1.factory = current === "black" ? new A.WhitePieceFactory("white") : new A.BlackPieceFactory("black");
-      t2 = t1.button;
-      t3 = current + "-btn";
-      list = t2.classList;
-      list.contains(t3).toString;
-      list.remove(t3);
-      t3 = t1.factory.colour + "-btn";
-      list = t2.classList;
-      list.contains(t3).toString;
-      list.add(t3);
-      t2.innerText = t1.factory.colour;
-      t1.presentPieces$0();
+      this.$this.switchColour$0();
     },
     $signature: 0
   };
