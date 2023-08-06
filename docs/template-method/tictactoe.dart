@@ -34,7 +34,7 @@ class TicTacToeGame extends Game {
 
 class TicTacToePiece extends GamePiece {
   TicTacToePiece(String team) {
-    setSource("/assets/tictactoe/ttt_${team}.png");
+    setSource("./assets/tictactoe/ttt_${team}.png");
   }
 }
 

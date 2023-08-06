@@ -65,6 +65,6 @@ class CheckersGame extends Game {
 
 class CheckersPiece extends GamePiece {
   CheckersPiece(String team) {
-    setSource("/assets/checkers/checkers_${team}.png");
+    setSource("./assets/checkers/checkers_${team}.png");
   }
 }

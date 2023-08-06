@@ -130,6 +130,6 @@ class ChessBoard extends GameBoard {
 
 class ChessPiece extends GamePiece {
   ChessPiece(String name, String colour) {
-    setSource("/assets/chess/${name}_${colour}.png");
+    setSource("./assets/chess/${name}_${colour}.png");
   }
 }

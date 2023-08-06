@@ -2849,7 +2849,7 @@
     },
     ChessPiece$($name, colour) {
       var t1 = new A.ChessPiece();
-      t1.__GamePiece_src_A = "/assets/chess/" + $name + "_" + colour + ".png";
+      t1.__GamePiece_src_A = "./assets/chess/" + $name + "_" + colour + ".png";
       t1.buildElement$0();
       return t1;
     },
@@ -4380,7 +4380,7 @@
       var i, j, r, piece, t1;
       for (i = 0, j = 1, r = 0; r < 12; ++r) {
         piece = new A.CheckersPiece();
-        piece.__GamePiece_src_A = "/assets/checkers/checkers_cream.png";
+        piece.__GamePiece_src_A = "./assets/checkers/checkers_cream.png";
         piece.buildElement$0();
         t1 = this.__Game_board_A;
         t1 === $ && A.throwLateFieldNI("board");
@@ -4400,7 +4400,7 @@
       var i, j, r, piece, t1;
       for (i = 5, j = 0, r = 0; r < 12; ++r) {
         piece = new A.CheckersPiece();
-        piece.__GamePiece_src_A = "/assets/checkers/checkers_red.png";
+        piece.__GamePiece_src_A = "./assets/checkers/checkers_red.png";
         piece.buildElement$0();
         t1 = this.__Game_board_A;
         t1 === $ && A.throwLateFieldNI("board");
@@ -4451,7 +4451,7 @@
       _this.__Game_board_A.placePiece$3(bishopR, 7, 5);
       for (j = 0; j < 8; ++j) {
         pawn = new A.ChessPiece();
-        pawn.__GamePiece_src_A = "/assets/chess/pawn_w.png";
+        pawn.__GamePiece_src_A = "./assets/chess/pawn_w.png";
         pawn.buildElement$0();
         _this.__Game_board_A.placePiece$3(pawn, 6, j);
       }
@@ -4478,7 +4478,7 @@
       _this.__Game_board_A.placePiece$3(bishopR, 0, 5);
       for (j = 0; j < 8; ++j) {
         pawn = new A.ChessPiece();
-        pawn.__GamePiece_src_A = "/assets/chess/pawn_b.png";
+        pawn.__GamePiece_src_A = "./assets/chess/pawn_b.png";
         pawn.buildElement$0();
         _this.__Game_board_A.placePiece$3(pawn, 1, j);
       }
@@ -4559,7 +4559,7 @@
         return;
       colour = _this.turnPlayer === 0 ? "red" : "yellow";
       piece = new A.ConnectPiece();
-      piece.__GamePiece_src_A = "/assets/connect/connect_" + colour + ".png";
+      piece.__GamePiece_src_A = "./assets/connect/connect_" + colour + ".png";
       piece.buildElement$0();
       t1 = _this.__Game_board_A;
       t1 === $ && A.throwLateFieldNI("board");
@@ -4727,7 +4727,7 @@
       if (t1.tileIsEmpty$2(i, j)) {
         team = _this.turnPlayer === 0 ? "nought" : "cross";
         piece = new A.TicTacToePiece();
-        piece.__GamePiece_src_A = "/assets/tictactoe/ttt_" + team + ".png";
+        piece.__GamePiece_src_A = "./assets/tictactoe/ttt_" + team + ".png";
         piece.buildElement$0();
         t1 = _this.__Game_board_A;
         if (t1 instanceof A.TicTacToeBoard) {

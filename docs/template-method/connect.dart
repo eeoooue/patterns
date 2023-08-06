@@ -92,6 +92,6 @@ class ConnectBoard extends GameBoard {
 
 class ConnectPiece extends GamePiece {
   ConnectPiece(String colour) {
-    setSource("/assets/connect/connect_${colour}.png");
+    setSource("./assets/connect/connect_${colour}.png");
   }
 }
