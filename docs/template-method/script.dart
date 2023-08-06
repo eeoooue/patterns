@@ -241,9 +241,21 @@ class ConnectBoard extends GameBoard {
   }
 }
 
+abstract class GamePiece {
+  late String src;
+
+  GamePiece() {}
+
+  void setSource(String address) {
+    src = address;
+  }
+}
+
 class TicTacToeBoard extends GameBoard {
   TicTacToeBoard(TicTacToeGame game, Element container)
       : super(game, container) {}
+
+  void placePiece(GamePiece piece, int i, int j) {}
 
   void insertTiles() {
     for (int i = 0; i < 3; i++) {
