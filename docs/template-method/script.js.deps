@@ -1,6 +1,11 @@
 file:///C:/tools/dart-sdk/lib/_internal/dart2js_platform.dill
 file:///C:/tools/dart-sdk/lib/libraries.json
+file:///D:/GitHub/patterns/docs/template-method/boardgames.dart
+file:///D:/GitHub/patterns/docs/template-method/checkers.dart
+file:///D:/GitHub/patterns/docs/template-method/chess.dart
+file:///D:/GitHub/patterns/docs/template-method/connect.dart
 file:///D:/GitHub/patterns/docs/template-method/script.dart
+file:///D:/GitHub/patterns/docs/template-method/tictactoe.dart
 org-dartlang-sdk:///lib/_http/crypto.dart
 org-dartlang-sdk:///lib/_http/embedder_config.dart
 org-dartlang-sdk:///lib/_http/http.dart
