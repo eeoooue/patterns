@@ -2864,11 +2864,6 @@
     },
     Game: function Game() {
     },
-    TicTacToeGame: function TicTacToeGame(t0) {
-      this.turnPlayer = 0;
-      this.container = t0;
-      this.__Game_board_A = $;
-    },
     ConnectGame: function ConnectGame(t0) {
       this.container = t0;
       this.__Game_board_A = $;
@@ -2900,6 +2895,11 @@
       this.connectGame = t0;
       this.i = t1;
       this.j = t2;
+    },
+    TicTacToeGame: function TicTacToeGame(t0) {
+      this.turnPlayer = 0;
+      this.container = t0;
+      this.__Game_board_A = $;
     },
     TicTacToeBoard: function TicTacToeBoard(t0, t1, t2) {
       this.board = t0;
@@ -4397,45 +4397,6 @@
     $signature: 0
   };
   A.Game.prototype = {};
-  A.TicTacToeGame.prototype = {
-    createBoard$0() {
-      var t1 = J.JSArray_JSArray$growable(0, type$.List_Element);
-      t1 = new A.TicTacToeBoard(t1, this, this.container);
-      t1.insertTiles$0();
-      return t1;
-    },
-    submitMove$2(i, j) {
-      var t1, team, img, t2, _this = this;
-      A.print("Tic-Tac-Toe: move was made at board[" + i + "][" + j + "]");
-      t1 = _this.__Game_board_A;
-      t1 === $ && A.throwLateFieldNI("board");
-      if (t1.tileIsEmpty$2(i, j)) {
-        team = _this.turnPlayer === 0 ? "nought" : "cross";
-        img = document.createElement("img");
-        J.get$classes$x(img).add$1(0, "piece-img");
-        if (type$.ImageElement._is(img)) {
-          B.ImageElement_methods.set$src(img, "/assets/tictactoe/ttt_" + team + ".png");
-          t1 = img;
-        } else
-          t1 = $;
-        t2 = _this.__Game_board_A;
-        if (t2 instanceof A.TicTacToeBoard) {
-          t2 = t2.board;
-          if (!(i < t2.length))
-            return A.ioore(t2, i);
-          t2 = t2[i];
-          if (!(j < t2.length))
-            return A.ioore(t2, j);
-          t2 = J.get$children$x(t2[j]);
-          t1 === $ && A.throwLateFieldNI("element");
-          t2.add$1(0, t1);
-          _this.turnPlayer = (_this.turnPlayer + 1) % 2;
-        }
-      }
-    },
-    setupPieces$0() {
-    }
-  };
   A.ConnectGame.prototype = {
     createBoard$0() {
       var t1 = new A.ConnectBoard(this, this.container);
@@ -4540,6 +4501,45 @@
     },
     $signature: 0
   };
+  A.TicTacToeGame.prototype = {
+    createBoard$0() {
+      var t1 = J.JSArray_JSArray$growable(0, type$.List_Element);
+      t1 = new A.TicTacToeBoard(t1, this, this.container);
+      t1.insertTiles$0();
+      return t1;
+    },
+    submitMove$2(i, j) {
+      var t1, team, img, t2, _this = this;
+      A.print("Tic-Tac-Toe: move was made at board[" + i + "][" + j + "]");
+      t1 = _this.__Game_board_A;
+      t1 === $ && A.throwLateFieldNI("board");
+      if (t1.tileIsEmpty$2(i, j)) {
+        team = _this.turnPlayer === 0 ? "nought" : "cross";
+        img = document.createElement("img");
+        J.get$classes$x(img).add$1(0, "piece-img");
+        if (type$.ImageElement._is(img)) {
+          B.ImageElement_methods.set$src(img, "/assets/tictactoe/ttt_" + team + ".png");
+          t1 = img;
+        } else
+          t1 = $;
+        t2 = _this.__Game_board_A;
+        if (t2 instanceof A.TicTacToeBoard) {
+          t2 = t2.board;
+          if (!(i < t2.length))
+            return A.ioore(t2, i);
+          t2 = t2[i];
+          if (!(j < t2.length))
+            return A.ioore(t2, j);
+          t2 = J.get$children$x(t2[j]);
+          t1 === $ && A.throwLateFieldNI("element");
+          t2.add$1(0, t1);
+          _this.turnPlayer = (_this.turnPlayer + 1) % 2;
+        }
+      }
+    },
+    setupPieces$0() {
+    }
+  };
   A.TicTacToeBoard.prototype = {
     insertTiles$0() {
       var t1, t2, t3, t4, i, rowList, row, t5, j, tile;
@@ -4624,7 +4624,7 @@
     _inherit(A.__NamedNodeMap_JavaScriptObject_ListMixin_ImmutableListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin);
     _inherit(A._NamedNodeMap, A.__NamedNodeMap_JavaScriptObject_ListMixin_ImmutableListMixin);
     _inheritMany(A.CssClassSetImpl, [A._ElementCssClassSet, A.AttributeClassSet]);
-    _inheritMany(A.Game, [A.TicTacToeGame, A.ConnectGame, A.ChessGame, A.CheckersGame]);
+    _inheritMany(A.Game, [A.ConnectGame, A.ChessGame, A.CheckersGame, A.TicTacToeGame]);
     _inheritMany(A.GameBoard, [A.ChessBoard, A.ConnectBoard, A.TicTacToeBoard]);
     _mixin(A._HtmlCollection_JavaScriptObject_ListMixin, A.ListBase);
     _mixin(A._HtmlCollection_JavaScriptObject_ListMixin_ImmutableListMixin, A.ImmutableListMixin);
@@ -4642,7 +4642,7 @@
     leafTags: null,
     arrayRti: Symbol("$ti")
   };
-  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"ButtonElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"TicTacToeGame":{"Game":[]},"ConnectGame":{"Game":[]},"ChessGame":{"Game":[]},"CheckersGame":{"Game":[]},"ChessBoard":{"GameBoard":[]},"ConnectBoard":{"GameBoard":[]},"TicTacToeBoard":{"GameBoard":[]}}'));
+  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"ButtonElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"ConnectGame":{"Game":[]},"ChessGame":{"Game":[]},"CheckersGame":{"Game":[]},"ChessBoard":{"GameBoard":[]},"ConnectBoard":{"GameBoard":[]},"TicTacToeGame":{"Game":[]},"TicTacToeBoard":{"GameBoard":[]}}'));
   A._Universe_addErasedTypes(init.typeUniverse, JSON.parse('{"_SetBase":1}'));
   var type$ = (function rtii() {
     var findType = A.findType;
