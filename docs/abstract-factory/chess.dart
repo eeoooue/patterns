@@ -133,3 +133,27 @@ class ChessPiece extends GamePiece {
     setSource("./assets/chess/${name}_${colour}.png");
   }
 }
+
+class Pawn extends ChessPiece {
+  Pawn(String colour) : super("pawn", colour) {}
+}
+
+class Knight extends ChessPiece {
+  Knight(String colour) : super("knight", colour) {}
+}
+
+class Bishop extends ChessPiece {
+  Bishop(String colour) : super("bishop", colour) {}
+}
+
+class Rook extends ChessPiece {
+  Rook(String colour) : super("rook", colour) {}
+}
+
+class King extends ChessPiece {
+  King(String colour) : super("king", colour) {}
+}
+
+class Queen extends ChessPiece {
+  Queen(String colour) : super("queen", colour) {}
+}
