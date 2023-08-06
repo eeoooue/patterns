@@ -15,6 +15,9 @@ body {
     margin: 0;
 }
 
+.pinkbg {
+    background-color: pink;
+}
 
 .hidden {
     display: none;
