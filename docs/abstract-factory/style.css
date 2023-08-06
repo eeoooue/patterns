@@ -15,10 +15,6 @@ body {
     margin: 0;
 }
 
-.pinkbg {
-    background-color: pink;
-}
-
 .hidden {
     display: none;
 }  
@@ -44,14 +40,22 @@ body {
 }
 
 .colour-switcher {
-    background-color: #333;
-    color: white;
     padding: 10px 10px;
     margin: 10px 0px;
     font-size: 1rem;
     border-style: none;
     border-radius: 8px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+}
+
+.black-btn {
+    background-color: #333;
+    color: white;
+}
+
+.white-btn {
+    background-color: white;
+    color: #111;
 }
 
 .colour-switcher:hover {
@@ -70,7 +74,6 @@ body {
 }
 
 #piece-box {
-    background-color: grey;
     padding: 10px 24px;
 }
 
