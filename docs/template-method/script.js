@@ -2871,6 +2871,7 @@
       this.__GamePiece_element_A = this.__GamePiece_src_A = $;
     },
     ConnectGame: function ConnectGame(t0) {
+      this.turnPlayer = 0;
       this.container = t0;
       this.__Game_board_A = $;
     },
@@ -2883,6 +2884,9 @@
       this.connectGame = t0;
       this.i = t1;
       this.j = t2;
+    },
+    ConnectPiece: function ConnectPiece() {
+      this.__GamePiece_element_A = this.__GamePiece_src_A = $;
     },
     main() {
       var t1 = document,
@@ -4484,7 +4488,7 @@
     placePiece$3(piece, i, j) {
       var t2,
         t1 = this.board;
-      if (!(i < t1.length))
+      if (!(i >= 0 && i < t1.length))
         return A.ioore(t1, i);
       t1 = t1[i];
       if (!(j < t1.length))
@@ -4541,7 +4545,26 @@
       return t1;
     },
     submitMove$2(i, j) {
-      A.print("Connect Game: move was made at board[" + i + "][" + j + "]");
+      var t1;
+      A.print("Connect Game: move was attempted in column[" + j + "]");
+      t1 = this.__Game_board_A;
+      t1 === $ && A.throwLateFieldNI("board");
+      if (t1 instanceof A.ConnectBoard)
+        this.makeMove$2(t1, j);
+    },
+    makeMove$2(grid, j) {
+      var colour, piece, t1, _this = this,
+        i = grid.lowestSpaceInColumn$1(j);
+      if (i === -1)
+        return;
+      colour = _this.turnPlayer === 0 ? "red" : "yellow";
+      piece = new A.ConnectPiece();
+      piece.__GamePiece_src_A = "/assets/connect/connect_" + colour + ".png";
+      piece.buildElement$0();
+      t1 = _this.__Game_board_A;
+      t1 === $ && A.throwLateFieldNI("board");
+      t1.placePiece$3(piece, i, j);
+      _this.turnPlayer = (_this.turnPlayer + 1) % 2;
     },
     setupPieces$0() {
     }
@@ -4550,7 +4573,7 @@
     placePiece$3(piece, i, j) {
       var t2,
         t1 = this.board;
-      if (!(i < t1.length))
+      if (!(i >= 0 && i < t1.length))
         return A.ioore(t1, i);
       t1 = t1[i];
       if (!(j < t1.length))
@@ -4559,6 +4582,20 @@
       t2 = piece.__GamePiece_element_A;
       t2 === $ && A.throwLateFieldNI("element");
       t1.add$1(0, t2);
+    },
+    lowestSpaceInColumn$1(j) {
+      var t1, i, t2;
+      for (t1 = this.board, i = t1.length - 1; i >= 0; --i) {
+        if (!(i < t1.length))
+          return A.ioore(t1, i);
+        t2 = t1[i];
+        if (!(j < t2.length))
+          return A.ioore(t2, j);
+        t2 = J.get$children$x(t2[j]);
+        if (t2.get$length(t2) === 0)
+          return i;
+      }
+      return -1;
     },
     insertTiles$0() {
       var t1, t2, t3, t4, i, rowList, row, t5, j, tile;
@@ -4587,16 +4624,24 @@
       return tile;
     },
     tileIsEmpty$2(i, j) {
-      return false;
+      var t1 = this.board;
+      if (!(i >= 0 && i < t1.length))
+        return A.ioore(t1, i);
+      t1 = t1[i];
+      if (!(j < t1.length))
+        return A.ioore(t1, j);
+      t1 = J.get$children$x(t1[j]);
+      return t1.get$length(t1) === 0;
     }
   };
   A.ConnectBoard_createTile_closure.prototype = {
     call$1($event) {
       type$.Event._as($event);
-      A.print("Connect Game: move was made at board[" + this.i + "][" + this.j + "]");
+      this.connectGame.submitMove$2(this.i, this.j);
     },
     $signature: 0
   };
+  A.ConnectPiece.prototype = {};
   A.GameSelector.prototype = {
     armButton$0() {
       B.ButtonElement_methods.addEventListener$2(this.button, "click", new A.GameSelector_armButton_closure(this));
@@ -4699,7 +4744,7 @@
     placePiece$3(piece, i, j) {
       var t2,
         t1 = this.board;
-      if (!(i < t1.length))
+      if (!(i >= 0 && i < t1.length))
         return A.ioore(t1, i);
       t1 = t1[i];
       if (!(j < t1.length))
@@ -4793,7 +4838,7 @@
     _inherit(A._NamedNodeMap, A.__NamedNodeMap_JavaScriptObject_ListMixin_ImmutableListMixin);
     _inheritMany(A.CssClassSetImpl, [A._ElementCssClassSet, A.AttributeClassSet]);
     _inheritMany(A.Game, [A.CheckersGame, A.ChessGame, A.ConnectGame, A.TicTacToeGame]);
-    _inheritMany(A.GamePiece, [A.CheckersPiece, A.ChessPiece, A.TicTacToePiece]);
+    _inheritMany(A.GamePiece, [A.CheckersPiece, A.ChessPiece, A.ConnectPiece, A.TicTacToePiece]);
     _inheritMany(A.GameBoard, [A.ChessBoard, A.ConnectBoard, A.TicTacToeBoard]);
     _mixin(A._HtmlCollection_JavaScriptObject_ListMixin, A.ListBase);
     _mixin(A._HtmlCollection_JavaScriptObject_ListMixin_ImmutableListMixin, A.ImmutableListMixin);
@@ -4811,7 +4856,7 @@
     leafTags: null,
     arrayRti: Symbol("$ti")
   };
-  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"ButtonElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"CheckersGame":{"Game":[]},"CheckersPiece":{"GamePiece":[]},"ChessGame":{"Game":[]},"ChessBoard":{"GameBoard":[]},"ChessPiece":{"GamePiece":[]},"ConnectGame":{"Game":[]},"ConnectBoard":{"GameBoard":[]},"TicTacToeGame":{"Game":[]},"TicTacToePiece":{"GamePiece":[]},"TicTacToeBoard":{"GameBoard":[]}}'));
+  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"ButtonElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"CheckersGame":{"Game":[]},"CheckersPiece":{"GamePiece":[]},"ChessGame":{"Game":[]},"ChessBoard":{"GameBoard":[]},"ChessPiece":{"GamePiece":[]},"ConnectGame":{"Game":[]},"ConnectBoard":{"GameBoard":[]},"ConnectPiece":{"GamePiece":[]},"TicTacToeGame":{"Game":[]},"TicTacToePiece":{"GamePiece":[]},"TicTacToeBoard":{"GameBoard":[]}}'));
   A._Universe_addErasedTypes(init.typeUniverse, JSON.parse('{"_SetBase":1}'));
   var type$ = (function rtii() {
     var findType = A.findType;
