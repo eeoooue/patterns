@@ -2832,12 +2832,18 @@
     },
     GameBoard: function GameBoard() {
     },
+    GamePiece: function GamePiece() {
+    },
     CheckersGame: function CheckersGame(t0) {
       this.container = t0;
       this.__Game_board_A = $;
     },
+    CheckersPiece: function CheckersPiece() {
+      this.__GamePiece_element_A = this.__GamePiece_src_A = $;
+    },
     ChessBoard$(game, container) {
-      var t1 = new A.ChessBoard(game, container);
+      var t1 = J.JSArray_JSArray$growable(0, type$.List_Element);
+      t1 = new A.ChessBoard(t1, game, container);
       t1.insertTiles$0();
       return t1;
     },
@@ -2845,9 +2851,10 @@
       this.container = t0;
       this.__Game_board_A = $;
     },
-    ChessBoard: function ChessBoard(t0, t1) {
-      this.game = t0;
-      this.container = t1;
+    ChessBoard: function ChessBoard(t0, t1, t2) {
+      this.board = t0;
+      this.game = t1;
+      this.container = t2;
     },
     ChessBoard_createTile_closure: function ChessBoard_createTile_closure(t0, t1, t2) {
       this.$this = t0;
@@ -2858,9 +2865,10 @@
       this.container = t0;
       this.__Game_board_A = $;
     },
-    ConnectBoard: function ConnectBoard(t0, t1) {
-      this.game = t0;
-      this.container = t1;
+    ConnectBoard: function ConnectBoard(t0, t1, t2) {
+      this.board = t0;
+      this.game = t1;
+      this.container = t2;
     },
     ConnectBoard_createTile_closure: function ConnectBoard_createTile_closure(t0, t1, t2) {
       this.connectGame = t0;
@@ -2900,6 +2908,9 @@
       this.turnPlayer = 0;
       this.container = t0;
       this.__Game_board_A = $;
+    },
+    TicTacToePiece: function TicTacToePiece() {
+      this.__GamePiece_element_A = this.__GamePiece_src_A = $;
     },
     TicTacToeBoard: function TicTacToeBoard(t0, t1, t2) {
       this.board = t0;
@@ -4328,6 +4339,19 @@
   };
   A.Game.prototype = {};
   A.GameBoard.prototype = {};
+  A.GamePiece.prototype = {
+    buildElement$0() {
+      var t1,
+        img = document.createElement("img");
+      J.get$classes$x(img).add$1(0, "piece-img");
+      if (type$.ImageElement._is(img)) {
+        t1 = this.__GamePiece_src_A;
+        t1 === $ && A.throwLateFieldNI("src");
+        B.ImageElement_methods.set$src(img, t1);
+        this.__GamePiece_element_A = img;
+      }
+    }
+  };
   A.CheckersGame.prototype = {
     createBoard$0() {
       return A.ChessBoard$(this, this.container);
@@ -4336,8 +4360,51 @@
       A.print("Checkers: move was made at board[" + i + "][" + j + "]");
     },
     setupPieces$0() {
+      this.setupCreamPieces$0();
+      this.setupRedPieces$0();
+    },
+    setupCreamPieces$0() {
+      var i, j, r, piece, t1;
+      for (i = 0, j = 1, r = 0; r < 12; ++r) {
+        piece = new A.CheckersPiece();
+        piece.__GamePiece_src_A = "/assets/checkers/checkers_cream.png";
+        piece.buildElement$0();
+        t1 = this.__Game_board_A;
+        t1 === $ && A.throwLateFieldNI("board");
+        t1.placePiece$3(piece, i, j);
+        j += 2;
+        if (j === 8) {
+          ++i;
+          j = 1;
+        }
+        if (j === 9) {
+          ++i;
+          j = 0;
+        }
+      }
+    },
+    setupRedPieces$0() {
+      var i, j, r, piece, t1;
+      for (i = 5, j = 0, r = 0; r < 12; ++r) {
+        piece = new A.CheckersPiece();
+        piece.__GamePiece_src_A = "/assets/checkers/checkers_red.png";
+        piece.buildElement$0();
+        t1 = this.__Game_board_A;
+        t1 === $ && A.throwLateFieldNI("board");
+        t1.placePiece$3(piece, i, j);
+        j += 2;
+        if (j === 8) {
+          ++i;
+          j = 1;
+        }
+        if (j === 9) {
+          ++i;
+          j = 0;
+        }
+      }
     }
   };
+  A.CheckersPiece.prototype = {};
   A.ChessGame.prototype = {
     createBoard$0() {
       return A.ChessBoard$(this, this.container);
@@ -4349,19 +4416,35 @@
     }
   };
   A.ChessBoard.prototype = {
+    placePiece$3(piece, i, j) {
+      var t2,
+        t1 = this.board;
+      if (!(i < t1.length))
+        return A.ioore(t1, i);
+      t1 = t1[i];
+      if (!(j < t1.length))
+        return A.ioore(t1, j);
+      t1 = J.get$children$x(t1[j]);
+      t2 = piece.__GamePiece_element_A;
+      t2 === $ && A.throwLateFieldNI("element");
+      t1.add$1(0, t2);
+    },
     insertTiles$0() {
-      var t1, t2, dark, i, row, t3, j, tile;
-      for (t1 = this.container, t2 = J.getInterceptor$x(t1), dark = false, i = 0; i < 8; ++i) {
+      var t1, t2, t3, t4, dark, i, rowList, row, t5, j, tile;
+      for (t1 = this.board, t2 = this.container, t3 = J.getInterceptor$x(t2), t4 = type$.JSArray_Element, dark = false, i = 0; i < 8; ++i) {
         dark = !dark;
+        rowList = A._setArrayType(new Array(0), t4);
         row = document.createElement("div");
-        t3 = J.getInterceptor$x(row);
-        t3.get$classes(row).add$1(0, "board-row");
+        t5 = J.getInterceptor$x(row);
+        t5.get$classes(row).add$1(0, "board-row");
         for (j = 0; j < 8; ++j) {
           dark = !dark;
           tile = this.createTile$3(i, j, dark);
-          t3.get$children(row).add$1(0, tile);
+          t5.get$children(row).add$1(0, tile);
+          B.JSArray_methods.add$1(rowList, tile);
         }
-        t2.get$children(t1).add$1(0, row);
+        B.JSArray_methods.add$1(t1, rowList);
+        t3.get$children(t2).add$1(0, row);
       }
     },
     createTile$3(i, j, dark) {
@@ -4386,7 +4469,8 @@
   };
   A.ConnectGame.prototype = {
     createBoard$0() {
-      var t1 = new A.ConnectBoard(this, this.container);
+      var t1 = J.JSArray_JSArray$growable(0, type$.List_Element);
+      t1 = new A.ConnectBoard(t1, this, this.container);
       t1.insertTiles$0();
       return t1;
     },
@@ -4397,17 +4481,33 @@
     }
   };
   A.ConnectBoard.prototype = {
+    placePiece$3(piece, i, j) {
+      var t2,
+        t1 = this.board;
+      if (!(i < t1.length))
+        return A.ioore(t1, i);
+      t1 = t1[i];
+      if (!(j < t1.length))
+        return A.ioore(t1, j);
+      t1 = J.get$children$x(t1[j]);
+      t2 = piece.__GamePiece_element_A;
+      t2 === $ && A.throwLateFieldNI("element");
+      t1.add$1(0, t2);
+    },
     insertTiles$0() {
-      var t1, t2, i, row, t3, j, tile;
-      for (t1 = this.container, t2 = J.getInterceptor$x(t1), i = 0; i < 6; ++i) {
+      var t1, t2, t3, t4, i, rowList, row, t5, j, tile;
+      for (t1 = this.board, t2 = this.container, t3 = J.getInterceptor$x(t2), t4 = type$.JSArray_Element, i = 0; i < 6; ++i) {
+        rowList = A._setArrayType(new Array(0), t4);
         row = document.createElement("div");
-        t3 = J.getInterceptor$x(row);
-        t3.get$classes(row).add$1(0, "board-row");
+        t5 = J.getInterceptor$x(row);
+        t5.get$classes(row).add$1(0, "board-row");
         for (j = 0; j < 7; ++j) {
           tile = this.createTile$2(i, j);
-          t3.get$children(row).add$1(0, tile);
+          t5.get$children(row).add$1(0, tile);
+          B.JSArray_methods.add$1(rowList, tile);
         }
-        t2.get$children(t1).add$1(0, row);
+        B.JSArray_methods.add$1(t1, rowList);
+        t3.get$children(t2).add$1(0, row);
       }
     },
     createTile$2(i, j) {
@@ -4509,30 +4609,18 @@
       return t1;
     },
     submitMove$2(i, j) {
-      var t1, team, img, t2, _this = this;
+      var t1, team, piece, _this = this;
       A.print("Tic-Tac-Toe: move was made at board[" + i + "][" + j + "]");
       t1 = _this.__Game_board_A;
       t1 === $ && A.throwLateFieldNI("board");
       if (t1.tileIsEmpty$2(i, j)) {
         team = _this.turnPlayer === 0 ? "nought" : "cross";
-        img = document.createElement("img");
-        J.get$classes$x(img).add$1(0, "piece-img");
-        if (type$.ImageElement._is(img)) {
-          B.ImageElement_methods.set$src(img, "/assets/tictactoe/ttt_" + team + ".png");
-          t1 = img;
-        } else
-          t1 = $;
-        t2 = _this.__Game_board_A;
-        if (t2 instanceof A.TicTacToeBoard) {
-          t2 = t2.board;
-          if (!(i < t2.length))
-            return A.ioore(t2, i);
-          t2 = t2[i];
-          if (!(j < t2.length))
-            return A.ioore(t2, j);
-          t2 = J.get$children$x(t2[j]);
-          t1 === $ && A.throwLateFieldNI("element");
-          t2.add$1(0, t1);
+        piece = new A.TicTacToePiece();
+        piece.__GamePiece_src_A = "/assets/tictactoe/ttt_" + team + ".png";
+        piece.buildElement$0();
+        t1 = _this.__Game_board_A;
+        if (t1 instanceof A.TicTacToeBoard) {
+          t1.placePiece$3(piece, i, j);
           _this.turnPlayer = (_this.turnPlayer + 1) % 2;
         }
       }
@@ -4540,7 +4628,21 @@
     setupPieces$0() {
     }
   };
+  A.TicTacToePiece.prototype = {};
   A.TicTacToeBoard.prototype = {
+    placePiece$3(piece, i, j) {
+      var t2,
+        t1 = this.board;
+      if (!(i < t1.length))
+        return A.ioore(t1, i);
+      t1 = t1[i];
+      if (!(j < t1.length))
+        return A.ioore(t1, j);
+      t1 = J.get$children$x(t1[j]);
+      t2 = piece.__GamePiece_element_A;
+      t2 === $ && A.throwLateFieldNI("element");
+      t1.add$1(0, t2);
+    },
     insertTiles$0() {
       var t1, t2, t3, t4, i, rowList, row, t5, j, tile;
       for (t1 = this.board, t2 = this.container, t3 = J.getInterceptor$x(t2), t4 = type$.JSArray_Element, i = 0; i < 3; ++i) {
@@ -4596,7 +4698,7 @@
       _inherit = hunkHelpers.inherit,
       _inheritMany = hunkHelpers.inheritMany;
     _inherit(A.Object, null);
-    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.Game, A.GameBoard, A.GameSelector, A.GameChoice]);
+    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.Game, A.GameBoard, A.GamePiece, A.GameSelector, A.GameChoice]);
     _inheritMany(J.Interceptor, [J.JSBool, J.JSNull, J.JavaScriptObject, J.JSNumber, J.JSString]);
     _inheritMany(J.JavaScriptObject, [J.LegacyJavaScriptObject, J.JSArray, A.EventTarget, A.DomException, A.DomTokenList, A.Event, A._HtmlCollection_JavaScriptObject_ListMixin, A._NodeList_JavaScriptObject_ListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin]);
     _inheritMany(J.LegacyJavaScriptObject, [J.PlainJavaScriptObject, J.UnknownJavaScriptObject, J.JavaScriptFunction]);
@@ -4625,6 +4727,7 @@
     _inherit(A._NamedNodeMap, A.__NamedNodeMap_JavaScriptObject_ListMixin_ImmutableListMixin);
     _inheritMany(A.CssClassSetImpl, [A._ElementCssClassSet, A.AttributeClassSet]);
     _inheritMany(A.Game, [A.CheckersGame, A.ChessGame, A.ConnectGame, A.TicTacToeGame]);
+    _inheritMany(A.GamePiece, [A.CheckersPiece, A.TicTacToePiece]);
     _inheritMany(A.GameBoard, [A.ChessBoard, A.ConnectBoard, A.TicTacToeBoard]);
     _mixin(A._HtmlCollection_JavaScriptObject_ListMixin, A.ListBase);
     _mixin(A._HtmlCollection_JavaScriptObject_ListMixin_ImmutableListMixin, A.ImmutableListMixin);
@@ -4642,7 +4745,7 @@
     leafTags: null,
     arrayRti: Symbol("$ti")
   };
-  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"ButtonElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"CheckersGame":{"Game":[]},"ChessGame":{"Game":[]},"ChessBoard":{"GameBoard":[]},"ConnectGame":{"Game":[]},"ConnectBoard":{"GameBoard":[]},"TicTacToeGame":{"Game":[]},"TicTacToeBoard":{"GameBoard":[]}}'));
+  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"ButtonElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"CheckersGame":{"Game":[]},"CheckersPiece":{"GamePiece":[]},"ChessGame":{"Game":[]},"ChessBoard":{"GameBoard":[]},"ConnectGame":{"Game":[]},"ConnectBoard":{"GameBoard":[]},"TicTacToeGame":{"Game":[]},"TicTacToePiece":{"GamePiece":[]},"TicTacToeBoard":{"GameBoard":[]}}'));
   A._Universe_addErasedTypes(init.typeUniverse, JSON.parse('{"_SetBase":1}'));
   var type$ = (function rtii() {
     var findType = A.findType;
