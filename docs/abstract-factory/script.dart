@@ -6,10 +6,10 @@ import 'boardgames.dart';
 import 'chess.dart';
 
 void main() {
-  createGameSelector();
+  createGame();
 }
 
-void createGameSelector() {
+void createGame() {
   Element? gameContainer = document.getElementById("game-container");
 
   if (gameContainer is Element) {
