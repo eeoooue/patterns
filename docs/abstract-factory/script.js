@@ -2834,23 +2834,17 @@
     },
     GamePiece: function GamePiece() {
     },
-    CheckersGame: function CheckersGame(t0) {
-      this.container = t0;
-      this.__Game_board_A = $;
-    },
-    CheckersPiece: function CheckersPiece() {
-      this.__GamePiece_element_A = this.__GamePiece_src_A = $;
-    },
-    ChessBoard$(game, container) {
-      var t1 = J.JSArray_JSArray$growable(0, type$.List_Element);
-      t1 = new A.ChessBoard(t1, game, container);
-      t1.insertTiles$0();
-      return t1;
-    },
     ChessPiece$($name, colour) {
-      var t1 = new A.ChessPiece();
-      t1.__GamePiece_src_A = "./assets/chess/" + $name + "_" + colour + ".png";
-      t1.buildElement$0();
+      var img,
+        t1 = new A.ChessPiece(),
+        t2 = "./assets/chess/" + $name + "_" + colour + ".png";
+      t1.__GamePiece_src_A = t2;
+      img = document.createElement("img");
+      J.get$classes$x(img).add$1(0, "piece-img");
+      if (type$.ImageElement._is(img)) {
+        B.ImageElement_methods.set$src(img, t2);
+        t1.__GamePiece_element_A = img;
+      }
       return t1;
     },
     ChessGame: function ChessGame(t0) {
@@ -2870,24 +2864,6 @@
     ChessPiece: function ChessPiece() {
       this.__GamePiece_element_A = this.__GamePiece_src_A = $;
     },
-    ConnectGame: function ConnectGame(t0) {
-      this.turnPlayer = 0;
-      this.container = t0;
-      this.__Game_board_A = $;
-    },
-    ConnectBoard: function ConnectBoard(t0, t1, t2) {
-      this.board = t0;
-      this.game = t1;
-      this.container = t2;
-    },
-    ConnectBoard_createTile_closure: function ConnectBoard_createTile_closure(t0, t1, t2) {
-      this.connectGame = t0;
-      this.i = t1;
-      this.j = t2;
-    },
-    ConnectPiece: function ConnectPiece() {
-      this.__GamePiece_element_A = this.__GamePiece_src_A = $;
-    },
     main() {
       var t1 = document,
         optionBtn = t1.getElementById("option-btn"),
@@ -2896,7 +2872,7 @@
       if (type$.ButtonElement._is(optionBtn)) {
         t1 = type$.Element;
         if (t1._is(choicesContainer) && t1._is(gameContainer))
-          new A.GameSelector(optionBtn, choicesContainer, gameContainer, A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal(["Checkers", "Chess", "Connect 4", "Tic-Tac-Toe"], type$.dynamic), true, type$.String)).armButton$0();
+          new A.GameSelector(optionBtn, choicesContainer, gameContainer, A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal(["Chess"], type$.dynamic), true, type$.String)).armButton$0();
       }
     },
     GameSelector: function GameSelector(t0, t1, t2, t3) {
@@ -2916,24 +2892,6 @@
     },
     GameChoice_armElement_closure: function GameChoice_armElement_closure(t0) {
       this.$this = t0;
-    },
-    TicTacToeGame: function TicTacToeGame(t0) {
-      this.turnPlayer = 0;
-      this.container = t0;
-      this.__Game_board_A = $;
-    },
-    TicTacToePiece: function TicTacToePiece() {
-      this.__GamePiece_element_A = this.__GamePiece_src_A = $;
-    },
-    TicTacToeBoard: function TicTacToeBoard(t0, t1, t2) {
-      this.board = t0;
-      this.game = t1;
-      this.container = t2;
-    },
-    TicTacToeBoard_createTile_closure: function TicTacToeBoard_createTile_closure(t0, t1, t2) {
-      this.ttt = t0;
-      this.i = t1;
-      this.j = t2;
     },
     printString(string) {
       if (typeof dartPrint == "function") {
@@ -4365,72 +4323,9 @@
       }
     }
   };
-  A.CheckersGame.prototype = {
-    createBoard$0() {
-      return A.ChessBoard$(this, this.container);
-    },
-    submitMove$2(i, j) {
-      A.print("Checkers: move was made at board[" + i + "][" + j + "]");
-    },
-    setupPieces$0() {
-      this.setupCreamPieces$0();
-      this.setupRedPieces$0();
-    },
-    setupCreamPieces$0() {
-      var i, j, r, piece, t1;
-      for (i = 0, j = 1, r = 0; r < 12; ++r) {
-        piece = new A.CheckersPiece();
-        piece.__GamePiece_src_A = "./assets/checkers/checkers_cream.png";
-        piece.buildElement$0();
-        t1 = this.__Game_board_A;
-        t1 === $ && A.throwLateFieldNI("board");
-        t1.placePiece$3(piece, i, j);
-        j += 2;
-        if (j === 8) {
-          ++i;
-          j = 1;
-        }
-        if (j === 9) {
-          ++i;
-          j = 0;
-        }
-      }
-    },
-    setupRedPieces$0() {
-      var i, j, r, piece, t1;
-      for (i = 5, j = 0, r = 0; r < 12; ++r) {
-        piece = new A.CheckersPiece();
-        piece.__GamePiece_src_A = "./assets/checkers/checkers_red.png";
-        piece.buildElement$0();
-        t1 = this.__Game_board_A;
-        t1 === $ && A.throwLateFieldNI("board");
-        t1.placePiece$3(piece, i, j);
-        j += 2;
-        if (j === 8) {
-          ++i;
-          j = 1;
-        }
-        if (j === 9) {
-          ++i;
-          j = 0;
-        }
-      }
-    }
-  };
-  A.CheckersPiece.prototype = {};
   A.ChessGame.prototype = {
-    createBoard$0() {
-      return A.ChessBoard$(this, this.container);
-    },
-    submitMove$2(i, j) {
-      A.print("Chess: move was made at board[" + i + "][" + j + "]");
-    },
-    setupPieces$0() {
-      this.setupWhitePieces$0();
-      this.setupBlackPieces$0();
-    },
     setupWhitePieces$0() {
-      var queen, rookL, rookR, knightL, knightR, bishopL, bishopR, j, pawn, _this = this, _s1_ = "w",
+      var queen, rookL, rookR, knightL, knightR, bishopL, bishopR, j, pawn, t2, _this = this, _s1_ = "w",
         king = A.ChessPiece$("king", _s1_),
         t1 = _this.__Game_board_A;
       t1 === $ && A.throwLateFieldNI("board");
@@ -4453,11 +4348,20 @@
         pawn = new A.ChessPiece();
         pawn.__GamePiece_src_A = "./assets/chess/pawn_w.png";
         pawn.buildElement$0();
-        _this.__Game_board_A.placePiece$3(pawn, 6, j);
+        t1 = _this.__Game_board_A.board;
+        if (6 >= t1.length)
+          return A.ioore(t1, 6);
+        t1 = t1[6];
+        if (!(j < t1.length))
+          return A.ioore(t1, j);
+        t1 = J.get$children$x(t1[j]);
+        t2 = pawn.__GamePiece_element_A;
+        t2 === $ && A.throwLateFieldNI("element");
+        t1.add$1(0, t2);
       }
     },
     setupBlackPieces$0() {
-      var queen, rookL, rookR, knightL, knightR, bishopL, bishopR, j, pawn, _this = this, _s1_ = "b",
+      var queen, rookL, rookR, knightL, knightR, bishopL, bishopR, j, pawn, t2, _this = this, _s1_ = "b",
         king = A.ChessPiece$("king", _s1_),
         t1 = _this.__Game_board_A;
       t1 === $ && A.throwLateFieldNI("board");
@@ -4480,7 +4384,16 @@
         pawn = new A.ChessPiece();
         pawn.__GamePiece_src_A = "./assets/chess/pawn_b.png";
         pawn.buildElement$0();
-        _this.__Game_board_A.placePiece$3(pawn, 1, j);
+        t1 = _this.__Game_board_A.board;
+        if (1 >= t1.length)
+          return A.ioore(t1, 1);
+        t1 = t1[1];
+        if (!(j < t1.length))
+          return A.ioore(t1, j);
+        t1 = J.get$children$x(t1[j]);
+        t2 = pawn.__GamePiece_element_A;
+        t2 === $ && A.throwLateFieldNI("element");
+        t1.add$1(0, t2);
       }
     }
   };
@@ -4488,7 +4401,7 @@
     placePiece$3(piece, i, j) {
       var t2,
         t1 = this.board;
-      if (!(i >= 0 && i < t1.length))
+      if (!(i < t1.length))
         return A.ioore(t1, i);
       t1 = t1[i];
       if (!(j < t1.length))
@@ -4524,124 +4437,16 @@
         t1.get$classes(tile).add$1(0, "dark");
       t1.addEventListener$2(tile, "click", new A.ChessBoard_createTile_closure(this, i, j));
       return tile;
-    },
-    tileIsEmpty$2(i, j) {
-      return false;
     }
   };
   A.ChessBoard_createTile_closure.prototype = {
     call$1($event) {
       type$.Event._as($event);
-      this.$this.game.submitMove$2(this.i, this.j);
+      A.print("Chess: move was made at board[" + this.i + "][" + this.j + "]");
     },
     $signature: 0
   };
   A.ChessPiece.prototype = {};
-  A.ConnectGame.prototype = {
-    createBoard$0() {
-      var t1 = J.JSArray_JSArray$growable(0, type$.List_Element);
-      t1 = new A.ConnectBoard(t1, this, this.container);
-      t1.insertTiles$0();
-      return t1;
-    },
-    submitMove$2(i, j) {
-      var t1;
-      A.print("Connect Game: move was attempted in column[" + j + "]");
-      t1 = this.__Game_board_A;
-      t1 === $ && A.throwLateFieldNI("board");
-      if (t1 instanceof A.ConnectBoard)
-        this.makeMove$2(t1, j);
-    },
-    makeMove$2(grid, j) {
-      var colour, piece, t1, _this = this,
-        i = grid.lowestSpaceInColumn$1(j);
-      if (i === -1)
-        return;
-      colour = _this.turnPlayer === 0 ? "red" : "yellow";
-      piece = new A.ConnectPiece();
-      piece.__GamePiece_src_A = "./assets/connect/connect_" + colour + ".png";
-      piece.buildElement$0();
-      t1 = _this.__Game_board_A;
-      t1 === $ && A.throwLateFieldNI("board");
-      t1.placePiece$3(piece, i, j);
-      _this.turnPlayer = (_this.turnPlayer + 1) % 2;
-    },
-    setupPieces$0() {
-    }
-  };
-  A.ConnectBoard.prototype = {
-    placePiece$3(piece, i, j) {
-      var t2,
-        t1 = this.board;
-      if (!(i >= 0 && i < t1.length))
-        return A.ioore(t1, i);
-      t1 = t1[i];
-      if (!(j < t1.length))
-        return A.ioore(t1, j);
-      t1 = J.get$children$x(t1[j]);
-      t2 = piece.__GamePiece_element_A;
-      t2 === $ && A.throwLateFieldNI("element");
-      t1.add$1(0, t2);
-    },
-    lowestSpaceInColumn$1(j) {
-      var t1, i, t2;
-      for (t1 = this.board, i = t1.length - 1; i >= 0; --i) {
-        if (!(i < t1.length))
-          return A.ioore(t1, i);
-        t2 = t1[i];
-        if (!(j < t2.length))
-          return A.ioore(t2, j);
-        t2 = J.get$children$x(t2[j]);
-        if (t2.get$length(t2) === 0)
-          return i;
-      }
-      return -1;
-    },
-    insertTiles$0() {
-      var t1, t2, t3, t4, i, rowList, row, t5, j, tile;
-      for (t1 = this.board, t2 = this.container, t3 = J.getInterceptor$x(t2), t4 = type$.JSArray_Element, i = 0; i < 6; ++i) {
-        rowList = A._setArrayType(new Array(0), t4);
-        row = document.createElement("div");
-        t5 = J.getInterceptor$x(row);
-        t5.get$classes(row).add$1(0, "board-row");
-        for (j = 0; j < 7; ++j) {
-          tile = this.createTile$2(i, j);
-          t5.get$children(row).add$1(0, tile);
-          B.JSArray_methods.add$1(rowList, tile);
-        }
-        B.JSArray_methods.add$1(t1, rowList);
-        t3.get$children(t2).add$1(0, row);
-      }
-    },
-    createTile$2(i, j) {
-      var connectGame,
-        tile = document.createElement("div"),
-        t1 = J.getInterceptor$x(tile);
-      t1.get$classes(tile).add$1(0, "connect-tile");
-      connectGame = this.game;
-      if (connectGame instanceof A.ConnectGame)
-        t1.addEventListener$2(tile, "click", new A.ConnectBoard_createTile_closure(connectGame, i, j));
-      return tile;
-    },
-    tileIsEmpty$2(i, j) {
-      var t1 = this.board;
-      if (!(i >= 0 && i < t1.length))
-        return A.ioore(t1, i);
-      t1 = t1[i];
-      if (!(j < t1.length))
-        return A.ioore(t1, j);
-      t1 = J.get$children$x(t1[j]);
-      return t1.get$length(t1) === 0;
-    }
-  };
-  A.ConnectBoard_createTile_closure.prototype = {
-    call$1($event) {
-      type$.Event._as($event);
-      this.connectGame.submitMove$2(this.i, this.j);
-    },
-    $signature: 0
-  };
-  A.ConnectPiece.prototype = {};
   A.GameSelector.prototype = {
     armButton$0() {
       B.ButtonElement_methods.addEventListener$2(this.button, "click", new A.GameSelector_armButton_closure(this));
@@ -4661,21 +4466,6 @@
         choice.__GameChoice_element_A = t5;
         choice.armElement$0();
         t4.get$children(t3).add$1(0, choice.__GameChoice_element_A);
-      }
-    },
-    getGame$1(title) {
-      var t1 = this.gameContainer;
-      switch (title) {
-        case "Checkers":
-          return new A.CheckersGame(t1);
-        case "Chess":
-          return new A.ChessGame(t1);
-        case "Connect 4":
-          return new A.ConnectGame(t1);
-        case "Tic-Tac-Toe":
-          return new A.TicTacToeGame(t1);
-        default:
-          return new A.TicTacToeGame(t1);
       }
     }
   };
@@ -4699,102 +4489,20 @@
       type$.Event._as($event);
       t1 = this.$this;
       t2 = t1.parent;
-      t1 = t1.title;
-      A.print("'" + t1 + "' was chosen.");
+      A.print("'" + t1.title + "' was chosen.");
       list = t2.button.classList;
       list.contains("hidden").toString;
       list.remove("hidden");
       J.get$children$x(t2.choicesContainer).clear$0(0);
-      game = t2.getGame$1(t1);
-      J.get$children$x(game.container).clear$0(0);
-      game.__Game_board_A = game.createBoard$0();
-      game.setupPieces$0();
-    },
-    $signature: 0
-  };
-  A.TicTacToeGame.prototype = {
-    createBoard$0() {
-      var t1 = J.JSArray_JSArray$growable(0, type$.List_Element);
-      t1 = new A.TicTacToeBoard(t1, this, this.container);
+      t1 = t2.gameContainer;
+      game = new A.ChessGame(t1);
+      J.get$children$x(t1).clear$0(0);
+      t2 = J.JSArray_JSArray$growable(0, type$.List_Element);
+      t1 = new A.ChessBoard(t2, game, t1);
       t1.insertTiles$0();
-      return t1;
-    },
-    submitMove$2(i, j) {
-      var t1, team, piece, _this = this;
-      A.print("Tic-Tac-Toe: move was made at board[" + i + "][" + j + "]");
-      t1 = _this.__Game_board_A;
-      t1 === $ && A.throwLateFieldNI("board");
-      if (t1.tileIsEmpty$2(i, j)) {
-        team = _this.turnPlayer === 0 ? "nought" : "cross";
-        piece = new A.TicTacToePiece();
-        piece.__GamePiece_src_A = "./assets/tictactoe/ttt_" + team + ".png";
-        piece.buildElement$0();
-        t1 = _this.__Game_board_A;
-        if (t1 instanceof A.TicTacToeBoard) {
-          t1.placePiece$3(piece, i, j);
-          _this.turnPlayer = (_this.turnPlayer + 1) % 2;
-        }
-      }
-    },
-    setupPieces$0() {
-    }
-  };
-  A.TicTacToePiece.prototype = {};
-  A.TicTacToeBoard.prototype = {
-    placePiece$3(piece, i, j) {
-      var t2,
-        t1 = this.board;
-      if (!(i >= 0 && i < t1.length))
-        return A.ioore(t1, i);
-      t1 = t1[i];
-      if (!(j < t1.length))
-        return A.ioore(t1, j);
-      t1 = J.get$children$x(t1[j]);
-      t2 = piece.__GamePiece_element_A;
-      t2 === $ && A.throwLateFieldNI("element");
-      t1.add$1(0, t2);
-    },
-    insertTiles$0() {
-      var t1, t2, t3, t4, i, rowList, row, t5, j, tile;
-      for (t1 = this.board, t2 = this.container, t3 = J.getInterceptor$x(t2), t4 = type$.JSArray_Element, i = 0; i < 3; ++i) {
-        rowList = A._setArrayType(new Array(0), t4);
-        row = document.createElement("div");
-        t5 = J.getInterceptor$x(row);
-        t5.get$classes(row).add$1(0, "board-row");
-        for (j = 0; j < 3; ++j) {
-          tile = this.createTile$2(i, j);
-          t5.get$children(row).add$1(0, tile);
-          B.JSArray_methods.add$1(rowList, tile);
-        }
-        B.JSArray_methods.add$1(t1, rowList);
-        t3.get$children(t2).add$1(0, row);
-      }
-    },
-    createTile$2(i, j) {
-      var ttt,
-        tile = document.createElement("div"),
-        t1 = J.getInterceptor$x(tile);
-      t1.get$classes(tile).add$1(0, "ttt-tile");
-      ttt = this.game;
-      if (ttt instanceof A.TicTacToeGame)
-        t1.addEventListener$2(tile, "click", new A.TicTacToeBoard_createTile_closure(ttt, i, j));
-      return tile;
-    },
-    tileIsEmpty$2(i, j) {
-      var t1 = this.board;
-      if (!(i < t1.length))
-        return A.ioore(t1, i);
-      t1 = t1[i];
-      if (!(j < t1.length))
-        return A.ioore(t1, j);
-      t1 = J.get$children$x(t1[j]);
-      return t1.get$length(t1) === 0;
-    }
-  };
-  A.TicTacToeBoard_createTile_closure.prototype = {
-    call$1($event) {
-      type$.Event._as($event);
-      this.ttt.submitMove$2(this.i, this.j);
+      game.__Game_board_A = t1;
+      game.setupWhitePieces$0();
+      game.setupBlackPieces$0();
     },
     $signature: 0
   };
@@ -4817,7 +4525,7 @@
     _inheritMany(J.JSNumber, [J.JSInt, J.JSNumNotInt]);
     _inheritMany(A.Error, [A.LateError, A._CyclicInitializationError, A.RuntimeError, A.AssertionError, A._Error, A.TypeError, A.ArgumentError, A.UnsupportedError, A.UnimplementedError, A.ConcurrentModificationError]);
     _inheritMany(A.Iterable, [A.MappedIterable, A.WhereIterable]);
-    _inheritMany(A.Closure, [A.Closure2Args, A.TearOffClosure, A.initHooks_closure, A.initHooks_closure1, A.CssClassSetImpl_add_closure, A.FilteredElementList__iterable_closure, A.FilteredElementList__iterable_closure0, A.ChessBoard_createTile_closure, A.ConnectBoard_createTile_closure, A.GameSelector_armButton_closure, A.GameChoice_armElement_closure, A.TicTacToeBoard_createTile_closure]);
+    _inheritMany(A.Closure, [A.Closure2Args, A.TearOffClosure, A.initHooks_closure, A.initHooks_closure1, A.CssClassSetImpl_add_closure, A.FilteredElementList__iterable_closure, A.FilteredElementList__iterable_closure0, A.ChessBoard_createTile_closure, A.GameSelector_armButton_closure, A.GameChoice_armElement_closure]);
     _inheritMany(A.TearOffClosure, [A.StaticClosure, A.BoundClosure]);
     _inherit(A._AssertionError, A.AssertionError);
     _inherit(A.initHooks_closure0, A.Closure2Args);
@@ -4837,9 +4545,9 @@
     _inherit(A.__NamedNodeMap_JavaScriptObject_ListMixin_ImmutableListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin);
     _inherit(A._NamedNodeMap, A.__NamedNodeMap_JavaScriptObject_ListMixin_ImmutableListMixin);
     _inheritMany(A.CssClassSetImpl, [A._ElementCssClassSet, A.AttributeClassSet]);
-    _inheritMany(A.Game, [A.CheckersGame, A.ChessGame, A.ConnectGame, A.TicTacToeGame]);
-    _inheritMany(A.GamePiece, [A.CheckersPiece, A.ChessPiece, A.ConnectPiece, A.TicTacToePiece]);
-    _inheritMany(A.GameBoard, [A.ChessBoard, A.ConnectBoard, A.TicTacToeBoard]);
+    _inherit(A.ChessGame, A.Game);
+    _inherit(A.ChessBoard, A.GameBoard);
+    _inherit(A.ChessPiece, A.GamePiece);
     _mixin(A._HtmlCollection_JavaScriptObject_ListMixin, A.ListBase);
     _mixin(A._HtmlCollection_JavaScriptObject_ListMixin_ImmutableListMixin, A.ImmutableListMixin);
     _mixin(A._NodeList_JavaScriptObject_ListMixin, A.ListBase);
@@ -4856,7 +4564,7 @@
     leafTags: null,
     arrayRti: Symbol("$ti")
   };
-  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"ButtonElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"CheckersGame":{"Game":[]},"CheckersPiece":{"GamePiece":[]},"ChessGame":{"Game":[]},"ChessBoard":{"GameBoard":[]},"ChessPiece":{"GamePiece":[]},"ConnectGame":{"Game":[]},"ConnectBoard":{"GameBoard":[]},"ConnectPiece":{"GamePiece":[]},"TicTacToeGame":{"Game":[]},"TicTacToePiece":{"GamePiece":[]},"TicTacToeBoard":{"GameBoard":[]}}'));
+  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"ButtonElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"ChessGame":{"Game":[]},"ChessBoard":{"GameBoard":[]},"ChessPiece":{"GamePiece":[]}}'));
   A._Universe_addErasedTypes(init.typeUniverse, JSON.parse('{"_SetBase":1}'));
   var type$ = (function rtii() {
     var findType = A.findType;

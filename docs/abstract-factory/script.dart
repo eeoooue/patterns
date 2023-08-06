@@ -3,18 +3,14 @@ import 'dart:html';
 // board games
 import 'boardgames.dart';
 // game-specific classes
-import 'tictactoe.dart';
 import 'chess.dart';
-import 'checkers.dart';
-import 'connect.dart';
 
 class GameSelector {
   ButtonElement button;
   Element choicesContainer;
   Element gameContainer;
 
-  List<String> gameChoices =
-      List.from({"Checkers", "Chess", "Connect 4", "Tic-Tac-Toe"});
+  List<String> gameChoices = List.from({"Chess"});
 
   GameSelector(this.button, this.choicesContainer, this.gameContainer) {
     armButton();
@@ -48,18 +44,7 @@ class GameSelector {
   }
 
   Game getGame(String title) {
-    switch (title) {
-      case "Checkers":
-        return CheckersGame(gameContainer);
-      case "Chess":
-        return ChessGame(gameContainer);
-      case "Connect 4":
-        return ConnectGame(gameContainer);
-      case "Tic-Tac-Toe":
-        return TicTacToeGame(gameContainer);
-      default:
-        return TicTacToeGame(gameContainer);
-    }
+    return ChessGame(gameContainer);
   }
 }
 
