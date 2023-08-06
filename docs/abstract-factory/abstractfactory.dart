@@ -5,6 +5,10 @@ import 'blackpieces.dart';
 import 'whitepieces.dart';
 
 abstract class ChessPieceFactory {
+  String colour;
+
+  ChessPieceFactory(this.colour) {}
+
   Pawn createPawn();
   Knight createKnight();
   Bishop createBishop();
@@ -14,6 +18,8 @@ abstract class ChessPieceFactory {
 }
 
 class BlackPieceFactory extends ChessPieceFactory {
+  BlackPieceFactory() : super("black") {}
+
   Pawn createPawn() {
     return BlackPawn();
   }
@@ -40,6 +46,8 @@ class BlackPieceFactory extends ChessPieceFactory {
 }
 
 class WhitePieceFactory extends ChessPieceFactory {
+  WhitePieceFactory() : super("white") {}
+
   Pawn createPawn() {
     return WhitePawn();
   }
