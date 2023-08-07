@@ -74,26 +74,51 @@ class BishopMovement implements MovementStrategy {
       }
     }
 
-    // for (MoveOption move in exploreDiagonal(board, i, j, 1, 1)) {
-    //   options.add(move);
-    // }
-
-    // for (MoveOption move in exploreDiagonal(board, i, j, 1, -1)) {
-    //   options.add(move);
-    // }
-
-    // for (MoveOption move in exploreDiagonal(board, i, j, -1, -1)) {
-    //   options.add(move);
-    // }
-
-    // for (MoveOption move in exploreDiagonal(board, i, j, -1, 1)) {
-    //   options.add(move);
-    // }
-
     return options;
   }
 
   List<MoveOption> exploreDiagonal(
+      ChessBoard board, int i, int j, int di, int dj) {
+    List<MoveOption> options = List.empty(growable: true);
+
+    while (true) {
+      i += di;
+      j += dj;
+      MoveOption move = MoveOption(i, j);
+
+      if (board.tileIsEmpty(i, j)) {
+        options.add(move);
+      } else {
+        return options;
+      }
+    }
+  }
+}
+
+class RookMovement implements MovementStrategy {
+  List<MoveOption> move(ChessBoard board, int i, int j) {
+    List<MoveOption> options = List.empty(growable: true);
+
+    for (MoveOption move in exploreImpulse(board, i, j, 0, 1)) {
+      options.add(move);
+    }
+
+    for (MoveOption move in exploreImpulse(board, i, j, 0, -1)) {
+      options.add(move);
+    }
+
+    for (MoveOption move in exploreImpulse(board, i, j, 1, 0)) {
+      options.add(move);
+    }
+
+    for (MoveOption move in exploreImpulse(board, i, j, -1, 0)) {
+      options.add(move);
+    }
+
+    return options;
+  }
+
+  List<MoveOption> exploreImpulse(
       ChessBoard board, int i, int j, int di, int dj) {
     List<MoveOption> options = List.empty(growable: true);
 
