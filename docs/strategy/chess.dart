@@ -60,7 +60,20 @@ class ChessBoard extends GameBoard {
     return tile;
   }
 
+  bool validCoordinates(int i, int j) {
+    if (0 <= i && i < board.length) {
+      if (0 <= j && j < board[0].length) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   bool tileIsEmpty(int i, int j) {
+    if (validCoordinates(i, j)) {
+      Element tile = board[i][j];
+      return tile.children.length == 0;
+    }
     return false;
   }
 }
