@@ -18,7 +18,7 @@ void setupDemo() {
     int i = 4;
     int j = 3;
 
-    MimicPiece mimic = MimicPiece(i, j, PawnMovement());
+    MimicPiece mimic = MimicPiece(i, j, KnightMovement());
     game.board.placePiece(mimic, i, j);
   }
 }

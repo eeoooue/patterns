@@ -19,6 +19,7 @@ class ChessGame extends Game {
       if (piece is MimicPiece) {
         List<MoveOption> options = piece.move(myBoard);
         print("checked for options: found ${options.length}");
+        myBoard.highlightOptions(options);
       }
     }
   }
@@ -29,6 +30,8 @@ class ChessGame extends Game {
 class ChessBoard extends GameBoard {
   List<List<Element>> board = List.empty(growable: true);
   List<List<GamePiece?>> pieces = List.empty(growable: true);
+
+  List<Element> highlights = List.empty(growable: true);
 
   ChessBoard(Game game, Element container) : super(game, container) {}
 
@@ -42,6 +45,27 @@ class ChessBoard extends GameBoard {
     Element tile = board[i][j];
     tile.children.clear();
     pieces[i][j] = null;
+  }
+
+  void clearHighlights() {
+    for (Element highlight in highlights) {
+      highlight.remove();
+    }
+  }
+
+  void highlightOptions(List<MoveOption> options) {
+    for (MoveOption move in options) {
+      Element highlight = createHighlight();
+      highlights.add(highlight);
+      Element tile = board[move.i][move.j];
+      tile.children.add(highlight);
+    }
+  }
+
+  Element createHighlight() {
+    Element e = document.createElement("div");
+    e.classes.add("dot");
+    return e;
   }
 
   GamePiece? getPiece(int i, int j) {

@@ -34,6 +34,14 @@ body {
     flex-direction: row;
 }
 
+.dot {
+    height: 25%;
+    width: 25%;
+    background-color: rgba(0,0,0,0.25);
+    border-radius: 50%;
+    margin: auto;
+    
+}
 
 .piece-img {
     width: 100%;
@@ -62,6 +70,7 @@ body {
     margin: 0px;
     width: 100px;
     height: 100px;
+    display: flex;
 }
 
 .chess-tile.dark {
