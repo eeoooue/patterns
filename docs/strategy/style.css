@@ -37,7 +37,7 @@ body {
 .dot {
     height: 25%;
     width: 25%;
-    background-color: rgba(0,0,0,0.25);
+    background-color: rgba(0,0,0,0.4);
     border-radius: 50%;
     margin: auto;
     
@@ -45,6 +45,10 @@ body {
 
 .piece-img {
     width: 100%;
+}
+
+.piece-img:hover {
+    cursor: pointer;
 }
 
 
