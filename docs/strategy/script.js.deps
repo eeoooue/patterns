@@ -1,11 +1,8 @@
 file:///C:/tools/dart-sdk/lib/_internal/dart2js_platform.dill
 file:///C:/tools/dart-sdk/lib/libraries.json
-file:///D:/GitHub/patterns/docs/abstract-factory/abstractfactory.dart
-file:///D:/GitHub/patterns/docs/abstract-factory/blackpieces.dart
-file:///D:/GitHub/patterns/docs/abstract-factory/boardgames.dart
-file:///D:/GitHub/patterns/docs/abstract-factory/chess.dart
-file:///D:/GitHub/patterns/docs/abstract-factory/script.dart
-file:///D:/GitHub/patterns/docs/abstract-factory/whitepieces.dart
+file:///D:/GitHub/patterns/docs/strategy/boardgames.dart
+file:///D:/GitHub/patterns/docs/strategy/chess.dart
+file:///D:/GitHub/patterns/docs/strategy/script.dart
 org-dartlang-sdk:///lib/_http/crypto.dart
 org-dartlang-sdk:///lib/_http/embedder_config.dart
 org-dartlang-sdk:///lib/_http/http.dart

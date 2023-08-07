@@ -39,29 +39,6 @@ body {
     width: 100%;
 }
 
-.colour-switcher {
-    padding: 10px 10px;
-    margin: 10px 0px;
-    font-size: 1rem;
-    border-style: none;
-    border-radius: 8px;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-}
-
-.black-btn {
-    background-color: #333;
-    color: white;
-}
-
-.white-btn {
-    background-color: white;
-    color: #111;
-}
-
-.colour-switcher:hover {
-    cursor: pointer;
-}
-
 
 .bookshelf {
     display: flex;
@@ -71,10 +48,6 @@ body {
 .totempole {
     display: flex;
     flex-direction: column;
-}
-
-#piece-box {
-    padding: 10px 24px;
 }
 
 #side-tray {
