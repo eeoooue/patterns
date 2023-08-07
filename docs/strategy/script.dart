@@ -1,6 +1,4 @@
 import 'dart:html';
-
-// game-specific classes
 import 'chess.dart';
 import 'strategy.dart';
 
