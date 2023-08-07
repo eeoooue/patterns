@@ -59,3 +59,54 @@ class KnightMovement implements MovementStrategy {
     return options;
   }
 }
+
+class BishopMovement implements MovementStrategy {
+  List<MoveOption> move(ChessBoard board, int i, int j) {
+    List<MoveOption> options = List.empty(growable: true);
+
+    List<int> components = List.from({1, -1});
+
+    for (int a in components) {
+      for (int b in components) {
+        for (MoveOption move in exploreDiagonal(board, i, j, a, b)) {
+          options.add(move);
+        }
+      }
+    }
+
+    // for (MoveOption move in exploreDiagonal(board, i, j, 1, 1)) {
+    //   options.add(move);
+    // }
+
+    // for (MoveOption move in exploreDiagonal(board, i, j, 1, -1)) {
+    //   options.add(move);
+    // }
+
+    // for (MoveOption move in exploreDiagonal(board, i, j, -1, -1)) {
+    //   options.add(move);
+    // }
+
+    // for (MoveOption move in exploreDiagonal(board, i, j, -1, 1)) {
+    //   options.add(move);
+    // }
+
+    return options;
+  }
+
+  List<MoveOption> exploreDiagonal(
+      ChessBoard board, int i, int j, int di, int dj) {
+    List<MoveOption> options = List.empty(growable: true);
+
+    while (true) {
+      i += di;
+      j += dj;
+      MoveOption move = MoveOption(i, j);
+
+      if (board.tileIsEmpty(i, j)) {
+        options.add(move);
+      } else {
+        return options;
+      }
+    }
+  }
+}
