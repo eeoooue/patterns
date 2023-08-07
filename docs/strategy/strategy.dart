@@ -135,3 +135,18 @@ class RookMovement implements MovementStrategy {
     }
   }
 }
+
+class QueenMovement implements MovementStrategy {
+  List<MoveOption> move(ChessBoard board, int i, int j) {
+    List<MoveOption> options = List.empty(growable: true);
+
+    var pair = List.from({RookMovement(), BishopMovement()});
+    for (MovementStrategy strategy in pair) {
+      for (MoveOption move in strategy.move(board, i, j)) {
+        options.add(move);
+      }
+    }
+
+    return options;
+  }
+}
