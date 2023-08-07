@@ -12,70 +12,7 @@ class ChessGame extends Game {
     print("Chess: move was made at board[${i}][${j}]");
   }
 
-  void setupPieces() {
-    setupWhitePieces();
-    setupBlackPieces();
-  }
-
-  void setupWhitePieces() {
-    String colour = "w";
-
-    ChessPiece king = ChessPiece("king", colour);
-    board.placePiece(king, 7, 4);
-
-    ChessPiece queen = ChessPiece("queen", colour);
-    board.placePiece(queen, 7, 3);
-
-    ChessPiece rookL = ChessPiece("rook", colour);
-    board.placePiece(rookL, 7, 0);
-    ChessPiece rookR = ChessPiece("rook", colour);
-    board.placePiece(rookR, 7, 7);
-
-    ChessPiece knightL = ChessPiece("knight", colour);
-    board.placePiece(knightL, 7, 1);
-    ChessPiece knightR = ChessPiece("knight", colour);
-    board.placePiece(knightR, 7, 6);
-
-    ChessPiece bishopL = ChessPiece("bishop", colour);
-    board.placePiece(bishopL, 7, 2);
-    ChessPiece bishopR = ChessPiece("bishop", colour);
-    board.placePiece(bishopR, 7, 5);
-
-    for (int j = 0; j < 8; j++) {
-      ChessPiece pawn = ChessPiece("pawn", colour);
-      board.placePiece(pawn, 6, j);
-    }
-  }
-
-  void setupBlackPieces() {
-    String colour = "b";
-
-    ChessPiece king = ChessPiece("king", colour);
-    board.placePiece(king, 0, 4);
-
-    ChessPiece queen = ChessPiece("queen", colour);
-    board.placePiece(queen, 0, 3);
-
-    ChessPiece rookL = ChessPiece("rook", colour);
-    board.placePiece(rookL, 0, 0);
-    ChessPiece rookR = ChessPiece("rook", colour);
-    board.placePiece(rookR, 0, 7);
-
-    ChessPiece knightL = ChessPiece("knight", colour);
-    board.placePiece(knightL, 0, 1);
-    ChessPiece knightR = ChessPiece("knight", colour);
-    board.placePiece(knightR, 0, 6);
-
-    ChessPiece bishopL = ChessPiece("bishop", colour);
-    board.placePiece(bishopL, 0, 2);
-    ChessPiece bishopR = ChessPiece("bishop", colour);
-    board.placePiece(bishopR, 0, 5);
-
-    for (int j = 0; j < 8; j++) {
-      ChessPiece pawn = ChessPiece("pawn", colour);
-      board.placePiece(pawn, 1, j);
-    }
-  }
+  void setupPieces() {}
 }
 
 class ChessBoard extends GameBoard {
