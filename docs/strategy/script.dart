@@ -18,7 +18,7 @@ void setupDemo() {
     int i = 4;
     int j = 3;
 
-    MimicPiece mimic = MimicPiece(i, j, QueenMovement());
+    MimicPiece mimic = MimicPiece(i, j, KingMovement());
     game.board.placePiece(mimic, i, j);
   }
 }
