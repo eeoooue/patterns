@@ -9,6 +9,10 @@ class MimicPiece extends GamePiece {
   MimicPiece(this.i, this.j, this.moveStrategy) {
     setSource("./assets/checkers/checkers_cream.png");
   }
+
+  List<MoveOption> move(ChessBoard board) {
+    return moveStrategy.move(board, i, j);
+  }
 }
 
 class MoveOption {
@@ -24,7 +28,7 @@ abstract class MovementStrategy {
 
 class PawnMovement implements MovementStrategy {
   List<MoveOption> move(ChessBoard board, int i, int j) {
-    List<MoveOption> options = List.empty();
+    List<MoveOption> options = List.empty(growable: true);
 
     MoveOption move = MoveOption(i - 1, j);
     if (board.tileIsEmpty(move.i, move.j)) {
@@ -37,7 +41,7 @@ class PawnMovement implements MovementStrategy {
 
 class KnightMovement implements MovementStrategy {
   List<MoveOption> move(ChessBoard board, int i, int j) {
-    List<MoveOption> options = List.empty();
+    List<MoveOption> options = List.empty(growable: true);
 
     List<int> components = List.from({1, 2, -2, -1});
 

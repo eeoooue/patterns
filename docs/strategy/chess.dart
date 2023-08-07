@@ -1,5 +1,6 @@
 import 'dart:html';
 import 'boardgames.dart';
+import 'strategy.dart';
 
 class ChessGame extends Game {
   ChessGame(Element container) : super(container) {}
@@ -10,6 +11,16 @@ class ChessGame extends Game {
 
   void submitMove(int i, int j) {
     print("Chess: move was made at board[${i}][${j}]");
+
+    var myBoard = board;
+
+    if (myBoard is ChessBoard) {
+      GamePiece? piece = myBoard.getPiece(i, j);
+      if (piece is MimicPiece) {
+        List<MoveOption> options = piece.move(myBoard);
+        print("checked for options: found ${options.length}");
+      }
+    }
   }
 
   void setupPieces() {}
