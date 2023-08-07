@@ -17,15 +17,38 @@ class ChessGame extends Game {
 
 class ChessBoard extends GameBoard {
   List<List<Element>> board = List.empty(growable: true);
+  List<List<GamePiece?>> pieces = List.empty(growable: true);
 
   ChessBoard(Game game, Element container) : super(game, container) {}
 
   void placePiece(GamePiece piece, int i, int j) {
     Element tile = board[i][j];
     tile.children.add(piece.element);
+    pieces[i][j] = piece;
+  }
+
+  void removePiece(int i, int j) {
+    Element tile = board[i][j];
+    tile.children.clear();
+    pieces[i][j] = null;
+  }
+
+  GamePiece? getPiece(int i, int j) {
+    return pieces[i][j];
+  }
+
+  void setupPieceMatrix() {
+    for (int i = 0; i < 8; i++) {
+      List<GamePiece?> row = List.empty(growable: true);
+      for (int j = 0; j < 8; j++) {
+        row.add(null);
+      }
+      pieces.add(row);
+    }
   }
 
   void insertTiles() {
+    setupPieceMatrix();
     bool dark = false;
 
     for (int i = 0; i < 8; i++) {
