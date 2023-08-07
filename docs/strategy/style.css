@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0;
+}
+
+.hidden {
+    display: none;
+}  
+
+#choices-container {
+    display: flex;
+    flex-direction: row;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.board-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.dot {
+    height: 25%;
+    width: 25%;
+    background-color: rgba(0,0,0,0.4);
+    border-radius: 50%;
+    margin: auto;
+    
+}
+
+.piece-img {
+    width: 100%;
+}
+
+.piece-img:hover {
+    cursor: pointer;
+}
+
+
+.bookshelf {
+    display: flex;
+    flex-direction: row;
+}
+
+.totempole {
+    display: flex;
+    flex-direction: column;
+}
+
+#side-tray {
+    background-color: #eee;
+    padding: 24px;
+    width: 200px;
+    margin: 0px 10px;
+}
+
+.chess-tile {
+    background-color: #e0c46e;
+    margin: 0px;
+    width: 100px;
+    height: 100px;
+    display: flex;
+}
+
+.chess-tile.dark {
+    background-color: #735e47;
+}
