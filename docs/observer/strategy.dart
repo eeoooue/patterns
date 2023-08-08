@@ -23,20 +23,6 @@ class ChessPiece extends GamePiece {
   }
 }
 
-class MimicPiece extends GamePiece {
-  int i;
-  int j;
-  MovementStrategy moveStrategy;
-
-  MimicPiece(this.i, this.j, this.moveStrategy) {
-    setSource("./assets/checkers/checkers_cream.png");
-  }
-
-  List<MoveOption> move(ChessBoard board) {
-    return moveStrategy.move(board, i, j);
-  }
-}
-
 class MoveOption {
   int i;
   int j;
