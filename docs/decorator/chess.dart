@@ -33,7 +33,6 @@ class ChessGame extends Game {
       if (chessBoard.canMoveHere(piece, i, j)) {
         chessBoard.movePiece(piece, i, j);
         turnCount += 1;
-        notify();
         return;
       }
     }
