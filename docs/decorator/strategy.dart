@@ -78,11 +78,11 @@ class PawnMovement implements MovementStrategy {
     List<MoveOption> options = List.empty(growable: true);
 
     MoveOption move = MoveOption(piece.i + 1, piece.j);
-    if (board.tileIsEmpty(move.i, move.j)) {
+    if (piece.canMove(board, move.i, move.j)) {
       options.add(move);
       if (piece.hasMoved == false) {
         MoveOption firstBonus = MoveOption(piece.i + 2, piece.j);
-        if (board.tileIsEmpty(firstBonus.i, firstBonus.j)) {
+        if (piece.canMove(board, firstBonus.i, firstBonus.j)) {
           options.add(firstBonus);
         }
       }
@@ -95,11 +95,11 @@ class PawnMovement implements MovementStrategy {
     List<MoveOption> options = List.empty(growable: true);
 
     MoveOption move = MoveOption(piece.i - 1, piece.j);
-    if (board.tileIsEmpty(move.i, move.j)) {
+    if (piece.canMove(board, move.i, move.j)) {
       options.add(move);
       if (piece.hasMoved == false) {
         MoveOption firstBonus = MoveOption(piece.i - 2, piece.j);
-        if (board.tileIsEmpty(firstBonus.i, firstBonus.j)) {
+        if (piece.canMove(board, firstBonus.i, firstBonus.j)) {
           options.add(firstBonus);
         }
       }
@@ -142,7 +142,7 @@ class BishopMovement implements MovementStrategy {
     for (int a in components) {
       for (int b in components) {
         for (MoveOption move
-            in exploreDiagonal(board, piece.i, piece.j, a, b)) {
+            in exploreDiagonal(piece, board, piece.i, piece.j, a, b)) {
           options.add(move);
         }
       }
@@ -152,7 +152,7 @@ class BishopMovement implements MovementStrategy {
   }
 
   List<MoveOption> exploreDiagonal(
-      ChessBoard board, int i, int j, int di, int dj) {
+      ChessPiece piece, ChessBoard board, int i, int j, int di, int dj) {
     List<MoveOption> options = List.empty(growable: true);
 
     while (true) {
@@ -160,7 +160,7 @@ class BishopMovement implements MovementStrategy {
       j += dj;
       MoveOption move = MoveOption(i, j);
 
-      if (board.tileIsEmpty(i, j)) {
+      if (piece.canMove(board, i, j)) {
         options.add(move);
       } else {
         return options;
@@ -173,19 +173,23 @@ class RookMovement implements MovementStrategy {
   List<MoveOption> move(ChessBoard board, ChessPiece piece) {
     List<MoveOption> options = List.empty(growable: true);
 
-    for (MoveOption move in exploreImpulse(board, piece.i, piece.j, 0, 1)) {
+    for (MoveOption move
+        in exploreImpulse(piece, board, piece.i, piece.j, 0, 1)) {
       options.add(move);
     }
 
-    for (MoveOption move in exploreImpulse(board, piece.i, piece.j, 0, -1)) {
+    for (MoveOption move
+        in exploreImpulse(piece, board, piece.i, piece.j, 0, -1)) {
       options.add(move);
     }
 
-    for (MoveOption move in exploreImpulse(board, piece.i, piece.j, 1, 0)) {
+    for (MoveOption move
+        in exploreImpulse(piece, board, piece.i, piece.j, 1, 0)) {
       options.add(move);
     }
 
-    for (MoveOption move in exploreImpulse(board, piece.i, piece.j, -1, 0)) {
+    for (MoveOption move
+        in exploreImpulse(piece, board, piece.i, piece.j, -1, 0)) {
       options.add(move);
     }
 
@@ -193,7 +197,7 @@ class RookMovement implements MovementStrategy {
   }
 
   List<MoveOption> exploreImpulse(
-      ChessBoard board, int i, int j, int di, int dj) {
+      ChessPiece piece, ChessBoard board, int i, int j, int di, int dj) {
     List<MoveOption> options = List.empty(growable: true);
 
     while (true) {
@@ -201,7 +205,7 @@ class RookMovement implements MovementStrategy {
       j += dj;
       MoveOption move = MoveOption(i, j);
 
-      if (board.tileIsEmpty(i, j)) {
+      if (piece.canMove(board, i, j)) {
         options.add(move);
       } else {
         return options;
@@ -234,7 +238,7 @@ class KingMovement implements MovementStrategy {
     for (int a in components) {
       for (int b in components) {
         MoveOption move = MoveOption(piece.i + a, piece.j + b);
-        if (board.tileIsEmpty(move.i, move.j)) {
+        if (piece.canMove(board, move.i, move.j)) {
           options.add(move);
         }
       }

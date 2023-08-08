@@ -4529,35 +4529,6 @@
       t1._addEventListener$3(tile, "click", type$.nullable_dynamic_Function_Event._as(new A.ChequeredBoard_createTile_closure(this, i, j)), null);
       return tile;
     },
-    validCoordinates$2(i, j) {
-      var t1;
-      if (0 <= i && i < this.board.length) {
-        if (0 <= j) {
-          t1 = this.board;
-          if (0 >= t1.length)
-            return A.ioore(t1, 0);
-          t1 = j < t1[0].length;
-        } else
-          t1 = false;
-        if (t1)
-          return true;
-      }
-      return false;
-    },
-    tileIsEmpty$2(i, j) {
-      var t1;
-      if (this.validCoordinates$2(i, j)) {
-        t1 = this.board;
-        if (!(i >= 0 && i < t1.length))
-          return A.ioore(t1, i);
-        t1 = t1[i];
-        if (!(j >= 0 && j < t1.length))
-          return A.ioore(t1, j);
-        t1 = J.get$children$x(t1[j]);
-        return t1.get$length(t1) === 0;
-      }
-      return false;
-    },
     clearHighlights$0() {
       var t2, elements, t3, t4,
         t1 = document;
@@ -4591,7 +4562,6 @@
       t1.get$classes(mark).add$1(0, "marker");
       t1.get$classes(mark).add$1(0, marker);
       J.get$children$x(tile).add$1(0, mark);
-      A.print("added mark at " + i + " " + j);
     },
     $isChessBoard: 1
   };
@@ -4617,9 +4587,6 @@
     },
     getPiece$2(i, j) {
       return this.base.getPiece$2(i, j);
-    },
-    tileIsEmpty$2(i, j) {
-      return this.base.tileIsEmpty$2(i, j);
     },
     addMarker$3(i, j, marker) {
       this.base.addMarker$3(i, j, marker);
@@ -4753,19 +4720,18 @@
   A.MoveOption.prototype = {};
   A.PawnMovement.prototype = {
     move$2(board, piece) {
-      var options, t2, t3,
+      var options, t2,
         t1 = type$.MoveOption;
       if (piece.colour === "b") {
         options = J.JSArray_JSArray$growable(0, t1);
         t1 = piece.i + 1;
         t2 = piece.j;
-        t3 = board.base;
-        if (t3.tileIsEmpty$2(t1, t2)) {
+        if (piece.canMove$3(board, t1, t2)) {
           B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
           if (!piece.hasMoved) {
             t1 = piece.i + 2;
             t2 = piece.j;
-            if (t3.tileIsEmpty$2(t1, t2))
+            if (piece.canMove$3(board, t1, t2))
               B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
           }
         }
@@ -4774,13 +4740,12 @@
         options = J.JSArray_JSArray$growable(0, t1);
         t1 = piece.i - 1;
         t2 = piece.j;
-        t3 = board.base;
-        if (t3.tileIsEmpty$2(t1, t2)) {
+        if (piece.canMove$3(board, t1, t2)) {
           B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
           if (!piece.hasMoved) {
             t1 = piece.i - 2;
             t2 = piece.j;
-            if (t3.tileIsEmpty$2(t1, t2))
+            if (piece.canMove$3(board, t1, t2))
               B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
           }
         }
@@ -4828,19 +4793,18 @@
         a = components[_i];
         for (_i0 = 0; t3 = components.length, _i0 < t3; components.length === t2 || (0, A.throwConcurrentModificationError)(components), ++_i0) {
           b = components[_i0];
-          for (t3 = this.exploreDiagonal$5(board, piece.i, piece.j, a, b), t4 = t3.length, _i1 = 0; _i1 < t3.length; t3.length === t4 || (0, A.throwConcurrentModificationError)(t3), ++_i1)
+          for (t3 = this.exploreDiagonal$6(piece, board, piece.i, piece.j, a, b), t4 = t3.length, _i1 = 0; _i1 < t3.length; t3.length === t4 || (0, A.throwConcurrentModificationError)(t3), ++_i1)
             B.JSArray_methods.add$1(options, t3[_i1]);
         }
       }
       return options;
     },
-    exploreDiagonal$5(board, i, j, di, dj) {
-      var t1,
-        options = J.JSArray_JSArray$growable(0, type$.MoveOption);
-      for (t1 = board.base; true;) {
+    exploreDiagonal$6(piece, board, i, j, di, dj) {
+      var options = J.JSArray_JSArray$growable(0, type$.MoveOption);
+      for (; true;) {
         i += di;
         j += dj;
-        if (t1.tileIsEmpty$2(i, j))
+        if (piece.canMove$3(board, i, j))
           B.JSArray_methods.add$1(options, new A.MoveOption(i, j));
         else
           return options;
@@ -4852,23 +4816,22 @@
     move$2(board, piece) {
       var t1, t2, _i, _this = this,
         options = J.JSArray_JSArray$growable(0, type$.MoveOption);
-      for (t1 = _this.exploreImpulse$5(board, piece.i, piece.j, 0, 1), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+      for (t1 = _this.exploreImpulse$6(piece, board, piece.i, piece.j, 0, 1), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         B.JSArray_methods.add$1(options, t1[_i]);
-      for (t1 = _this.exploreImpulse$5(board, piece.i, piece.j, 0, -1), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+      for (t1 = _this.exploreImpulse$6(piece, board, piece.i, piece.j, 0, -1), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         B.JSArray_methods.add$1(options, t1[_i]);
-      for (t1 = _this.exploreImpulse$5(board, piece.i, piece.j, 1, 0), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+      for (t1 = _this.exploreImpulse$6(piece, board, piece.i, piece.j, 1, 0), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         B.JSArray_methods.add$1(options, t1[_i]);
-      for (t1 = _this.exploreImpulse$5(board, piece.i, piece.j, -1, 0), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+      for (t1 = _this.exploreImpulse$6(piece, board, piece.i, piece.j, -1, 0), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         B.JSArray_methods.add$1(options, t1[_i]);
       return options;
     },
-    exploreImpulse$5(board, i, j, di, dj) {
-      var t1,
-        options = J.JSArray_JSArray$growable(0, type$.MoveOption);
-      for (t1 = board.base; true;) {
+    exploreImpulse$6(piece, board, i, j, di, dj) {
+      var options = J.JSArray_JSArray$growable(0, type$.MoveOption);
+      for (; true;) {
         i += di;
         j += dj;
-        if (t1.tileIsEmpty$2(i, j))
+        if (piece.canMove$3(board, i, j))
           B.JSArray_methods.add$1(options, new A.MoveOption(i, j));
         else
           return options;
@@ -4891,23 +4854,23 @@
   };
   A.KingMovement.prototype = {
     move$2(board, piece) {
-      var t1, t2, _i, a, _i0, b, t3, t4,
+      var t1, _i, a, _i0, b, t2, t3,
         options = J.JSArray_JSArray$growable(0, type$.MoveOption),
         components = A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal([-1, 0, 1], type$.dynamic), true, type$.int);
-      for (t1 = components.length, t2 = board.base, _i = 0; _i < t1; ++_i) {
+      for (t1 = components.length, _i = 0; _i < t1; ++_i) {
         a = components[_i];
         for (_i0 = 0; _i0 < t1; ++_i0) {
           b = components[_i0];
-          t3 = piece.i;
+          t2 = piece.i;
           if (typeof a !== "number")
             return A.iae(a);
-          t3 += a;
-          t4 = piece.j;
+          t2 += a;
+          t3 = piece.j;
           if (typeof b !== "number")
             return A.iae(b);
-          t4 += b;
-          if (t2.tileIsEmpty$2(t3, t4))
-            B.JSArray_methods.add$1(options, new A.MoveOption(t3, t4));
+          t3 += b;
+          if (piece.canMove$3(board, t2, t3))
+            B.JSArray_methods.add$1(options, new A.MoveOption(t2, t3));
         }
       }
       return options;

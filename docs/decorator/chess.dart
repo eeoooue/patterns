@@ -7,7 +7,6 @@ abstract class ChessBoard {
   void removePiece(int i, int j);
   void setupPieces(String playerColour);
   GamePiece? getPiece(int i, int j);
-  bool tileIsEmpty(int i, int j);
   void placePiece(GamePiece piece, int i, int j);
   void addMarker(int i, int j, String marker);
   void clearHighlights();
@@ -173,14 +172,6 @@ class ChequeredBoard extends GameBoard implements ChessBoard {
       if (0 <= j && j < board[0].length) {
         return true;
       }
-    }
-    return false;
-  }
-
-  bool tileIsEmpty(int i, int j) {
-    if (validCoordinates(i, j)) {
-      Element tile = board[i][j];
-      return tile.children.length == 0;
     }
     return false;
   }

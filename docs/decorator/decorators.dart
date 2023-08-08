@@ -29,10 +29,6 @@ abstract class BoardWithPieces implements ChessBoard {
     return base.getPiece(i, j);
   }
 
-  bool tileIsEmpty(int i, int j) {
-    return base.tileIsEmpty(i, j);
-  }
-
   void addMarker(int i, int j, String marker) {
     base.addMarker(i, j, marker);
   }
