@@ -2850,7 +2850,7 @@
       this.j = t2;
     },
     main() {
-      var game, t3, t4, img,
+      var game, t3, t4, piece, img,
         _s26_ = "./assets/chess/queen_w.png",
         t1 = document,
         gameContainer = t1.getElementById("game-container"),
@@ -2864,37 +2864,40 @@
         t2 = new A.ChessBoard(t3, t4, t2, game, gameContainer);
         t2.insertTiles$0();
         game.__Game_board_A = t2;
-        t2 = new A.ChessPiece(new A.QueenMovement(), "w", "queen");
-        t2.__GamePiece_src_A = _s26_;
+        piece = new A.ChessPiece(new A.QueenMovement(), "w", "queen");
+        piece.__GamePiece_src_A = _s26_;
         img = t1.createElement("img");
         J.get$classes$x(img).add$1(0, "piece-img");
         if (type$.ImageElement._is(img)) {
           B.ImageElement_methods.set$src(img, _s26_);
-          t2.__GamePiece_element_A = img;
-        }
-        t1 = game.__Game_board_A;
-        t3 = t1.board;
-        if (0 >= t3.length)
-          return A.ioore(t3, 0);
-        t3 = t3[0];
-        if (0 >= t3.length)
-          return A.ioore(t3, 0);
-        t3 = J.get$children$x(t3[0]);
-        t4 = t2.__GamePiece_element_A;
-        t4 === $ && A.throwLateFieldNI("element");
-        t3.add$1(0, t4);
-        t1 = t1.pieces;
-        if (0 >= t1.length)
-          return A.ioore(t1, 0);
-        B.JSArray_methods.$indexSet(t1[0], 0, t2);
+          piece.__GamePiece_element_A = img;
+          t1 = img;
+        } else
+          t1 = $;
+        t2 = game.__Game_board_A;
+        t3 = t2.board;
+        if (4 >= t3.length)
+          return A.ioore(t3, 4);
+        t3 = t3[4];
+        if (3 >= t3.length)
+          return A.ioore(t3, 3);
+        t3 = J.get$children$x(t3[3]);
+        t1 === $ && A.throwLateFieldNI("element");
+        t3.add$1(0, t1);
+        t2 = t2.pieces;
+        if (4 >= t2.length)
+          return A.ioore(t2, 4);
+        B.JSArray_methods.$indexSet(t2[4], 3, piece);
+        piece.i = 4;
+        piece.j = 3;
       }
     },
-    StrategyDemo: function StrategyDemo(t0, t1) {
+    StrategyDemo: function StrategyDemo(t0) {
       this.game = t0;
-      this.piece = t1;
     },
     ChessPiece: function ChessPiece(t0, t1, t2) {
       var _ = this;
+      _.j = _.i = 0;
       _.moveStrategy = t0;
       _.colour = t1;
       _.name = t2;
@@ -4428,14 +4431,16 @@
   A.MoveOption.prototype = {};
   A.BishopMovement.prototype = {
     move$2(board, piece) {
-      var t1, t2, _i, a, _i0, t3, t4, _i1,
+      var t1, t2, _i, a, _i0, t3, b, t4, _i1,
         options = J.JSArray_JSArray$growable(0, type$.MoveOption),
         components = A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal([1, -1], type$.dynamic), true, type$.int);
       for (t1 = components.length, t2 = t1, _i = 0; _i < t2; t3 === t1 || (0, A.throwConcurrentModificationError)(components), ++_i, t2 = t3) {
         a = components[_i];
-        for (_i0 = 0; t3 = components.length, _i0 < t3; components.length === t2 || (0, A.throwConcurrentModificationError)(components), ++_i0)
-          for (t3 = this.exploreDiagonal$5(board, 0, 0, a, components[_i0]), t4 = t3.length, _i1 = 0; _i1 < t3.length; t3.length === t4 || (0, A.throwConcurrentModificationError)(t3), ++_i1)
+        for (_i0 = 0; t3 = components.length, _i0 < t3; components.length === t2 || (0, A.throwConcurrentModificationError)(components), ++_i0) {
+          b = components[_i0];
+          for (t3 = this.exploreDiagonal$5(board, piece.i, piece.j, a, b), t4 = t3.length, _i1 = 0; _i1 < t3.length; t3.length === t4 || (0, A.throwConcurrentModificationError)(t3), ++_i1)
             B.JSArray_methods.add$1(options, t3[_i1]);
+        }
       }
       return options;
     },
@@ -4456,13 +4461,13 @@
     move$2(board, piece) {
       var t1, t2, _i, _this = this,
         options = J.JSArray_JSArray$growable(0, type$.MoveOption);
-      for (t1 = _this.exploreImpulse$5(board, 0, 0, 0, 1), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+      for (t1 = _this.exploreImpulse$5(board, piece.i, piece.j, 0, 1), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         B.JSArray_methods.add$1(options, t1[_i]);
-      for (t1 = _this.exploreImpulse$5(board, 0, 0, 0, -1), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+      for (t1 = _this.exploreImpulse$5(board, piece.i, piece.j, 0, -1), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         B.JSArray_methods.add$1(options, t1[_i]);
-      for (t1 = _this.exploreImpulse$5(board, 0, 0, 1, 0), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+      for (t1 = _this.exploreImpulse$5(board, piece.i, piece.j, 1, 0), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         B.JSArray_methods.add$1(options, t1[_i]);
-      for (t1 = _this.exploreImpulse$5(board, 0, 0, -1, 0), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+      for (t1 = _this.exploreImpulse$5(board, piece.i, piece.j, -1, 0), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         B.JSArray_methods.add$1(options, t1[_i]);
       return options;
     },

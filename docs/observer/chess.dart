@@ -39,6 +39,11 @@ class ChessBoard extends GameBoard {
     Element tile = board[i][j];
     tile.children.add(piece.element);
     pieces[i][j] = piece;
+
+    if (piece is ChessPiece) {
+      piece.i = i;
+      piece.j = j;
+    }
   }
 
   void removePiece(int i, int j) {
