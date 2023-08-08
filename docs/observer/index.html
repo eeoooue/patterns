@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     
-    <title>Chess Movement (Strategy)</title>
+    <title>Gamestate Widgets (Observer)</title>
     
 </head>
 
@@ -18,26 +18,35 @@
 
         <div class="container totempole" id="side-tray">
 
-            <h2>Movement</h2>
+            <div class="container totempole" id="turnplayer-widget">
 
-            <form action="">
+                <h3>Turn Player</h3>
+
+                <div class="container bookshelf" id="turnswitch-bar">
+                    <button>White</button>
+                    <button>Black</button>
+                </div>
+                
+            </div>
+
+            <div class="container totempole" id="analysis widget">
+                <h3>Analysis</h3>
+
+                <div class="container bookshelf" id="analysis-bar">
+
+                    <div class="teamclr-block white"></div>
+                    <div class="teamclr-block black"></div>
+
+                </div>
 
                 
-            <select id="strategy-selector" name="strategy-selector">
-                <option value="Pawn">Pawn</option>
-                <option value="Bishop">Bishop</option>
-                <option value="Knight">Knight</option>
-                <option value="Rook">Rook</option>
-                <option value="Queen">Queen</option>
-                <option value="King">King</option>
-            </select>
+            </div>
 
-
-            </form>
-
+            <div class="container totempole" id="feed-widget">
+                <h3>Feed</h3>
+            </div>
 
         </div>
-
     </div>
 
     
