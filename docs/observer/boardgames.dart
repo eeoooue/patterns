@@ -1,10 +1,27 @@
 import 'dart:html';
+import 'observer.dart';
 
-abstract class Game {
+abstract class Game implements Subject {
   Element container;
   late GameBoard board;
 
+  List<Observer> observers = List.empty(growable: true);
+
   Game(this.container) {}
+
+  void subscribe(Observer observer) {
+    observers.add(observer);
+  }
+
+  void unsubscribe(Observer observer) {
+    observers.remove(observer);
+  }
+
+  void notify() {
+    for (Observer observer in observers) {
+      observer.update(this);
+    }
+  }
 
   void startGame() {
     clearPlayArea();
