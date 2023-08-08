@@ -36,6 +36,25 @@ abstract class MovementStrategy {
 
 class PawnMovement implements MovementStrategy {
   List<MoveOption> move(ChessBoard board, ChessPiece piece) {
+    if (piece.colour == "b") {
+      return blackMovement(board, piece);
+    } else {
+      return whiteMovement(board, piece);
+    }
+  }
+
+  List<MoveOption> blackMovement(ChessBoard board, ChessPiece piece) {
+    List<MoveOption> options = List.empty(growable: true);
+
+    MoveOption move = MoveOption(piece.i + 1, piece.j);
+    if (board.tileIsEmpty(move.i, move.j)) {
+      options.add(move);
+    }
+
+    return options;
+  }
+
+  List<MoveOption> whiteMovement(ChessBoard board, ChessPiece piece) {
     List<MoveOption> options = List.empty(growable: true);
 
     MoveOption move = MoveOption(piece.i - 1, piece.j);

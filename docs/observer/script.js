@@ -4542,12 +4542,23 @@
   A.MoveOption.prototype = {};
   A.PawnMovement.prototype = {
     move$2(board, piece) {
-      var options = J.JSArray_JSArray$growable(0, type$.MoveOption),
-        t1 = piece.i - 1,
+      var options, t2,
+        t1 = type$.MoveOption;
+      if (piece.colour === "b") {
+        options = J.JSArray_JSArray$growable(0, t1);
+        t1 = piece.i + 1;
         t2 = piece.j;
-      if (board.tileIsEmpty$2(t1, t2))
-        B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
-      return options;
+        if (board.tileIsEmpty$2(t1, t2))
+          B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
+        return options;
+      } else {
+        options = J.JSArray_JSArray$growable(0, t1);
+        t1 = piece.i - 1;
+        t2 = piece.j;
+        if (board.tileIsEmpty$2(t1, t2))
+          B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
+        return options;
+      }
     },
     $isMovementStrategy: 1
   };
