@@ -17,6 +17,7 @@ class ChessGame extends Game {
     if (myBoard is ChessBoard) {
       GamePiece? piece = myBoard.getPiece(i, j);
       if (piece is ChessPiece) {
+        myBoard.clearHighlights();
         List<MoveOption> options = piece.move(myBoard);
         print("checked for options: found ${options.length}");
         myBoard.highlightOptions(options);
@@ -25,12 +26,68 @@ class ChessGame extends Game {
   }
 
   void setupPieces() {
-    placeQueen();
+    setupWhitePieces();
+    setupBlackPieces();
   }
 
-  void placeQueen() {
-    ChessPiece piece = ChessPiece("w", "queen", QueenMovement());
-    board.placePiece(piece, 4, 3);
+  void setupWhitePieces() {
+    String colour = "w";
+
+    ChessPiece king = ChessPiece(colour, "king", KingMovement());
+    board.placePiece(king, 7, 4);
+
+    ChessPiece queen = ChessPiece(colour, "queen", QueenMovement());
+    board.placePiece(queen, 7, 3);
+
+    ChessPiece rookL = ChessPiece(colour, "rook", RookMovement());
+    board.placePiece(rookL, 7, 0);
+    ChessPiece rookR = ChessPiece(colour, "rook", RookMovement());
+    board.placePiece(rookR, 7, 7);
+
+    ChessPiece knightL = ChessPiece(colour, "knight", KnightMovement());
+    board.placePiece(knightL, 7, 1);
+    ChessPiece knightR = ChessPiece(colour, "knight", KnightMovement());
+    board.placePiece(knightR, 7, 6);
+
+    ChessPiece bishopL = ChessPiece(colour, "bishop", BishopMovement());
+    board.placePiece(bishopL, 7, 2);
+    ChessPiece bishopR = ChessPiece(colour, "bishop", BishopMovement());
+    board.placePiece(bishopR, 7, 5);
+
+    for (int j = 0; j < 8; j++) {
+      ChessPiece pawn = ChessPiece(colour, "pawn", PawnMovement());
+      board.placePiece(pawn, 6, j);
+    }
+  }
+
+  void setupBlackPieces() {
+    String colour = "b";
+
+    ChessPiece king = ChessPiece(colour, "king", KingMovement());
+    board.placePiece(king, 0, 4);
+
+    ChessPiece queen = ChessPiece(colour, "queen", QueenMovement());
+    board.placePiece(queen, 0, 3);
+
+    ChessPiece rookL = ChessPiece(colour, "rook", RookMovement());
+    board.placePiece(rookL, 0, 0);
+    ChessPiece rookR = ChessPiece(colour, "rook", RookMovement());
+    board.placePiece(rookR, 0, 7);
+
+    ChessPiece knightL = ChessPiece(colour, "knight", KnightMovement());
+    board.placePiece(knightL, 0, 1);
+    ChessPiece knightR = ChessPiece(colour, "knight", KnightMovement());
+    board.placePiece(knightR, 0, 6);
+
+    ChessPiece bishopL = ChessPiece(colour, "bishop", BishopMovement());
+    board.placePiece(bishopL, 0, 2);
+    ChessPiece bishopR = ChessPiece(colour, "bishop", BishopMovement());
+    board.placePiece(bishopR, 0, 5);
+
+    for (int j = 0; j < 8; j++) {
+      ChessPiece pawn = ChessPiece(colour, "pawn", PawnMovement());
+      board.placePiece(pawn, 1, j);
+    }
   }
 }
 

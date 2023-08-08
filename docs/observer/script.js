@@ -354,6 +354,9 @@
         return object.toString$0(0);
       return "Instance of '" + A.Primitives_objectTypeName(object) + "'";
     },
+    iae(argument) {
+      throw A.wrapException(A.argumentErrorValue(argument));
+    },
     ioore(receiver, index) {
       if (receiver == null)
         J.get$length$asx(receiver);
@@ -367,6 +370,9 @@
       if (index < 0 || index >= $length)
         return A.IndexError$withLength(index, $length, indexable, _s5_);
       return new A.RangeError(null, null, true, index, _s5_, "Value not in range");
+    },
+    argumentErrorValue(object) {
+      return new A.ArgumentError(true, object, null, null);
     },
     wrapException(ex) {
       var wrapper, t1;
@@ -2758,7 +2764,7 @@
     DomTokenList: function DomTokenList() {
     },
     _ChildrenElementList: function _ChildrenElementList(t0, t1) {
-      this._html$_element = t0;
+      this._element = t0;
       this._childElements = t1;
     },
     Element: function Element() {
@@ -2785,7 +2791,7 @@
     _NamedNodeMap: function _NamedNodeMap() {
     },
     _ElementCssClassSet: function _ElementCssClassSet(t0) {
-      this._html$_element = t0;
+      this._element = t0;
     },
     ImmutableListMixin: function ImmutableListMixin() {
     },
@@ -2822,7 +2828,7 @@
     FilteredElementList__iterable_closure0: function FilteredElementList__iterable_closure0() {
     },
     AttributeClassSet: function AttributeClassSet(t0) {
-      this._element = t0;
+      this._svg$_element = t0;
     },
     SvgElement: function SvgElement() {
     },
@@ -2849,6 +2855,19 @@
       this.i = t1;
       this.j = t2;
     },
+    ChessPiece$(colour, $name, moveStrategy) {
+      var img,
+        t1 = new A.ChessPiece(moveStrategy, colour, $name),
+        t2 = "./assets/chess/" + $name + "_" + colour + ".png";
+      t1.__GamePiece_src_A = t2;
+      img = document.createElement("img");
+      J.get$classes$x(img).add$1(0, "piece-img");
+      if (type$.ImageElement._is(img)) {
+        B.ImageElement_methods.set$src(img, t2);
+        t1.__GamePiece_element_A = img;
+      }
+      return t1;
+    },
     ChessPiece: function ChessPiece(t0, t1, t2) {
       var _ = this;
       _.j = _.i = 0;
@@ -2861,11 +2880,17 @@
       this.i = t0;
       this.j = t1;
     },
+    PawnMovement: function PawnMovement() {
+    },
+    KnightMovement: function KnightMovement() {
+    },
     BishopMovement: function BishopMovement() {
     },
     RookMovement: function RookMovement() {
     },
     QueenMovement: function QueenMovement() {
+    },
+    KingMovement: function KingMovement() {
     },
     printString(string) {
       if (typeof dartPrint == "function") {
@@ -2889,46 +2914,20 @@
       return A.throwExpression(new A.LateError("Field '" + fieldName + "' has been assigned during initialization."));
     },
     main() {
-      var game, t3, t4, piece, img,
-        _s26_ = "./assets/chess/queen_w.png",
-        t1 = document,
-        gameContainer = t1.getElementById("game-container"),
-        t2 = type$.Element;
-      if (t2._is(gameContainer)) {
+      var game, t2, t3,
+        gameContainer = document.getElementById("game-container"),
+        t1 = type$.Element;
+      if (t1._is(gameContainer)) {
         game = new A.ChessGame(gameContainer);
         J.get$children$x(gameContainer).clear$0(0);
-        t3 = J.JSArray_JSArray$growable(0, type$.List_Element);
-        t4 = J.JSArray_JSArray$growable(0, type$.List_nullable_GamePiece);
-        t2 = J.JSArray_JSArray$growable(0, t2);
-        t2 = new A.ChessBoard(t3, t4, t2, game, gameContainer);
-        t2.insertTiles$0();
-        game.__Game_board_A = t2;
-        piece = new A.ChessPiece(new A.QueenMovement(), "w", "queen");
-        piece.__GamePiece_src_A = _s26_;
-        img = t1.createElement("img");
-        J.get$classes$x(img).add$1(0, "piece-img");
-        if (type$.ImageElement._is(img)) {
-          B.ImageElement_methods.set$src(img, _s26_);
-          piece.__GamePiece_element_A = img;
-          t1 = img;
-        } else
-          t1 = $;
-        t2 = game.__Game_board_A;
-        t3 = t2.board;
-        if (4 >= t3.length)
-          return A.ioore(t3, 4);
-        t3 = t3[4];
-        if (3 >= t3.length)
-          return A.ioore(t3, 3);
-        t3 = J.get$children$x(t3[3]);
-        t1 === $ && A.throwLateFieldNI("element");
-        t3.add$1(0, t1);
-        t2 = t2.pieces;
-        if (4 >= t2.length)
-          return A.ioore(t2, 4);
-        B.JSArray_methods.$indexSet(t2[4], 3, piece);
-        piece.i = 4;
-        piece.j = 3;
+        t2 = J.JSArray_JSArray$growable(0, type$.List_Element);
+        t3 = J.JSArray_JSArray$growable(0, type$.List_nullable_GamePiece);
+        t1 = J.JSArray_JSArray$growable(0, t1);
+        t1 = new A.ChessBoard(t2, t3, t1, game, gameContainer);
+        t1.insertTiles$0();
+        game.__Game_board_A = t1;
+        game.setupWhitePieces$0();
+        game.setupBlackPieces$0();
       }
     }
   },
@@ -3107,6 +3106,18 @@
         return receiver;
       return J.getNativeInterceptor(receiver);
     },
+    getInterceptor$in(receiver) {
+      if (typeof receiver == "number") {
+        if (Math.floor(receiver) == receiver)
+          return J.JSInt.prototype;
+        return J.JSNumNotInt.prototype;
+      }
+      if (receiver == null)
+        return receiver;
+      if (!(receiver instanceof A.Object))
+        return J.UnknownJavaScriptObject.prototype;
+      return receiver;
+    },
     getInterceptor$s(receiver) {
       if (typeof receiver == "string")
         return J.JSString.prototype;
@@ -3162,6 +3173,11 @@
     },
     _clearChildren$0$x(receiver) {
       return J.getInterceptor$x(receiver)._clearChildren$0(receiver);
+    },
+    abs$0$in(receiver) {
+      if (typeof receiver === "number")
+        return Math.abs(receiver);
+      return J.getInterceptor$in(receiver).abs$0(receiver);
     },
     elementAt$1$ax(receiver, a0) {
       return J.getInterceptor$ax(receiver).elementAt$1(receiver, a0);
@@ -3363,6 +3379,9 @@
     $isnum: 1
   };
   J.JSInt.prototype = {
+    abs$0(receiver) {
+      return Math.abs(receiver);
+    },
     get$runtimeType(receiver) {
       return A.createRuntimeType(type$.int);
     },
@@ -3986,7 +4005,7 @@
   };
   A._ChildrenElementList.prototype = {
     get$isEmpty(_) {
-      return this._html$_element.firstElementChild == null;
+      return this._element.firstElementChild == null;
     },
     get$length(_) {
       return this._childElements.length;
@@ -3998,7 +4017,7 @@
       return type$.Element._as(t1[index]);
     },
     add$1(_, value) {
-      this._html$_element.appendChild(value).toString;
+      this._element.appendChild(value).toString;
       return value;
     },
     get$iterator(_) {
@@ -4006,7 +4025,7 @@
       return new J.ArrayIterator(t1, t1.length, A._arrayInstanceType(t1)._eval$1("ArrayIterator<1>"));
     },
     clear$0(_) {
-      J._clearChildren$0$x(this._html$_element);
+      J._clearChildren$0$x(this._element);
     }
   };
   A.Element.prototype = {
@@ -4154,7 +4173,7 @@
     readClasses$0() {
       var t1, t2, _i, trimmed,
         s = A.LinkedHashSet_LinkedHashSet(type$.String);
-      for (t1 = this._html$_element.className.split(" "), t2 = t1.length, _i = 0; _i < t2; ++_i) {
+      for (t1 = this._element.className.split(" "), t2 = t1.length, _i = 0; _i < t2; ++_i) {
         trimmed = J.trim$0$s(t1[_i]);
         if (trimmed.length !== 0)
           s.add$1(0, trimmed);
@@ -4162,15 +4181,15 @@
       return s;
     },
     writeClasses$1(s) {
-      this._html$_element.className = type$.Set_String._as(s).join$1(0, " ");
+      this._element.className = type$.Set_String._as(s).join$1(0, " ");
     },
     get$length(_) {
-      var t1 = this._html$_element.classList.length;
+      var t1 = this._element.classList.length;
       t1.toString;
       return t1;
     },
     add$1(_, value) {
-      var list = this._html$_element.classList,
+      var list = this._element.classList,
         t1 = list.contains(value);
       t1.toString;
       list.add(value);
@@ -4286,7 +4305,7 @@
   A.AttributeClassSet.prototype = {
     readClasses$0() {
       var t1, t2, _i, trimmed,
-        classname = this._element.getAttribute("class"),
+        classname = this._svg$_element.getAttribute("class"),
         s = A.LinkedHashSet_LinkedHashSet(type$.String);
       if (classname == null)
         return s;
@@ -4298,7 +4317,7 @@
       return s;
     },
     writeClasses$1(s) {
-      this._element.setAttribute("class", s.join$1(0, " "));
+      this._svg$_element.setAttribute("class", s.join$1(0, " "));
     }
   };
   A.SvgElement.prototype = {
@@ -4311,9 +4330,104 @@
   };
   A.Game.prototype = {};
   A.GameBoard.prototype = {};
-  A.GamePiece.prototype = {};
-  A.ChessGame.prototype = {};
+  A.GamePiece.prototype = {
+    buildElement$0() {
+      var t1,
+        img = document.createElement("img");
+      J.get$classes$x(img).add$1(0, "piece-img");
+      if (type$.ImageElement._is(img)) {
+        t1 = this.__GamePiece_src_A;
+        t1 === $ && A.throwLateFieldNI("src");
+        B.ImageElement_methods.set$src(img, t1);
+        this.__GamePiece_element_A = img;
+      }
+    }
+  };
+  A.ChessGame.prototype = {
+    setupWhitePieces$0() {
+      var queen, rookL, rookR, knightL, knightR, bishopL, bishopR, j, pawn, _this = this, _s1_ = "w",
+        king = A.ChessPiece$(_s1_, "king", new A.KingMovement()),
+        t1 = _this.__Game_board_A;
+      t1 === $ && A.throwLateFieldNI("board");
+      t1.placePiece$3(king, 7, 4);
+      queen = A.ChessPiece$(_s1_, "queen", new A.QueenMovement());
+      _this.__Game_board_A.placePiece$3(queen, 7, 3);
+      rookL = A.ChessPiece$(_s1_, "rook", new A.RookMovement());
+      _this.__Game_board_A.placePiece$3(rookL, 7, 0);
+      rookR = A.ChessPiece$(_s1_, "rook", new A.RookMovement());
+      _this.__Game_board_A.placePiece$3(rookR, 7, 7);
+      knightL = A.ChessPiece$(_s1_, "knight", new A.KnightMovement());
+      _this.__Game_board_A.placePiece$3(knightL, 7, 1);
+      knightR = A.ChessPiece$(_s1_, "knight", new A.KnightMovement());
+      _this.__Game_board_A.placePiece$3(knightR, 7, 6);
+      bishopL = A.ChessPiece$(_s1_, "bishop", new A.BishopMovement());
+      _this.__Game_board_A.placePiece$3(bishopL, 7, 2);
+      bishopR = A.ChessPiece$(_s1_, "bishop", new A.BishopMovement());
+      _this.__Game_board_A.placePiece$3(bishopR, 7, 5);
+      for (j = 0; j < 8; ++j) {
+        pawn = new A.ChessPiece(new A.PawnMovement(), _s1_, "pawn");
+        pawn.__GamePiece_src_A = "./assets/chess/pawn_w.png";
+        pawn.buildElement$0();
+        _this.__Game_board_A.placePiece$3(pawn, 6, j);
+      }
+    },
+    setupBlackPieces$0() {
+      var queen, rookL, rookR, knightL, knightR, bishopL, bishopR, j, pawn, _this = this, _s1_ = "b",
+        king = A.ChessPiece$(_s1_, "king", new A.KingMovement()),
+        t1 = _this.__Game_board_A;
+      t1 === $ && A.throwLateFieldNI("board");
+      t1.placePiece$3(king, 0, 4);
+      queen = A.ChessPiece$(_s1_, "queen", new A.QueenMovement());
+      _this.__Game_board_A.placePiece$3(queen, 0, 3);
+      rookL = A.ChessPiece$(_s1_, "rook", new A.RookMovement());
+      _this.__Game_board_A.placePiece$3(rookL, 0, 0);
+      rookR = A.ChessPiece$(_s1_, "rook", new A.RookMovement());
+      _this.__Game_board_A.placePiece$3(rookR, 0, 7);
+      knightL = A.ChessPiece$(_s1_, "knight", new A.KnightMovement());
+      _this.__Game_board_A.placePiece$3(knightL, 0, 1);
+      knightR = A.ChessPiece$(_s1_, "knight", new A.KnightMovement());
+      _this.__Game_board_A.placePiece$3(knightR, 0, 6);
+      bishopL = A.ChessPiece$(_s1_, "bishop", new A.BishopMovement());
+      _this.__Game_board_A.placePiece$3(bishopL, 0, 2);
+      bishopR = A.ChessPiece$(_s1_, "bishop", new A.BishopMovement());
+      _this.__Game_board_A.placePiece$3(bishopR, 0, 5);
+      for (j = 0; j < 8; ++j) {
+        pawn = new A.ChessPiece(new A.PawnMovement(), _s1_, "pawn");
+        pawn.__GamePiece_src_A = "./assets/chess/pawn_b.png";
+        pawn.buildElement$0();
+        _this.__Game_board_A.placePiece$3(pawn, 1, j);
+      }
+    }
+  };
   A.ChessBoard.prototype = {
+    placePiece$3(piece, i, j) {
+      var t2,
+        t1 = this.board;
+      if (!(i < t1.length))
+        return A.ioore(t1, i);
+      t1 = t1[i];
+      if (!(j < t1.length))
+        return A.ioore(t1, j);
+      t1 = J.get$children$x(t1[j]);
+      t2 = piece.__GamePiece_element_A;
+      t2 === $ && A.throwLateFieldNI("element");
+      t1.add$1(0, t2);
+      t2 = this.pieces;
+      if (!(i < t2.length))
+        return A.ioore(t2, i);
+      B.JSArray_methods.$indexSet(t2[i], j, piece);
+      piece.i = i;
+      piece.j = j;
+    },
+    clearHighlights$0() {
+      var t1, t2, _i, highlight, t3;
+      for (t1 = this.highlights, t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i) {
+        highlight = t1[_i];
+        t3 = highlight.parentNode;
+        if (t3 != null)
+          t3.removeChild(highlight).toString;
+      }
+    },
     highlightOptions$1(options) {
       var t1, t2, t3, _i, move, e, t4, t5;
       type$.List_MoveOption._as(options);
@@ -4416,6 +4530,7 @@
         return A.ioore(t1, t2);
       piece = t1[t2];
       if (piece instanceof A.ChessPiece) {
+        t3.clearHighlights$0();
         options = piece.moveStrategy.move$2(t3, piece);
         A.print("checked for options: found " + options.length);
         t3.highlightOptions$1(options);
@@ -4425,6 +4540,44 @@
   };
   A.ChessPiece.prototype = {};
   A.MoveOption.prototype = {};
+  A.PawnMovement.prototype = {
+    move$2(board, piece) {
+      var options = J.JSArray_JSArray$growable(0, type$.MoveOption),
+        t1 = piece.i - 1,
+        t2 = piece.j;
+      if (board.tileIsEmpty$2(t1, t2))
+        B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
+      return options;
+    },
+    $isMovementStrategy: 1
+  };
+  A.KnightMovement.prototype = {
+    move$2(board, piece) {
+      var t1, _i, a, t2, _i0, b, t3, t4,
+        options = J.JSArray_JSArray$growable(0, type$.MoveOption),
+        components = A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal([1, 2, -2, -1], type$.dynamic), true, type$.int);
+      for (t1 = components.length, _i = 0; _i < t1; ++_i) {
+        a = components[_i];
+        for (t2 = J.getInterceptor$in(a), _i0 = 0; _i0 < t1; ++_i0) {
+          b = components[_i0];
+          if (t2.abs$0(a) + J.abs$0$in(b) === 3) {
+            t3 = piece.i;
+            if (typeof a !== "number")
+              return A.iae(a);
+            t3 += a;
+            t4 = piece.j;
+            if (typeof b !== "number")
+              return A.iae(b);
+            t4 += b;
+            if (board.tileIsEmpty$2(t3, t4))
+              B.JSArray_methods.add$1(options, new A.MoveOption(t3, t4));
+          }
+        }
+      }
+      return options;
+    },
+    $isMovementStrategy: 1
+  };
   A.BishopMovement.prototype = {
     move$2(board, piece) {
       var t1, t2, _i, a, _i0, t3, b, t4, _i1,
@@ -4493,6 +4646,31 @@
     },
     $isMovementStrategy: 1
   };
+  A.KingMovement.prototype = {
+    move$2(board, piece) {
+      var t1, _i, a, _i0, b, t2, t3,
+        options = J.JSArray_JSArray$growable(0, type$.MoveOption),
+        components = A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal([-1, 0, 1], type$.dynamic), true, type$.int);
+      for (t1 = components.length, _i = 0; _i < t1; ++_i) {
+        a = components[_i];
+        for (_i0 = 0; _i0 < t1; ++_i0) {
+          b = components[_i0];
+          t2 = piece.i;
+          if (typeof a !== "number")
+            return A.iae(a);
+          t2 += a;
+          t3 = piece.j;
+          if (typeof b !== "number")
+            return A.iae(b);
+          t3 += b;
+          if (board.tileIsEmpty$2(t2, t3))
+            B.JSArray_methods.add$1(options, new A.MoveOption(t2, t3));
+        }
+      }
+      return options;
+    },
+    $isMovementStrategy: 1
+  };
   (function aliases() {
     var _ = J.Interceptor.prototype;
     _.super$Interceptor$toString = _.toString$0;
@@ -4504,7 +4682,7 @@
       _inherit = hunkHelpers.inherit,
       _inheritMany = hunkHelpers.inheritMany;
     _inherit(A.Object, null);
-    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.Game, A.GameBoard, A.GamePiece, A.MoveOption, A.BishopMovement, A.RookMovement, A.QueenMovement]);
+    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.Game, A.GameBoard, A.GamePiece, A.MoveOption, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement]);
     _inheritMany(J.Interceptor, [J.JSBool, J.JSNull, J.JavaScriptObject, J.JSNumber, J.JSString]);
     _inheritMany(J.JavaScriptObject, [J.LegacyJavaScriptObject, J.JSArray, A.EventTarget, A.DomException, A.DomTokenList, A.Event, A._HtmlCollection_JavaScriptObject_ListMixin, A._NodeList_JavaScriptObject_ListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin]);
     _inheritMany(J.LegacyJavaScriptObject, [J.PlainJavaScriptObject, J.UnknownJavaScriptObject, J.JavaScriptFunction]);
@@ -4551,7 +4729,7 @@
     leafTags: null,
     arrayRti: Symbol("$ti")
   };
-  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"int":{"num":[]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"ChessGame":{"Game":[]},"ChessBoard":{"GameBoard":[]},"ChessPiece":{"GamePiece":[]},"BishopMovement":{"MovementStrategy":[]},"RookMovement":{"MovementStrategy":[]},"QueenMovement":{"MovementStrategy":[]}}'));
+  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"int":{"num":[]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"ChessGame":{"Game":[]},"ChessBoard":{"GameBoard":[]},"ChessPiece":{"GamePiece":[]},"PawnMovement":{"MovementStrategy":[]},"KnightMovement":{"MovementStrategy":[]},"BishopMovement":{"MovementStrategy":[]},"RookMovement":{"MovementStrategy":[]},"QueenMovement":{"MovementStrategy":[]},"KingMovement":{"MovementStrategy":[]}}'));
   A._Universe_addErasedTypes(init.typeUniverse, JSON.parse('{"_SetBase":1}'));
   var type$ = (function rtii() {
     var findType = A.findType;
