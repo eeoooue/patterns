@@ -4,7 +4,7 @@ import 'strategy.dart';
 
 class StrategyDemo {
   ChessGame game;
-  MimicPiece piece = MimicPiece(4, 3, PawnMovement());
+  ChessPiece piece = ChessPiece("w", "queen", QueenMovement());
   SelectElement selector;
   ChessBoard board;
 
