@@ -15,13 +15,28 @@ class ChessGame extends Game {
     var myBoard = board;
 
     if (myBoard is ChessBoard) {
-      GamePiece? piece = myBoard.getPiece(i, j);
-      if (piece is ChessPiece) {
-        myBoard.clearHighlights();
-        List<MoveOption> options = piece.move(myBoard);
-        print("checked for options: found ${options.length}");
-        myBoard.highlightOptions(options);
+      processMove(myBoard, i, j);
+    }
+  }
+
+  void processMove(ChessBoard chessBoard, int i, int j) {
+    ChessPiece? piece;
+
+    piece = chessBoard.activePiece;
+    if (piece != null) {
+      if (chessBoard.canMoveHere(piece, i, j)) {
+        chessBoard.movePiece(piece, i, j);
+        return;
       }
+    }
+
+    piece = chessBoard.getPiece(i, j) as ChessPiece?;
+    if (piece is ChessPiece) {
+      chessBoard.clearHighlights();
+      List<MoveOption> options = piece.move(chessBoard);
+      print("checked for options: found ${options.length}");
+      chessBoard.setActivePiece(piece);
+      chessBoard.highlightOptions(options);
     }
   }
 
@@ -97,6 +112,8 @@ class ChessBoard extends GameBoard {
 
   List<Element> highlights = List.empty(growable: true);
 
+  ChessPiece? activePiece = null;
+
   ChessBoard(Game game, Element container) : super(game, container) {}
 
   void placePiece(GamePiece piece, int i, int j) {
@@ -110,10 +127,34 @@ class ChessBoard extends GameBoard {
     }
   }
 
+  bool canMoveHere(GamePiece piece, int i, int j) {
+    Element destination = board[i][j];
+
+    for (Element div in destination.children) {
+      if (div.classes.contains("dot")) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   void removePiece(int i, int j) {
     Element tile = board[i][j];
     tile.children.clear();
     pieces[i][j] = null;
+  }
+
+  void setActivePiece(ChessPiece piece) {
+    activePiece = piece;
+  }
+
+  void movePiece(ChessPiece piece, int i, int j) {
+    clearHighlights();
+    removePiece(piece.i, piece.j);
+    placePiece(piece, i, j);
+    piece.hasMoved = true;
+    activePiece = null;
   }
 
   void clearHighlights() {

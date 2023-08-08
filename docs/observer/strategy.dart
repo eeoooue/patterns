@@ -8,6 +8,7 @@ class ChessPiece extends GamePiece {
   String colour;
   String name;
   bool selected = false;
+  bool hasMoved = false;
 
   ChessPiece(this.colour, this.name, this.moveStrategy) {
     setSource("./assets/chess/${name}_${colour}.png");

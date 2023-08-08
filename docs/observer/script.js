@@ -2847,6 +2847,7 @@
       _.board = t0;
       _.pieces = t1;
       _.highlights = t2;
+      _.activePiece = null;
       _.game = t3;
       _.container = t4;
     },
@@ -3644,6 +3645,24 @@
     get$length(_) {
       return this._collection$_length;
     },
+    contains$1(_, object) {
+      var strings, t1;
+      if (object !== "__proto__") {
+        strings = this._strings;
+        if (strings == null)
+          return false;
+        return type$.nullable__LinkedHashSetCell._as(strings[object]) != null;
+      } else {
+        t1 = this._contains$1(object);
+        return t1;
+      }
+    },
+    _contains$1(object) {
+      var rest = this._collection$_rest;
+      if (rest == null)
+        return false;
+      return this._findBucketIndex$2(rest[this._computeHashCode$1(object)], object) >= 0;
+    },
     add$1(_, element) {
       var strings, nums, _this = this;
       A._instanceType(_this)._precomputed1._as(element);
@@ -3695,8 +3714,10 @@
       return J.get$hashCode$(element) & 1073741823;
     },
     _findBucketIndex$2(bucket, element) {
-      var i,
-        $length = bucket.length;
+      var $length, i;
+      if (bucket == null)
+        return -1;
+      $length = bucket.length;
       for (i = 0; i < $length; ++i)
         if (J.$eq$(bucket[i]._collection$_element, element))
           return i;
@@ -4188,6 +4209,11 @@
       t1.toString;
       return t1;
     },
+    contains$1(_, value) {
+      var t1 = this._element.classList.contains(value);
+      t1.toString;
+      return t1;
+    },
     add$1(_, value) {
       var list = this._element.classList,
         t1 = list.contains(value);
@@ -4246,6 +4272,10 @@
     },
     get$length(_) {
       return this.readClasses$0()._collection$_length;
+    },
+    contains$1(_, value) {
+      this._validateToken$1(value);
+      return this.readClasses$0().contains$1(0, value);
     },
     add$1(_, value) {
       var t1, s, ret;
@@ -4344,6 +4374,44 @@
     }
   };
   A.ChessGame.prototype = {
+    processMove$3(chessBoard, i, j) {
+      var t1, t2, t3, options,
+        piece = chessBoard.activePiece;
+      if (piece != null)
+        if (chessBoard.canMoveHere$3(piece, i, j)) {
+          chessBoard.clearHighlights$0();
+          t1 = piece.i;
+          t2 = piece.j;
+          t3 = chessBoard.board;
+          if (!(t1 < t3.length))
+            return A.ioore(t3, t1);
+          t3 = t3[t1];
+          if (!(t2 < t3.length))
+            return A.ioore(t3, t2);
+          J.get$children$x(t3[t2]).clear$0(0);
+          t3 = chessBoard.pieces;
+          if (!(t1 < t3.length))
+            return A.ioore(t3, t1);
+          B.JSArray_methods.$indexSet(t3[t1], t2, null);
+          chessBoard.placePiece$3(piece, i, j);
+          chessBoard.activePiece = null;
+          return;
+        }
+      t1 = chessBoard.pieces;
+      if (!(i < t1.length))
+        return A.ioore(t1, i);
+      t1 = t1[i];
+      if (!(j < t1.length))
+        return A.ioore(t1, j);
+      piece = t1[j];
+      if (piece instanceof A.ChessPiece) {
+        chessBoard.clearHighlights$0();
+        options = piece.moveStrategy.move$2(chessBoard, piece);
+        A.print("checked for options: found " + options.length);
+        chessBoard.activePiece = piece;
+        chessBoard.highlightOptions$1(options);
+      }
+    },
     setupWhitePieces$0() {
       var queen, rookL, rookR, knightL, knightR, bishopL, bishopR, j, pawn, _this = this, _s1_ = "w",
         king = A.ChessPiece$(_s1_, "king", new A.KingMovement()),
@@ -4418,6 +4486,21 @@
       B.JSArray_methods.$indexSet(t2[i], j, piece);
       piece.i = i;
       piece.j = j;
+    },
+    canMoveHere$3(piece, i, j) {
+      var t2, t3,
+        t1 = this.board;
+      if (!(i < t1.length))
+        return A.ioore(t1, i);
+      t1 = t1[i];
+      if (!(j < t1.length))
+        return A.ioore(t1, j);
+      for (t1 = J.get$children$x(t1[j]), t1 = t1.get$iterator(t1), t2 = t1.$ti._precomputed1; t1.moveNext$0();) {
+        t3 = t1._current;
+        if (J.get$classes$x(t3 == null ? t2._as(t3) : t3).contains$1(0, "dot"))
+          return true;
+      }
+      return false;
     },
     clearHighlights$0() {
       var t1, t2, _i, highlight, t3;
@@ -4515,26 +4598,15 @@
   };
   A.ChessBoard_createTile_closure.prototype = {
     call$1($event) {
-      var t1, t2, t3, t4, piece, options;
+      var t1, t2, t3, t4;
       type$.Event._as($event);
-      t1 = this.i;
-      t2 = this.j;
-      A.print("Chess: move was made at board[" + t1 + "][" + t2 + "]");
-      t3 = this.$this.game.__Game_board_A;
-      t3 === $ && A.throwLateFieldNI("board");
-      t4 = t3.pieces;
-      if (!(t1 < t4.length))
-        return A.ioore(t4, t1);
-      t1 = t4[t1];
-      if (!(t2 < t1.length))
-        return A.ioore(t1, t2);
-      piece = t1[t2];
-      if (piece instanceof A.ChessPiece) {
-        t3.clearHighlights$0();
-        options = piece.moveStrategy.move$2(t3, piece);
-        A.print("checked for options: found " + options.length);
-        t3.highlightOptions$1(options);
-      }
+      t1 = this.$this.game;
+      t2 = this.i;
+      t3 = this.j;
+      A.print("Chess: move was made at board[" + t2 + "][" + t3 + "]");
+      t4 = t1.__Game_board_A;
+      t4 === $ && A.throwLateFieldNI("board");
+      t1.processMove$3(t4, t2, t3);
     },
     $signature: 6
   };
