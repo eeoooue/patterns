@@ -1,14 +1,27 @@
 import 'dart:html';
 import 'boardgames.dart';
 import 'strategy.dart';
+import 'decorators.dart';
+
+abstract class ChessBoard {
+  void removePiece(int i, int j);
+  void setupPieces(String playerColour);
+  GamePiece? getPiece(int i, int j);
+  void placePiece(GamePiece piece, int i, int j);
+  void addMarker(int i, int j, String marker);
+  void clearHighlights();
+}
 
 class ChessGame extends Game {
   int turnCount = 0;
+  late ChessBoard chessBoard;
+  ChessPiece? activePiece = null;
+  List<MoveOption> options = List.empty(growable: true);
 
   ChessGame(Element container) : super(container) {}
 
   GameBoard createBoard() {
-    return ChessBoard(this, container);
+    return ChequeredBoard(this, container);
   }
 
   String getTurnPlayer() {
@@ -18,111 +31,72 @@ class ChessGame extends Game {
   void submitMove(int i, int j) {
     print("Chess: move was made at board[${i}][${j}]");
 
-    var myBoard = board;
+    if (activePiece != null) {
+      if (validMove(i, j)) {
+        movePiece(activePiece!, i, j);
+        endTurn();
+        return;
+      }
+      activePiece = null;
+      chessBoard.clearHighlights();
+    }
 
-    if (myBoard is ChessBoard) {
-      processMove(myBoard, i, j);
+    dynamic piece = chessBoard.getPiece(i, j);
+
+    if (piece is ChessPiece && piece.colour == getTurnPlayer()) {
+      options = piece.move(chessBoard);
+      activePiece = piece;
     }
   }
 
-  void processMove(ChessBoard chessBoard, int i, int j) {
-    ChessPiece? piece;
+  void endTurn() {
+    chessBoard.clearHighlights();
+    turnCount += 1;
+  }
 
-    piece = chessBoard.activePiece;
-    if (piece != null) {
-      if (chessBoard.canMoveHere(piece, i, j)) {
-        chessBoard.movePiece(piece, i, j);
-        turnCount += 1;
-        return;
+  bool validMove(int i, int j) {
+    for (MoveOption move in options) {
+      if ((move.i == i) && (move.j == j)) {
+        return true;
       }
     }
+    return false;
+  }
 
-    chessBoard.clearHighlights();
-
-    piece = chessBoard.getPiece(i, j) as ChessPiece?;
-    if (piece is ChessPiece && piece.colour == getTurnPlayer()) {
-      List<MoveOption> options = piece.move(chessBoard);
-      print("checked for options: found ${options.length}");
-      chessBoard.setActivePiece(piece);
-      chessBoard.highlightOptions(options);
-    }
+  void movePiece(ChessPiece piece, int i, int j) {
+    chessBoard.removePiece(piece.i, piece.j);
+    chessBoard.removePiece(i, j);
+    chessBoard.placePiece(piece, i, j);
+    piece.hasMoved = true;
+    activePiece = null;
   }
 
   void setupPieces() {
-    setupWhitePieces();
-    setupBlackPieces();
-  }
+    var thing = board;
 
-  void setupWhitePieces() {
-    String colour = "w";
+    if (thing is ChequeredBoard) {
+      ChessBoard decoratedBoard = thing;
+      decoratedBoard = BoardWithPawns(decoratedBoard);
+      decoratedBoard = BoardWithBishops(decoratedBoard);
+      decoratedBoard = BoardWithKnights(decoratedBoard);
+      decoratedBoard = BoardWithRooks(decoratedBoard);
+      decoratedBoard = BoardWithQueens(decoratedBoard);
+      decoratedBoard = BoardWithKings(decoratedBoard);
 
-    ChessPiece king = ChessPiece(colour, "king", KingMovement());
-    board.placePiece(king, 7, 4);
+      decoratedBoard.setupPieces("w");
 
-    ChessPiece queen = ChessPiece(colour, "queen", QueenMovement());
-    board.placePiece(queen, 7, 3);
-
-    ChessPiece rookL = ChessPiece(colour, "rook", RookMovement());
-    board.placePiece(rookL, 7, 0);
-    ChessPiece rookR = ChessPiece(colour, "rook", RookMovement());
-    board.placePiece(rookR, 7, 7);
-
-    ChessPiece knightL = ChessPiece(colour, "knight", KnightMovement());
-    board.placePiece(knightL, 7, 1);
-    ChessPiece knightR = ChessPiece(colour, "knight", KnightMovement());
-    board.placePiece(knightR, 7, 6);
-
-    ChessPiece bishopL = ChessPiece(colour, "bishop", BishopMovement());
-    board.placePiece(bishopL, 7, 2);
-    ChessPiece bishopR = ChessPiece(colour, "bishop", BishopMovement());
-    board.placePiece(bishopR, 7, 5);
-
-    for (int j = 0; j < 8; j++) {
-      ChessPiece pawn = ChessPiece(colour, "pawn", PawnMovement());
-      board.placePiece(pawn, 6, j);
-    }
-  }
-
-  void setupBlackPieces() {
-    String colour = "b";
-
-    ChessPiece king = ChessPiece(colour, "king", KingMovement());
-    board.placePiece(king, 0, 4);
-
-    ChessPiece queen = ChessPiece(colour, "queen", QueenMovement());
-    board.placePiece(queen, 0, 3);
-
-    ChessPiece rookL = ChessPiece(colour, "rook", RookMovement());
-    board.placePiece(rookL, 0, 0);
-    ChessPiece rookR = ChessPiece(colour, "rook", RookMovement());
-    board.placePiece(rookR, 0, 7);
-
-    ChessPiece knightL = ChessPiece(colour, "knight", KnightMovement());
-    board.placePiece(knightL, 0, 1);
-    ChessPiece knightR = ChessPiece(colour, "knight", KnightMovement());
-    board.placePiece(knightR, 0, 6);
-
-    ChessPiece bishopL = ChessPiece(colour, "bishop", BishopMovement());
-    board.placePiece(bishopL, 0, 2);
-    ChessPiece bishopR = ChessPiece(colour, "bishop", BishopMovement());
-    board.placePiece(bishopR, 0, 5);
-
-    for (int j = 0; j < 8; j++) {
-      ChessPiece pawn = ChessPiece(colour, "pawn", PawnMovement());
-      board.placePiece(pawn, 1, j);
+      chessBoard = decoratedBoard;
     }
   }
 }
 
-class ChessBoard extends GameBoard {
+class ChequeredBoard extends GameBoard implements ChessBoard {
   List<List<Element>> board = List.empty(growable: true);
   List<List<GamePiece?>> pieces = List.empty(growable: true);
 
-  List<Element> highlights = List.empty(growable: true);
+  ChequeredBoard(Game game, Element container) : super(game, container) {}
 
-  ChessPiece? activePiece = null;
-
-  ChessBoard(Game game, Element container) : super(game, container) {}
+  void setupPieces(String playerColour) {}
 
   void placePiece(GamePiece piece, int i, int j) {
     Element tile = board[i][j];
@@ -132,52 +106,17 @@ class ChessBoard extends GameBoard {
     if (piece is ChessPiece) {
       piece.i = i;
       piece.j = j;
-    }
-  }
 
-  bool canMoveHere(GamePiece piece, int i, int j) {
-    Element destination = board[i][j];
-
-    for (Element div in destination.children) {
-      if (div.classes.contains("dot")) {
-        return true;
+      if (piece.initialRow == -1) {
+        piece.initialRow = i;
       }
     }
-
-    return false;
   }
 
   void removePiece(int i, int j) {
     Element tile = board[i][j];
     tile.children.clear();
     pieces[i][j] = null;
-  }
-
-  void setActivePiece(ChessPiece piece) {
-    activePiece = piece;
-  }
-
-  void movePiece(ChessPiece piece, int i, int j) {
-    clearHighlights();
-    removePiece(piece.i, piece.j);
-    placePiece(piece, i, j);
-    piece.hasMoved = true;
-    activePiece = null;
-  }
-
-  void clearHighlights() {
-    for (Element highlight in highlights) {
-      highlight.remove();
-    }
-  }
-
-  void highlightOptions(List<MoveOption> options) {
-    for (MoveOption move in options) {
-      Element highlight = createHighlight();
-      highlights.add(highlight);
-      Element tile = board[move.i][move.j];
-      tile.children.add(highlight);
-    }
   }
 
   Element createHighlight() {
@@ -245,11 +184,19 @@ class ChessBoard extends GameBoard {
     return false;
   }
 
-  bool tileIsEmpty(int i, int j) {
-    if (validCoordinates(i, j)) {
-      Element tile = board[i][j];
-      return tile.children.length == 0;
+  void clearHighlights() {
+    List<Element> elements = document.querySelectorAll(".marker");
+
+    for (Element highlight in elements) {
+      highlight.remove();
     }
-    return false;
+  }
+
+  void addMarker(int i, int j, String marker) {
+    Element tile = board[i][j];
+    Element mark = document.createElement("div");
+    mark.classes.add("marker");
+    mark.classes.add(marker);
+    tile.children.add(mark);
   }
 }

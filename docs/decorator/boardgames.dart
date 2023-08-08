@@ -39,8 +39,6 @@ abstract class GameBoard {
 
   void insertTiles();
 
-  bool tileIsEmpty(int i, int j);
-
   void placePiece(GamePiece piece, int i, int j);
 }
 
