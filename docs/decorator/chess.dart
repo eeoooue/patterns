@@ -31,10 +31,14 @@ class ChessGame extends Game {
   void submitMove(int i, int j) {
     print("Chess: move was made at board[${i}][${j}]");
 
-    if (activePiece != null && validMove(i, j)) {
-      movePiece(activePiece!, i, j);
-      endTurn();
-      return;
+    if (activePiece != null) {
+      if (validMove(i, j)) {
+        movePiece(activePiece!, i, j);
+        endTurn();
+        return;
+      }
+      activePiece = null;
+      chessBoard.clearHighlights();
     }
 
     dynamic piece = chessBoard.getPiece(i, j);
@@ -79,7 +83,7 @@ class ChessGame extends Game {
       decoratedBoard = BoardWithQueens(decoratedBoard);
       decoratedBoard = BoardWithKings(decoratedBoard);
 
-      decoratedBoard.setupPieces("w");
+      decoratedBoard.setupPieces("b");
 
       chessBoard = decoratedBoard;
     }

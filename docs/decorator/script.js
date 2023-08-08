@@ -2961,7 +2961,7 @@
         t1.insertTiles$0();
         game.__Game_board_A = t1;
         decoratedBoard = new A.BoardWithKings(new A.BoardWithQueens(new A.BoardWithRooks(new A.BoardWithKnights(new A.BoardWithBishops(new A.BoardWithPawns(t1))))));
-        decoratedBoard.setupPieces$1("w");
+        decoratedBoard.setupPieces$1("b");
         game.__ChessGame_chessBoard_A = decoratedBoard;
       }
     }
@@ -4405,19 +4405,25 @@
       var t1, t2, piece, options, _this = this,
         _s10_ = "chessBoard";
       A.print("Chess: move was made at board[" + i + "][" + j + "]");
-      if (_this.activePiece != null && _this.validMove$2(i, j)) {
-        t1 = _this.activePiece;
-        t1.toString;
-        t2 = _this.__ChessGame_chessBoard_A;
-        t2 === $ && A.throwLateFieldNI(_s10_);
-        t2.base.removePiece$2(t1.i, t1.j);
-        _this.__ChessGame_chessBoard_A.base.removePiece$2(i, j);
-        _this.__ChessGame_chessBoard_A.base.placePiece$3(t1, i, j);
-        t1.hasMoved = true;
+      if (_this.activePiece != null) {
+        if (_this.validMove$2(i, j)) {
+          t1 = _this.activePiece;
+          t1.toString;
+          t2 = _this.__ChessGame_chessBoard_A;
+          t2 === $ && A.throwLateFieldNI(_s10_);
+          t2.base.removePiece$2(t1.i, t1.j);
+          _this.__ChessGame_chessBoard_A.base.removePiece$2(i, j);
+          _this.__ChessGame_chessBoard_A.base.placePiece$3(t1, i, j);
+          t1.hasMoved = true;
+          _this.activePiece = null;
+          _this.__ChessGame_chessBoard_A.base.clearHighlights$0();
+          ++_this.turnCount;
+          return;
+        }
         _this.activePiece = null;
-        _this.__ChessGame_chessBoard_A.base.clearHighlights$0();
-        ++_this.turnCount;
-        return;
+        t1 = _this.__ChessGame_chessBoard_A;
+        t1 === $ && A.throwLateFieldNI(_s10_);
+        t1.base.clearHighlights$0();
       }
       t1 = _this.__ChessGame_chessBoard_A;
       t1 === $ && A.throwLateFieldNI(_s10_);
