@@ -90,6 +90,14 @@ class PawnMovement implements MovementStrategy {
       }
     }
 
+    MoveOption capEast = MoveOption(piece.i + 1, piece.j + 1);
+    MoveOption capWest = MoveOption(piece.i + 1, piece.j - 1);
+    for (MoveOption cap in List.from({capEast, capWest})) {
+      if (piece.canCapture(board, cap.i, cap.j)) {
+        options.add(cap);
+      }
+    }
+
     return options;
   }
 
@@ -107,6 +115,13 @@ class PawnMovement implements MovementStrategy {
       }
     }
 
+    MoveOption capEast = MoveOption(piece.i - 1, piece.j + 1);
+    MoveOption capWest = MoveOption(piece.i - 1, piece.j - 1);
+    for (MoveOption cap in List.from({capEast, capWest})) {
+      if (piece.canCapture(board, cap.i, cap.j)) {
+        options.add(cap);
+      }
+    }
     return options;
   }
 }
@@ -162,6 +177,11 @@ class BishopMovement implements MovementStrategy {
       j += dj;
       MoveOption move = MoveOption(i, j);
 
+      if (piece.canCapture(board, i, j)) {
+        options.add(move);
+        return options;
+      }
+
       if (piece.canMove(board, i, j)) {
         options.add(move);
       } else {
@@ -207,6 +227,11 @@ class RookMovement implements MovementStrategy {
       j += dj;
       MoveOption move = MoveOption(i, j);
 
+      if (piece.canCapture(board, i, j)) {
+        options.add(move);
+        return options;
+      }
+
       if (piece.canMove(board, i, j)) {
         options.add(move);
       } else {
@@ -240,6 +265,9 @@ class KingMovement implements MovementStrategy {
     for (int a in components) {
       for (int b in components) {
         MoveOption move = MoveOption(piece.i + a, piece.j + b);
+        if (piece.canCapture(board, move.i, move.j)) {
+          options.add(move);
+        }
         if (piece.canMove(board, move.i, move.j)) {
           options.add(move);
         }
