@@ -4729,38 +4729,59 @@
   A.MoveOption.prototype = {};
   A.PawnMovement.prototype = {
     move$2(board, piece) {
-      var t1, options, t2;
       A.print("the pawn's initial row = " + piece.initialRow);
-      t1 = type$.MoveOption;
-      if (piece.initialRow === 6) {
-        options = J.JSArray_JSArray$growable(0, t1);
-        t1 = piece.i - 1;
-        t2 = piece.j;
-        if (piece.canMove$3(board, t1, t2)) {
-          B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
-          if (!piece.hasMoved) {
-            t1 = piece.i - 2;
-            t2 = piece.j;
-            if (piece.canMove$3(board, t1, t2))
-              B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
-          }
+      if (piece.initialRow === 6)
+        return this.moveNorth$2(board, piece);
+      else
+        return this.moveSouth$2(board, piece);
+    },
+    moveSouth$2(board, piece) {
+      var _i, cap,
+        t1 = type$.MoveOption,
+        options = J.JSArray_JSArray$growable(0, t1),
+        t2 = piece.i + 1,
+        t3 = piece.j;
+      if (piece.canMove$3(board, t2, t3)) {
+        B.JSArray_methods.add$1(options, new A.MoveOption(t2, t3));
+        if (!piece.hasMoved) {
+          t2 = piece.i + 2;
+          t3 = piece.j;
+          if (piece.canMove$3(board, t2, t3))
+            B.JSArray_methods.add$1(options, new A.MoveOption(t2, t3));
         }
-        return options;
-      } else {
-        options = J.JSArray_JSArray$growable(0, t1);
-        t1 = piece.i + 1;
-        t2 = piece.j;
-        if (piece.canMove$3(board, t1, t2)) {
-          B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
-          if (!piece.hasMoved) {
-            t1 = piece.i + 2;
-            t2 = piece.j;
-            if (piece.canMove$3(board, t1, t2))
-              B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
-          }
-        }
-        return options;
       }
+      t2 = piece.i + 1;
+      t3 = piece.j;
+      for (t1 = A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal([new A.MoveOption(t2, t3 + 1), new A.MoveOption(t2, t3 - 1)], type$.dynamic), true, t1), t2 = t1.length, _i = 0; _i < t2; ++_i) {
+        cap = t1[_i];
+        if (piece.canCapture$3(board, cap.i, cap.j))
+          B.JSArray_methods.add$1(options, cap);
+      }
+      return options;
+    },
+    moveNorth$2(board, piece) {
+      var _i, cap,
+        t1 = type$.MoveOption,
+        options = J.JSArray_JSArray$growable(0, t1),
+        t2 = piece.i - 1,
+        t3 = piece.j;
+      if (piece.canMove$3(board, t2, t3)) {
+        B.JSArray_methods.add$1(options, new A.MoveOption(t2, t3));
+        if (!piece.hasMoved) {
+          t2 = piece.i - 2;
+          t3 = piece.j;
+          if (piece.canMove$3(board, t2, t3))
+            B.JSArray_methods.add$1(options, new A.MoveOption(t2, t3));
+        }
+      }
+      t2 = piece.i - 1;
+      t3 = piece.j;
+      for (t1 = A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal([new A.MoveOption(t2, t3 + 1), new A.MoveOption(t2, t3 - 1)], type$.dynamic), true, t1), t2 = t1.length, _i = 0; _i < t2; ++_i) {
+        cap = t1[_i];
+        if (piece.canCapture$3(board, cap.i, cap.j))
+          B.JSArray_methods.add$1(options, cap);
+      }
+      return options;
     },
     $isMovementStrategy: 1
   };

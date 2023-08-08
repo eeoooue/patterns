@@ -90,6 +90,14 @@ class PawnMovement implements MovementStrategy {
       }
     }
 
+    MoveOption capEast = MoveOption(piece.i + 1, piece.j + 1);
+    MoveOption capWest = MoveOption(piece.i + 1, piece.j - 1);
+    for (MoveOption cap in List.from({capEast, capWest})) {
+      if (piece.canCapture(board, cap.i, cap.j)) {
+        options.add(cap);
+      }
+    }
+
     return options;
   }
 
@@ -107,6 +115,13 @@ class PawnMovement implements MovementStrategy {
       }
     }
 
+    MoveOption capEast = MoveOption(piece.i - 1, piece.j + 1);
+    MoveOption capWest = MoveOption(piece.i - 1, piece.j - 1);
+    for (MoveOption cap in List.from({capEast, capWest})) {
+      if (piece.canCapture(board, cap.i, cap.j)) {
+        options.add(cap);
+      }
+    }
     return options;
   }
 }
