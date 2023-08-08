@@ -22,6 +22,7 @@ class ChessGame extends Game {
 
     if (myBoard is ChessBoard) {
       processMove(myBoard, i, j);
+      notify();
     }
   }
 
