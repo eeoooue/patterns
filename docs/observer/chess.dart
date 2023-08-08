@@ -16,7 +16,7 @@ class ChessGame extends Game {
 
     if (myBoard is ChessBoard) {
       GamePiece? piece = myBoard.getPiece(i, j);
-      if (piece is MimicPiece) {
+      if (piece is ChessPiece) {
         List<MoveOption> options = piece.move(myBoard);
         print("checked for options: found ${options.length}");
         myBoard.highlightOptions(options);
@@ -133,11 +133,5 @@ class ChessBoard extends GameBoard {
       return tile.children.length == 0;
     }
     return false;
-  }
-}
-
-class ChessPiece extends GamePiece {
-  ChessPiece(String name, String colour) {
-    setSource("./assets/chess/${name}_${colour}.png");
   }
 }

@@ -1,6 +1,28 @@
 import 'boardgames.dart';
 import 'chess.dart';
 
+class ChessPiece extends GamePiece {
+  int i = 0;
+  int j = 0;
+  MovementStrategy moveStrategy;
+  String colour;
+  String name;
+  bool selected = false;
+
+  ChessPiece(this.colour, this.name, this.moveStrategy) {
+    setSource("./assets/chess/${name}_${colour}.png");
+  }
+
+  void setPosition(int iInput, int jInput) {
+    i = iInput;
+    j = jInput;
+  }
+
+  List<MoveOption> move(ChessBoard board) {
+    return moveStrategy.move(board, i, j);
+  }
+}
+
 class MimicPiece extends GamePiece {
   int i;
   int j;
