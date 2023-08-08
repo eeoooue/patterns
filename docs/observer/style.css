@@ -77,6 +77,10 @@ body {
     display: flex;
 }
 
+.chess-tile:hover {
+    cursor: pointer;
+}
+
 .chess-tile.dark {
     background-color: #735e47;
 }
