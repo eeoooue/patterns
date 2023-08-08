@@ -2849,6 +2849,45 @@
       this.i = t1;
       this.j = t2;
     },
+    ChessPiece: function ChessPiece(t0, t1, t2) {
+      var _ = this;
+      _.j = _.i = 0;
+      _.moveStrategy = t0;
+      _.colour = t1;
+      _.name = t2;
+      _.__GamePiece_element_A = _.__GamePiece_src_A = $;
+    },
+    MoveOption: function MoveOption(t0, t1) {
+      this.i = t0;
+      this.j = t1;
+    },
+    BishopMovement: function BishopMovement() {
+    },
+    RookMovement: function RookMovement() {
+    },
+    QueenMovement: function QueenMovement() {
+    },
+    printString(string) {
+      if (typeof dartPrint == "function") {
+        dartPrint(string);
+        return;
+      }
+      if (typeof console == "object" && typeof console.log != "undefined") {
+        console.log(string);
+        return;
+      }
+      if (typeof print == "function") {
+        print(string);
+        return;
+      }
+      throw "Unable to print message: " + String(string);
+    },
+    throwLateFieldNI(fieldName) {
+      return A.throwExpression(A.LateError$fieldNI(fieldName));
+    },
+    throwLateFieldADI(fieldName) {
+      return A.throwExpression(new A.LateError("Field '" + fieldName + "' has been assigned during initialization."));
+    },
     main() {
       var game, t3, t4, piece, img,
         _s26_ = "./assets/chess/queen_w.png",
@@ -2891,48 +2930,6 @@
         piece.i = 4;
         piece.j = 3;
       }
-    },
-    StrategyDemo: function StrategyDemo(t0) {
-      this.game = t0;
-    },
-    ChessPiece: function ChessPiece(t0, t1, t2) {
-      var _ = this;
-      _.j = _.i = 0;
-      _.moveStrategy = t0;
-      _.colour = t1;
-      _.name = t2;
-      _.__GamePiece_element_A = _.__GamePiece_src_A = $;
-    },
-    MoveOption: function MoveOption(t0, t1) {
-      this.i = t0;
-      this.j = t1;
-    },
-    BishopMovement: function BishopMovement() {
-    },
-    RookMovement: function RookMovement() {
-    },
-    QueenMovement: function QueenMovement() {
-    },
-    printString(string) {
-      if (typeof dartPrint == "function") {
-        dartPrint(string);
-        return;
-      }
-      if (typeof console == "object" && typeof console.log != "undefined") {
-        console.log(string);
-        return;
-      }
-      if (typeof print == "function") {
-        print(string);
-        return;
-      }
-      throw "Unable to print message: " + String(string);
-    },
-    throwLateFieldNI(fieldName) {
-      return A.throwExpression(A.LateError$fieldNI(fieldName));
-    },
-    throwLateFieldADI(fieldName) {
-      return A.throwExpression(new A.LateError("Field '" + fieldName + "' has been assigned during initialization."));
     }
   },
   J = {
@@ -4426,7 +4423,6 @@
     },
     $signature: 6
   };
-  A.StrategyDemo.prototype = {};
   A.ChessPiece.prototype = {};
   A.MoveOption.prototype = {};
   A.BishopMovement.prototype = {
@@ -4508,7 +4504,7 @@
       _inherit = hunkHelpers.inherit,
       _inheritMany = hunkHelpers.inheritMany;
     _inherit(A.Object, null);
-    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.Game, A.GameBoard, A.GamePiece, A.StrategyDemo, A.MoveOption, A.BishopMovement, A.RookMovement, A.QueenMovement]);
+    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.Game, A.GameBoard, A.GamePiece, A.MoveOption, A.BishopMovement, A.RookMovement, A.QueenMovement]);
     _inheritMany(J.Interceptor, [J.JSBool, J.JSNull, J.JavaScriptObject, J.JSNumber, J.JSString]);
     _inheritMany(J.JavaScriptObject, [J.LegacyJavaScriptObject, J.JSArray, A.EventTarget, A.DomException, A.DomTokenList, A.Event, A._HtmlCollection_JavaScriptObject_ListMixin, A._NodeList_JavaScriptObject_ListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin]);
     _inheritMany(J.LegacyJavaScriptObject, [J.PlainJavaScriptObject, J.UnknownJavaScriptObject, J.JavaScriptFunction]);

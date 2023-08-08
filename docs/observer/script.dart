@@ -1,19 +1,11 @@
 import 'dart:html';
 import 'chess.dart';
-import 'strategy.dart';
 
 class StrategyDemo {
   ChessGame game;
   ChessBoard board;
 
-  StrategyDemo(this.game, this.board) {
-    placeQueen();
-  }
-
-  void placeQueen() {
-    ChessPiece piece = ChessPiece("w", "queen", QueenMovement());
-    game.board.placePiece(piece, 4, 3);
-  }
+  StrategyDemo(this.game, this.board) {}
 }
 
 void main() {

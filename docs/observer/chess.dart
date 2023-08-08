@@ -24,7 +24,14 @@ class ChessGame extends Game {
     }
   }
 
-  void setupPieces() {}
+  void setupPieces() {
+    placeQueen();
+  }
+
+  void placeQueen() {
+    ChessPiece piece = ChessPiece("w", "queen", QueenMovement());
+    board.placePiece(piece, 4, 3);
+  }
 }
 
 class ChessBoard extends GameBoard {
