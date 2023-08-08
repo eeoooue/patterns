@@ -106,6 +106,10 @@ class ChequeredBoard extends GameBoard implements ChessBoard {
     if (piece is ChessPiece) {
       piece.i = i;
       piece.j = j;
+
+      if (piece.initialRow == -1) {
+        piece.initialRow == i;
+      }
     }
   }
 

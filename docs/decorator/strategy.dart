@@ -9,6 +9,7 @@ class ChessPiece extends GamePiece {
   String name;
   bool selected = false;
   bool hasMoved = false;
+  int initialRow = -1;
 
   ChessPiece(this.colour, this.name, this.moveStrategy) {
     setSource("./assets/chess/${name}_${colour}.png");
