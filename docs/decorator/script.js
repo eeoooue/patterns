@@ -2909,6 +2909,7 @@
       _.colour = t1;
       _.name = t2;
       _.hasMoved = false;
+      _.initialRow = -1;
       _.__GamePiece_element_A = _.__GamePiece_src_A = $;
     },
     MoveOption: function MoveOption(t0, t1) {
@@ -4475,6 +4476,8 @@
       B.JSArray_methods.$indexSet(t2[i], j, piece);
       piece.i = i;
       piece.j = j;
+      if (piece.initialRow === -1)
+        piece.initialRow = i;
     },
     removePiece$2(i, j) {
       var t1 = this.board;
@@ -4726,16 +4729,17 @@
   A.MoveOption.prototype = {};
   A.PawnMovement.prototype = {
     move$2(board, piece) {
-      var options, t2,
-        t1 = type$.MoveOption;
-      if (piece.colour === "b") {
+      var t1, options, t2;
+      A.print("the pawn's initial row = " + piece.initialRow);
+      t1 = type$.MoveOption;
+      if (piece.initialRow === 6) {
         options = J.JSArray_JSArray$growable(0, t1);
-        t1 = piece.i + 1;
+        t1 = piece.i - 1;
         t2 = piece.j;
         if (piece.canMove$3(board, t1, t2)) {
           B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
           if (!piece.hasMoved) {
-            t1 = piece.i + 2;
+            t1 = piece.i - 2;
             t2 = piece.j;
             if (piece.canMove$3(board, t1, t2))
               B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
@@ -4744,12 +4748,12 @@
         return options;
       } else {
         options = J.JSArray_JSArray$growable(0, t1);
-        t1 = piece.i - 1;
+        t1 = piece.i + 1;
         t2 = piece.j;
         if (piece.canMove$3(board, t1, t2)) {
           B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
           if (!piece.hasMoved) {
-            t1 = piece.i - 2;
+            t1 = piece.i + 2;
             t2 = piece.j;
             if (piece.canMove$3(board, t1, t2))
               B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));

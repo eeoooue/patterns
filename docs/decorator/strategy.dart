@@ -68,14 +68,15 @@ abstract class MovementStrategy {
 
 class PawnMovement implements MovementStrategy {
   List<MoveOption> move(ChessBoard board, ChessPiece piece) {
-    if (piece.colour == "b") {
-      return blackMovement(board, piece);
+    print("the pawn's initial row = ${piece.initialRow}");
+    if (piece.initialRow == 6) {
+      return moveNorth(board, piece);
     } else {
-      return whiteMovement(board, piece);
+      return moveSouth(board, piece);
     }
   }
 
-  List<MoveOption> blackMovement(ChessBoard board, ChessPiece piece) {
+  List<MoveOption> moveSouth(ChessBoard board, ChessPiece piece) {
     List<MoveOption> options = List.empty(growable: true);
 
     MoveOption move = MoveOption(piece.i + 1, piece.j);
@@ -92,7 +93,7 @@ class PawnMovement implements MovementStrategy {
     return options;
   }
 
-  List<MoveOption> whiteMovement(ChessBoard board, ChessPiece piece) {
+  List<MoveOption> moveNorth(ChessBoard board, ChessPiece piece) {
     List<MoveOption> options = List.empty(growable: true);
 
     MoveOption move = MoveOption(piece.i - 1, piece.j);
