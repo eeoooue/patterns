@@ -22,7 +22,6 @@ class ChessGame extends Game {
 
     if (myBoard is ChessBoard) {
       processMove(myBoard, i, j);
-      notify();
     }
   }
 
@@ -34,6 +33,7 @@ class ChessGame extends Game {
       if (chessBoard.canMoveHere(piece, i, j)) {
         chessBoard.movePiece(piece, i, j);
         turnCount += 1;
+        notify();
         return;
       }
     }
