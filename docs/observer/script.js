@@ -4416,7 +4416,7 @@
         return A.ioore(t1, t2);
       piece = t1[t2];
       if (piece instanceof A.ChessPiece) {
-        options = piece.moveStrategy.move$3(t3, 0, 0);
+        options = piece.moveStrategy.move$2(t3, piece);
         A.print("checked for options: found " + options.length);
         t3.highlightOptions$1(options);
       }
@@ -4427,14 +4427,14 @@
   A.ChessPiece.prototype = {};
   A.MoveOption.prototype = {};
   A.BishopMovement.prototype = {
-    move$3(board, i, j) {
+    move$2(board, piece) {
       var t1, t2, _i, a, _i0, t3, t4, _i1,
         options = J.JSArray_JSArray$growable(0, type$.MoveOption),
         components = A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal([1, -1], type$.dynamic), true, type$.int);
       for (t1 = components.length, t2 = t1, _i = 0; _i < t2; t3 === t1 || (0, A.throwConcurrentModificationError)(components), ++_i, t2 = t3) {
         a = components[_i];
         for (_i0 = 0; t3 = components.length, _i0 < t3; components.length === t2 || (0, A.throwConcurrentModificationError)(components), ++_i0)
-          for (t3 = this.exploreDiagonal$5(board, i, j, a, components[_i0]), t4 = t3.length, _i1 = 0; _i1 < t3.length; t3.length === t4 || (0, A.throwConcurrentModificationError)(t3), ++_i1)
+          for (t3 = this.exploreDiagonal$5(board, 0, 0, a, components[_i0]), t4 = t3.length, _i1 = 0; _i1 < t3.length; t3.length === t4 || (0, A.throwConcurrentModificationError)(t3), ++_i1)
             B.JSArray_methods.add$1(options, t3[_i1]);
       }
       return options;
@@ -4453,16 +4453,16 @@
     $isMovementStrategy: 1
   };
   A.RookMovement.prototype = {
-    move$3(board, i, j) {
+    move$2(board, piece) {
       var t1, t2, _i, _this = this,
         options = J.JSArray_JSArray$growable(0, type$.MoveOption);
-      for (t1 = _this.exploreImpulse$5(board, i, j, 0, 1), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+      for (t1 = _this.exploreImpulse$5(board, 0, 0, 0, 1), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         B.JSArray_methods.add$1(options, t1[_i]);
-      for (t1 = _this.exploreImpulse$5(board, i, j, 0, -1), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+      for (t1 = _this.exploreImpulse$5(board, 0, 0, 0, -1), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         B.JSArray_methods.add$1(options, t1[_i]);
-      for (t1 = _this.exploreImpulse$5(board, i, j, 1, 0), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+      for (t1 = _this.exploreImpulse$5(board, 0, 0, 1, 0), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         B.JSArray_methods.add$1(options, t1[_i]);
-      for (t1 = _this.exploreImpulse$5(board, i, j, -1, 0), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+      for (t1 = _this.exploreImpulse$5(board, 0, 0, -1, 0), t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         B.JSArray_methods.add$1(options, t1[_i]);
       return options;
     },
@@ -4480,13 +4480,13 @@
     $isMovementStrategy: 1
   };
   A.QueenMovement.prototype = {
-    move$3(board, i, j) {
+    move$2(board, piece) {
       var t2, _i, t3, t4, _i0,
         options = J.JSArray_JSArray$growable(0, type$.MoveOption),
         t1 = type$.dynamic,
         pair = A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal([new A.RookMovement(), new A.BishopMovement()], t1), true, t1);
       for (t1 = pair.length, t2 = type$.MovementStrategy, _i = 0; _i < pair.length; pair.length === t1 || (0, A.throwConcurrentModificationError)(pair), ++_i)
-        for (t3 = t2._as(pair[_i]).move$3(board, i, j), t4 = t3.length, _i0 = 0; _i0 < t3.length; t3.length === t4 || (0, A.throwConcurrentModificationError)(t3), ++_i0)
+        for (t3 = t2._as(pair[_i]).move$2(board, piece), t4 = t3.length, _i0 = 0; _i0 < t3.length; t3.length === t4 || (0, A.throwConcurrentModificationError)(t3), ++_i0)
           B.JSArray_methods.add$1(options, t3[_i0]);
       return options;
     },

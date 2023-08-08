@@ -19,7 +19,7 @@ class ChessPiece extends GamePiece {
   }
 
   List<MoveOption> move(ChessBoard board) {
-    return moveStrategy.move(board, i, j);
+    return moveStrategy.move(board, this);
   }
 }
 
@@ -31,14 +31,14 @@ class MoveOption {
 }
 
 abstract class MovementStrategy {
-  List<MoveOption> move(ChessBoard board, int i, int j);
+  List<MoveOption> move(ChessBoard board, ChessPiece piece);
 }
 
 class PawnMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, int i, int j) {
+  List<MoveOption> move(ChessBoard board, ChessPiece piece) {
     List<MoveOption> options = List.empty(growable: true);
 
-    MoveOption move = MoveOption(i - 1, j);
+    MoveOption move = MoveOption(piece.i - 1, piece.j);
     if (board.tileIsEmpty(move.i, move.j)) {
       options.add(move);
     }
@@ -48,7 +48,7 @@ class PawnMovement implements MovementStrategy {
 }
 
 class KnightMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, int i, int j) {
+  List<MoveOption> move(ChessBoard board, ChessPiece piece) {
     List<MoveOption> options = List.empty(growable: true);
 
     List<int> components = List.from({1, 2, -2, -1});
@@ -56,7 +56,7 @@ class KnightMovement implements MovementStrategy {
     for (int a in components) {
       for (int b in components) {
         if (a.abs() + b.abs() == 3) {
-          MoveOption move = MoveOption(i + a, j + b);
+          MoveOption move = MoveOption(piece.i + a, piece.j + b);
           if (board.tileIsEmpty(move.i, move.j)) {
             options.add(move);
           }
@@ -69,14 +69,15 @@ class KnightMovement implements MovementStrategy {
 }
 
 class BishopMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, int i, int j) {
+  List<MoveOption> move(ChessBoard board, ChessPiece piece) {
     List<MoveOption> options = List.empty(growable: true);
 
     List<int> components = List.from({1, -1});
 
     for (int a in components) {
       for (int b in components) {
-        for (MoveOption move in exploreDiagonal(board, i, j, a, b)) {
+        for (MoveOption move
+            in exploreDiagonal(board, piece.i, piece.j, a, b)) {
           options.add(move);
         }
       }
@@ -104,22 +105,22 @@ class BishopMovement implements MovementStrategy {
 }
 
 class RookMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, int i, int j) {
+  List<MoveOption> move(ChessBoard board, ChessPiece piece) {
     List<MoveOption> options = List.empty(growable: true);
 
-    for (MoveOption move in exploreImpulse(board, i, j, 0, 1)) {
+    for (MoveOption move in exploreImpulse(board, piece.i, piece.j, 0, 1)) {
       options.add(move);
     }
 
-    for (MoveOption move in exploreImpulse(board, i, j, 0, -1)) {
+    for (MoveOption move in exploreImpulse(board, piece.i, piece.j, 0, -1)) {
       options.add(move);
     }
 
-    for (MoveOption move in exploreImpulse(board, i, j, 1, 0)) {
+    for (MoveOption move in exploreImpulse(board, piece.i, piece.j, 1, 0)) {
       options.add(move);
     }
 
-    for (MoveOption move in exploreImpulse(board, i, j, -1, 0)) {
+    for (MoveOption move in exploreImpulse(board, piece.i, piece.j, -1, 0)) {
       options.add(move);
     }
 
@@ -145,12 +146,12 @@ class RookMovement implements MovementStrategy {
 }
 
 class QueenMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, int i, int j) {
+  List<MoveOption> move(ChessBoard board, ChessPiece piece) {
     List<MoveOption> options = List.empty(growable: true);
 
     var pair = List.from({RookMovement(), BishopMovement()});
     for (MovementStrategy strategy in pair) {
-      for (MoveOption move in strategy.move(board, i, j)) {
+      for (MoveOption move in strategy.move(board, piece)) {
         options.add(move);
       }
     }
@@ -160,14 +161,14 @@ class QueenMovement implements MovementStrategy {
 }
 
 class KingMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, int i, int j) {
+  List<MoveOption> move(ChessBoard board, ChessPiece piece) {
     List<MoveOption> options = List.empty(growable: true);
 
     List<int> components = List.from({-1, 0, 1});
 
     for (int a in components) {
       for (int b in components) {
-        MoveOption move = MoveOption(i + a, j + b);
+        MoveOption move = MoveOption(piece.i + a, piece.j + b);
         if (board.tileIsEmpty(move.i, move.j)) {
           options.add(move);
         }
