@@ -15,6 +15,7 @@ class ChessGame extends Game {
   int turnCount = 0;
   late ChessBoard chessBoard;
   ChessPiece? activePiece = null;
+  List<MoveOption> options = List.empty(growable: true);
 
   ChessGame(Element container) : super(container) {}
 
@@ -29,15 +30,36 @@ class ChessGame extends Game {
   void submitMove(int i, int j) {
     print("Chess: move was made at board[${i}][${j}]");
 
+    if (activePiece != null && validMove(i, j)) {
+      movePiece(activePiece!, i, j);
+      endTurn();
+      return;
+    }
+
     dynamic piece = chessBoard.getPiece(i, j);
 
-    if (piece is ChessPiece) {
-      piece.move(chessBoard);
+    if (piece is ChessPiece && piece.colour == getTurnPlayer()) {
+      options = piece.move(chessBoard);
+      activePiece = piece;
     }
+  }
+
+  void endTurn() {
+    turnCount += 1;
+  }
+
+  bool validMove(int i, int j) {
+    for (MoveOption move in options) {
+      if ((move.i == i) && (move.j == j)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   void movePiece(ChessPiece piece, int i, int j) {
     chessBoard.removePiece(piece.i, piece.j);
+    chessBoard.removePiece(i, j);
     chessBoard.placePiece(piece, i, j);
     piece.hasMoved = true;
     activePiece = null;

@@ -2838,10 +2838,14 @@
     },
     GamePiece: function GamePiece() {
     },
-    ChessGame: function ChessGame(t0) {
-      this.__ChessGame_chessBoard_A = $;
-      this.container = t0;
-      this.__Game_board_A = $;
+    ChessGame: function ChessGame(t0, t1) {
+      var _ = this;
+      _.turnCount = 0;
+      _.__ChessGame_chessBoard_A = $;
+      _.activePiece = null;
+      _.options = t0;
+      _.container = t1;
+      _.__Game_board_A = $;
     },
     ChequeredBoard: function ChequeredBoard(t0, t1, t2, t3) {
       var _ = this;
@@ -2894,6 +2898,7 @@
       _.moveStrategy = t0;
       _.colour = t1;
       _.name = t2;
+      _.hasMoved = false;
       _.__GamePiece_element_A = _.__GamePiece_src_A = $;
     },
     MoveOption: function MoveOption(t0, t1) {
@@ -2934,10 +2939,11 @@
       return A.throwExpression(new A.LateError("Field '" + fieldName + "' has been assigned during initialization."));
     },
     main() {
-      var game, t1, t2, decoratedBoard,
+      var t1, game, t2, decoratedBoard,
         gameContainer = document.getElementById("game-container");
       if (type$.Element._is(gameContainer)) {
-        game = new A.ChessGame(gameContainer);
+        t1 = J.JSArray_JSArray$growable(0, type$.MoveOption);
+        game = new A.ChessGame(t1, gameContainer);
         J.get$children$x(gameContainer).clear$0(0);
         t1 = J.JSArray_JSArray$growable(0, type$.List_Element);
         t2 = J.JSArray_JSArray$growable(0, type$.List_nullable_GamePiece);
@@ -3394,6 +3400,14 @@
       factor = Math.pow(2, floorLog2);
       scaled = absolute < 1 ? absolute / factor : factor / absolute;
       return ((scaled * 9007199254740992 | 0) + (scaled * 3542243181176521 | 0)) * 599197 + floorLog2 * 1259 & 536870911;
+    },
+    $mod(receiver, other) {
+      var result = receiver % other;
+      if (result === 0)
+        return 0;
+      if (result > 0)
+        return result;
+      return result + other;
     },
     get$runtimeType(receiver) {
       return A.createRuntimeType(type$.num);
@@ -4365,7 +4379,53 @@
       }
     }
   };
-  A.ChessGame.prototype = {};
+  A.ChessGame.prototype = {
+    submitMove$2(i, j) {
+      var t1, t2, piece, options, _this = this,
+        _s10_ = "chessBoard";
+      A.print("Chess: move was made at board[" + i + "][" + j + "]");
+      if (_this.activePiece != null && _this.validMove$2(i, j)) {
+        t1 = _this.activePiece;
+        t1.toString;
+        t2 = _this.__ChessGame_chessBoard_A;
+        t2 === $ && A.throwLateFieldNI(_s10_);
+        t2.base.removePiece$2(t1.i, t1.j);
+        _this.__ChessGame_chessBoard_A.base.removePiece$2(i, j);
+        _this.__ChessGame_chessBoard_A.base.placePiece$3(t1, i, j);
+        t1.hasMoved = true;
+        _this.activePiece = null;
+        ++_this.turnCount;
+        return;
+      }
+      t1 = _this.__ChessGame_chessBoard_A;
+      t1 === $ && A.throwLateFieldNI(_s10_);
+      piece = t1.base.getPiece$2(i, j);
+      if (piece instanceof A.ChessPiece) {
+        t1 = piece.colour;
+        t1 = t1 === (B.JSInt_methods.$mod(_this.turnCount, 2) === 0 ? "w" : "b");
+      } else
+        t1 = false;
+      if (t1) {
+        t1 = _this.__ChessGame_chessBoard_A;
+        options = piece.moveStrategy.move$2(t1, piece);
+        A.print("the piece has " + options.length + " options");
+        _this.set$options(0, options);
+        _this.activePiece = piece;
+      }
+    },
+    validMove$2(i, j) {
+      var t1, t2, _i, move;
+      for (t1 = this.options, t2 = t1.length, _i = 0; _i < t2; ++_i) {
+        move = t1[_i];
+        if (move.i === i && move.j === j)
+          return true;
+      }
+      return false;
+    },
+    set$options(_, options) {
+      this.options = type$.List_MoveOption._as(options);
+    }
+  };
   A.ChequeredBoard.prototype = {
     setupPieces$1(playerColour) {
     },
@@ -4387,6 +4447,19 @@
       B.JSArray_methods.$indexSet(t2[i], j, piece);
       piece.i = i;
       piece.j = j;
+    },
+    removePiece$2(i, j) {
+      var t1 = this.board;
+      if (!(i < t1.length))
+        return A.ioore(t1, i);
+      t1 = t1[i];
+      if (!(j < t1.length))
+        return A.ioore(t1, j);
+      J.get$children$x(t1[j]).clear$0(0);
+      t1 = this.pieces;
+      if (!(i < t1.length))
+        return A.ioore(t1, i);
+      B.JSArray_methods.$indexSet(t1[i], j, null);
     },
     getPiece$2(i, j) {
       var t1 = this.pieces;
@@ -4467,19 +4540,8 @@
   };
   A.ChequeredBoard_createTile_closure.prototype = {
     call$1($event) {
-      var t1, t2, t3, t4, piece;
       type$.Event._as($event);
-      t1 = this.$this.game;
-      t2 = this.i;
-      t3 = this.j;
-      A.print("Chess: move was made at board[" + t2 + "][" + t3 + "]");
-      t4 = t1.__ChessGame_chessBoard_A;
-      t4 === $ && A.throwLateFieldNI("chessBoard");
-      piece = t4.base.getPiece$2(t2, t3);
-      if (piece instanceof A.ChessPiece) {
-        t1 = t1.__ChessGame_chessBoard_A;
-        A.print("the piece has " + piece.moveStrategy.move$2(t1, piece).length + " options");
-      }
+      this.$this.game.submitMove$2(this.i, this.j);
     },
     $signature: 6
   };
@@ -4489,6 +4551,9 @@
       this.setupFriendlyPieces$1(playerColour);
       this.setupEnemyPieces$1(enemyColour);
       this.base.setupPieces$1(playerColour);
+    },
+    removePiece$2(i, j) {
+      this.base.removePiece$2(i, j);
     },
     placePiece$3(piece, i, j) {
       this.base.placePiece$3(piece, i, j);
@@ -4626,10 +4691,12 @@
         t3 = board.base;
         if (t3.tileIsEmpty$2(t1, t2)) {
           B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
-          t1 = piece.i + 2;
-          t2 = piece.j;
-          if (t3.tileIsEmpty$2(t1, t2))
-            B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
+          if (!piece.hasMoved) {
+            t1 = piece.i + 2;
+            t2 = piece.j;
+            if (t3.tileIsEmpty$2(t1, t2))
+              B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
+          }
         }
         return options;
       } else {
@@ -4639,10 +4706,12 @@
         t3 = board.base;
         if (t3.tileIsEmpty$2(t1, t2)) {
           B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
-          t1 = piece.i - 2;
-          t2 = piece.j;
-          if (t3.tileIsEmpty$2(t1, t2))
-            B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
+          if (!piece.hasMoved) {
+            t1 = piece.i - 2;
+            t2 = piece.j;
+            if (t3.tileIsEmpty$2(t1, t2))
+              B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
+          }
         }
         return options;
       }
@@ -4851,6 +4920,7 @@
       JavaScriptFunction: findType("JavaScriptFunction"),
       JavaScriptIndexingBehavior_dynamic: findType("JavaScriptIndexingBehavior<@>"),
       List_Element: findType("List<Element>"),
+      List_MoveOption: findType("List<MoveOption>"),
       List_nullable_GamePiece: findType("List<GamePiece?>"),
       MoveOption: findType("MoveOption"),
       MovementStrategy: findType("MovementStrategy"),
@@ -4881,6 +4951,7 @@
     B.Interceptor_methods = J.Interceptor.prototype;
     B.JSArray_methods = J.JSArray.prototype;
     B.JSBool_methods = J.JSBool.prototype;
+    B.JSInt_methods = J.JSInt.prototype;
     B.JSString_methods = J.JSString.prototype;
     B.JavaScriptFunction_methods = J.JavaScriptFunction.prototype;
     B.JavaScriptObject_methods = J.JavaScriptObject.prototype;
