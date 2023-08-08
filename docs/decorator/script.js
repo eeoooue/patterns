@@ -4897,7 +4897,7 @@
   };
   A.KingMovement.prototype = {
     move$2(board, piece) {
-      var t1, _i, a, _i0, b, t2, t3,
+      var t1, _i, a, _i0, b, t2, t3, move,
         options = J.JSArray_JSArray$growable(0, type$.MoveOption),
         components = A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal([-1, 0, 1], type$.dynamic), true, type$.int);
       for (t1 = components.length, _i = 0; _i < t1; ++_i) {
@@ -4912,8 +4912,11 @@
           if (typeof b !== "number")
             return A.iae(b);
           t3 += b;
+          move = new A.MoveOption(t2, t3);
+          if (piece.canCapture$3(board, t2, t3))
+            B.JSArray_methods.add$1(options, move);
           if (piece.canMove$3(board, t2, t3))
-            B.JSArray_methods.add$1(options, new A.MoveOption(t2, t3));
+            B.JSArray_methods.add$1(options, move);
         }
       }
       return options;

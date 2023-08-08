@@ -265,6 +265,9 @@ class KingMovement implements MovementStrategy {
     for (int a in components) {
       for (int b in components) {
         MoveOption move = MoveOption(piece.i + a, piece.j + b);
+        if (piece.canCapture(board, move.i, move.j)) {
+          options.add(move);
+        }
         if (piece.canMove(board, move.i, move.j)) {
           options.add(move);
         }
