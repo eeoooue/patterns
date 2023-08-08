@@ -1,27 +1,53 @@
 import 'dart:html';
+import 'chess.dart';
 import 'observer.dart';
 
 class TurnplayerWidget implements Observer {
-  Element container;
+  late Element container;
   PlayerBlock blackBlock = PlayerBlock("Black");
   PlayerBlock whiteBlock = PlayerBlock("White");
 
-  TurnplayerWidget(Subject game, this.container) {
-    container.children.clear();
-    container.children.add(whiteBlock.element);
-    container.children.add(blackBlock.element);
+  TurnplayerWidget(Subject game) {
+    container = createContainer();
+    container.children.add(createHeader());
+    container.children.add(createBookshelf());
     game.subscribe(this);
+    update(game);
+  }
+
+  Element createHeader() {
+    Element header = document.createElement("h3");
+    header.innerText = "Turn Player";
+    return header;
+  }
+
+  Element createBookshelf() {
+    Element bookshelf = document.createElement("div");
+    bookshelf.classes.add("container");
+    bookshelf.classes.add("bookshelf");
+    bookshelf.id = "turnswitch-bar";
+    bookshelf.children.add(whiteBlock.element);
+    bookshelf.children.add(blackBlock.element);
+    return bookshelf;
+  }
+
+  Element createContainer() {
+    Element container = document.createElement("div");
+    container.classes.add("container");
+    container.classes.add("totempole");
+    container.id = "turnplayer-widget";
+    return container;
   }
 
   void update(Subject subject) {
-    String turnPlayer = "w";
-
-    if (turnPlayer == "b") {
-      blackBlock.setState(true);
-      whiteBlock.setState(false);
-    } else {
-      blackBlock.setState(false);
-      whiteBlock.setState(true);
+    if (subject is ChessGame) {
+      if (subject.getTurnPlayer() == "b") {
+        blackBlock.setState(true);
+        whiteBlock.setState(false);
+      } else {
+        blackBlock.setState(false);
+        whiteBlock.setState(true);
+      }
     }
   }
 }
@@ -31,7 +57,7 @@ class PlayerBlock {
   late Element element;
 
   PlayerBlock(this.colour) {
-    createElement();
+    element = createElement();
   }
 
   Element createElement() {

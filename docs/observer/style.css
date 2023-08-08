@@ -89,12 +89,37 @@ body {
     display: flex;
     justify-content: space-around;
     background-color: rgba(0, 0, 0, 0.2);
-    padding: 10px;
+    padding: 4px 10px;
     border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .teamclr-block{
     height: 24px;
+}
+
+.player-block {
+    padding:  10px 32px;
+    border-radius: 10px;
+    font-size: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+.player-block.white {
+    background-color: white;
+    color: black;
+}
+
+.player-block.black {
+    background-color: black;
+    color: white;
+}
+
+.player-block.inactive {
+    background-color: transparent;
+    box-shadow: none;
+    color: rgba(0, 0, 0, 0.5);
 }
 
 #analysis-bar {
