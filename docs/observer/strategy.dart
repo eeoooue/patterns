@@ -50,6 +50,12 @@ class PawnMovement implements MovementStrategy {
     MoveOption move = MoveOption(piece.i + 1, piece.j);
     if (board.tileIsEmpty(move.i, move.j)) {
       options.add(move);
+      if (piece.hasMoved == false) {
+        MoveOption firstBonus = MoveOption(piece.i + 2, piece.j);
+        if (board.tileIsEmpty(firstBonus.i, firstBonus.j)) {
+          options.add(firstBonus);
+        }
+      }
     }
 
     return options;
@@ -61,6 +67,12 @@ class PawnMovement implements MovementStrategy {
     MoveOption move = MoveOption(piece.i - 1, piece.j);
     if (board.tileIsEmpty(move.i, move.j)) {
       options.add(move);
+      if (piece.hasMoved == false) {
+        MoveOption firstBonus = MoveOption(piece.i - 2, piece.j);
+        if (board.tileIsEmpty(firstBonus.i, firstBonus.j)) {
+          options.add(firstBonus);
+        }
+      }
     }
 
     return options;
