@@ -29,14 +29,10 @@ class ChessGame extends Game {
   void submitMove(int i, int j) {
     print("Chess: move was made at board[${i}][${j}]");
 
-    dynamic chessBoard = board;
+    dynamic piece = chessBoard.getPiece(i, j);
 
-    if (chessBoard is ChessBoard) {
-      dynamic piece = chessBoard.getPiece(i, j);
-
-      if (piece is ChessPiece) {
-        piece.move(chessBoard);
-      }
+    if (piece is ChessPiece) {
+      piece.move(chessBoard);
     }
   }
 
@@ -83,18 +79,6 @@ class ChequeredBoard extends GameBoard implements ChessBoard {
       piece.i = i;
       piece.j = j;
     }
-  }
-
-  bool canMoveHere(GamePiece piece, int i, int j) {
-    Element destination = board[i][j];
-
-    for (Element div in destination.children) {
-      if (div.classes.contains("dot")) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   void removePiece(int i, int j) {

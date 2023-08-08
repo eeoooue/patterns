@@ -2839,6 +2839,7 @@
     GamePiece: function GamePiece() {
     },
     ChessGame: function ChessGame(t0) {
+      this.__ChessGame_chessBoard_A = $;
       this.container = t0;
       this.__Game_board_A = $;
     },
@@ -2933,7 +2934,7 @@
       return A.throwExpression(new A.LateError("Field '" + fieldName + "' has been assigned during initialization."));
     },
     main() {
-      var game, t1, t2,
+      var game, t1, t2, decoratedBoard,
         gameContainer = document.getElementById("game-container");
       if (type$.Element._is(gameContainer)) {
         game = new A.ChessGame(gameContainer);
@@ -2943,7 +2944,9 @@
         t1 = new A.ChequeredBoard(t1, t2, game, gameContainer);
         t1.insertTiles$0();
         game.__Game_board_A = t1;
-        new A.BoardWithKings(new A.BoardWithQueens(new A.BoardWithRooks(new A.BoardWithKnights(new A.BoardWithBishops(new A.BoardWithPawns(t1)))))).setupPieces$1("w");
+        decoratedBoard = new A.BoardWithKings(new A.BoardWithQueens(new A.BoardWithRooks(new A.BoardWithKnights(new A.BoardWithBishops(new A.BoardWithPawns(t1))))));
+        decoratedBoard.setupPieces$1("w");
+        game.__ChessGame_chessBoard_A = decoratedBoard;
       }
     }
   },
@@ -4385,6 +4388,15 @@
       piece.i = i;
       piece.j = j;
     },
+    getPiece$2(i, j) {
+      var t1 = this.pieces;
+      if (!(i >= 0 && i < t1.length))
+        return A.ioore(t1, i);
+      t1 = t1[i];
+      if (!(j >= 0 && j < t1.length))
+        return A.ioore(t1, j);
+      return t1[j];
+    },
     setupPieceMatrix$0() {
       var t1, t2, i, row, j;
       for (t1 = this.pieces, t2 = type$.JSArray_nullable_GamePiece, i = 0; i < 8; ++i) {
@@ -4457,20 +4469,17 @@
     call$1($event) {
       var t1, t2, t3, t4, piece;
       type$.Event._as($event);
-      t1 = this.i;
-      t2 = this.j;
-      A.print("Chess: move was made at board[" + t1 + "][" + t2 + "]");
-      t3 = this.$this.game.__Game_board_A;
-      t3 === $ && A.throwLateFieldNI("board");
-      t4 = t3.pieces;
-      if (!(t1 < t4.length))
-        return A.ioore(t4, t1);
-      t1 = t4[t1];
-      if (!(t2 < t1.length))
-        return A.ioore(t1, t2);
-      piece = t1[t2];
-      if (piece instanceof A.ChessPiece)
-        A.print("the piece has " + piece.moveStrategy.move$2(t3, piece).length + " options");
+      t1 = this.$this.game;
+      t2 = this.i;
+      t3 = this.j;
+      A.print("Chess: move was made at board[" + t2 + "][" + t3 + "]");
+      t4 = t1.__ChessGame_chessBoard_A;
+      t4 === $ && A.throwLateFieldNI("chessBoard");
+      piece = t4.base.getPiece$2(t2, t3);
+      if (piece instanceof A.ChessPiece) {
+        t1 = t1.__ChessGame_chessBoard_A;
+        A.print("the piece has " + piece.moveStrategy.move$2(t1, piece).length + " options");
+      }
     },
     $signature: 6
   };
@@ -4483,6 +4492,12 @@
     },
     placePiece$3(piece, i, j) {
       this.base.placePiece$3(piece, i, j);
+    },
+    getPiece$2(i, j) {
+      return this.base.getPiece$2(i, j);
+    },
+    tileIsEmpty$2(i, j) {
+      return this.base.tileIsEmpty$2(i, j);
     },
     $isChessBoard: 1
   };
@@ -4580,32 +4595,18 @@
   };
   A.ChessPiece.prototype = {
     canCapture$3(board, i, j) {
-      var t1, target;
+      var target;
       if (this.validCoords$2(i, j)) {
-        t1 = board.pieces;
-        if (!(i >= 0 && i < t1.length))
-          return A.ioore(t1, i);
-        t1 = t1[i];
-        if (!(j >= 0 && j < t1.length))
-          return A.ioore(t1, j);
-        target = t1[j];
+        target = board.base.getPiece$2(i, j);
         if (target instanceof A.ChessPiece && target.colour !== this.colour)
           return true;
       }
       return false;
     },
     canMove$3(board, i, j) {
-      var t1;
-      if (this.validCoords$2(i, j)) {
-        t1 = board.pieces;
-        if (!(i >= 0 && i < t1.length))
-          return A.ioore(t1, i);
-        t1 = t1[i];
-        if (!(j >= 0 && j < t1.length))
-          return A.ioore(t1, j);
-        if (t1[j] == null)
+      if (this.validCoords$2(i, j))
+        if (board.base.getPiece$2(i, j) == null)
           return true;
-      }
       return false;
     },
     validCoords$2(i, j) {
@@ -4616,17 +4617,18 @@
   A.MoveOption.prototype = {};
   A.PawnMovement.prototype = {
     move$2(board, piece) {
-      var options, t2,
+      var options, t2, t3,
         t1 = type$.MoveOption;
       if (piece.colour === "b") {
         options = J.JSArray_JSArray$growable(0, t1);
         t1 = piece.i + 1;
         t2 = piece.j;
-        if (board.tileIsEmpty$2(t1, t2)) {
+        t3 = board.base;
+        if (t3.tileIsEmpty$2(t1, t2)) {
           B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
           t1 = piece.i + 2;
           t2 = piece.j;
-          if (board.tileIsEmpty$2(t1, t2))
+          if (t3.tileIsEmpty$2(t1, t2))
             B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
         }
         return options;
@@ -4634,11 +4636,12 @@
         options = J.JSArray_JSArray$growable(0, t1);
         t1 = piece.i - 1;
         t2 = piece.j;
-        if (board.tileIsEmpty$2(t1, t2)) {
+        t3 = board.base;
+        if (t3.tileIsEmpty$2(t1, t2)) {
           B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
           t1 = piece.i - 2;
           t2 = piece.j;
-          if (board.tileIsEmpty$2(t1, t2))
+          if (t3.tileIsEmpty$2(t1, t2))
             B.JSArray_methods.add$1(options, new A.MoveOption(t1, t2));
         }
         return options;
@@ -4692,11 +4695,12 @@
       return options;
     },
     exploreDiagonal$5(board, i, j, di, dj) {
-      var options = J.JSArray_JSArray$growable(0, type$.MoveOption);
-      for (; true;) {
+      var t1,
+        options = J.JSArray_JSArray$growable(0, type$.MoveOption);
+      for (t1 = board.base; true;) {
         i += di;
         j += dj;
-        if (board.tileIsEmpty$2(i, j))
+        if (t1.tileIsEmpty$2(i, j))
           B.JSArray_methods.add$1(options, new A.MoveOption(i, j));
         else
           return options;
@@ -4719,11 +4723,12 @@
       return options;
     },
     exploreImpulse$5(board, i, j, di, dj) {
-      var options = J.JSArray_JSArray$growable(0, type$.MoveOption);
-      for (; true;) {
+      var t1,
+        options = J.JSArray_JSArray$growable(0, type$.MoveOption);
+      for (t1 = board.base; true;) {
         i += di;
         j += dj;
-        if (board.tileIsEmpty$2(i, j))
+        if (t1.tileIsEmpty$2(i, j))
           B.JSArray_methods.add$1(options, new A.MoveOption(i, j));
         else
           return options;
@@ -4746,23 +4751,23 @@
   };
   A.KingMovement.prototype = {
     move$2(board, piece) {
-      var t1, _i, a, _i0, b, t2, t3,
+      var t1, t2, _i, a, _i0, b, t3, t4,
         options = J.JSArray_JSArray$growable(0, type$.MoveOption),
         components = A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal([-1, 0, 1], type$.dynamic), true, type$.int);
-      for (t1 = components.length, _i = 0; _i < t1; ++_i) {
+      for (t1 = components.length, t2 = board.base, _i = 0; _i < t1; ++_i) {
         a = components[_i];
         for (_i0 = 0; _i0 < t1; ++_i0) {
           b = components[_i0];
-          t2 = piece.i;
+          t3 = piece.i;
           if (typeof a !== "number")
             return A.iae(a);
-          t2 += a;
-          t3 = piece.j;
+          t3 += a;
+          t4 = piece.j;
           if (typeof b !== "number")
             return A.iae(b);
-          t3 += b;
-          if (board.tileIsEmpty$2(t2, t3))
-            B.JSArray_methods.add$1(options, new A.MoveOption(t2, t3));
+          t4 += b;
+          if (t2.tileIsEmpty$2(t3, t4))
+            B.JSArray_methods.add$1(options, new A.MoveOption(t3, t4));
         }
       }
       return options;
