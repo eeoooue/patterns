@@ -95,9 +95,6 @@ body {
     border: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-.teamclr-block{
-    height: 24px;
-}
 
 .player-block {
     padding:  10px 32px;
@@ -126,14 +123,13 @@ body {
     border-radius: 10px 10px;
     width: 100%;
     overflow: hidden;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 1px solid #888;
+    height: 28px;
+    background-color: black;
 }
 
-.teamclr-block.black {
-    background-color: black;
-    width: 40%;
-}
-.teamclr-block.white {
+.white-block {
+    height: 100%;
     background-color: white;
-    width: 60%;
+    width: 50%;
 }

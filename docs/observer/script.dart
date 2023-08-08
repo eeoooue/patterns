@@ -8,10 +8,16 @@ class ObserverDemo {
 
   ObserverDemo(this.sideTray, this.game) {
     addTurnplayerWidget();
+    addAnalysisWidget();
   }
 
   void addTurnplayerWidget() {
     var widget = TurnplayerWidget(game);
+    sideTray.children.add(widget.container);
+  }
+
+  void addAnalysisWidget() {
+    var widget = AnalysisWidget(game);
     sideTray.children.add(widget.container);
   }
 }
