@@ -3,10 +3,16 @@ import 'boardgames.dart';
 import 'strategy.dart';
 
 class ChessGame extends Game {
+  int turnCount = 0;
+
   ChessGame(Element container) : super(container) {}
 
   GameBoard createBoard() {
     return ChessBoard(this, container);
+  }
+
+  String getTurnPlayer() {
+    return (turnCount % 2 == 0) ? "w" : "b";
   }
 
   void submitMove(int i, int j) {
@@ -26,13 +32,15 @@ class ChessGame extends Game {
     if (piece != null) {
       if (chessBoard.canMoveHere(piece, i, j)) {
         chessBoard.movePiece(piece, i, j);
+        turnCount += 1;
         return;
       }
     }
 
+    chessBoard.clearHighlights();
+
     piece = chessBoard.getPiece(i, j) as ChessPiece?;
-    if (piece is ChessPiece) {
-      chessBoard.clearHighlights();
+    if (piece is ChessPiece && piece.colour == getTurnPlayer()) {
       List<MoveOption> options = piece.move(chessBoard);
       print("checked for options: found ${options.length}");
       chessBoard.setActivePiece(piece);

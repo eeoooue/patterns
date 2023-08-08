@@ -2839,6 +2839,7 @@
     GamePiece: function GamePiece() {
     },
     ChessGame: function ChessGame(t0) {
+      this.turnCount = 0;
       this.container = t0;
       this.__Game_board_A = $;
     },
@@ -3374,6 +3375,14 @@
       factor = Math.pow(2, floorLog2);
       scaled = absolute < 1 ? absolute / factor : factor / absolute;
       return ((scaled * 9007199254740992 | 0) + (scaled * 3542243181176521 | 0)) * 599197 + floorLog2 * 1259 & 536870911;
+    },
+    $mod(receiver, other) {
+      var result = receiver % other;
+      if (result === 0)
+        return 0;
+      if (result > 0)
+        return result;
+      return result + other;
     },
     get$runtimeType(receiver) {
       return A.createRuntimeType(type$.num);
@@ -4397,8 +4406,10 @@
           chessBoard.placePiece$3(piece, i, j);
           piece.hasMoved = true;
           chessBoard.activePiece = null;
+          ++this.turnCount;
           return;
         }
+      chessBoard.clearHighlights$0();
       t1 = chessBoard.pieces;
       if (!(i < t1.length))
         return A.ioore(t1, i);
@@ -4407,7 +4418,11 @@
         return A.ioore(t1, j);
       piece = t1[j];
       if (piece instanceof A.ChessPiece) {
-        chessBoard.clearHighlights$0();
+        t1 = piece.colour;
+        t1 = t1 === (B.JSInt_methods.$mod(this.turnCount, 2) === 0 ? "w" : "b");
+      } else
+        t1 = false;
+      if (t1) {
         options = piece.moveStrategy.move$2(chessBoard, piece);
         A.print("checked for options: found " + options.length);
         chessBoard.activePiece = piece;
@@ -4876,6 +4891,7 @@
     B.ImageElement_methods = A.ImageElement.prototype;
     B.Interceptor_methods = J.Interceptor.prototype;
     B.JSArray_methods = J.JSArray.prototype;
+    B.JSInt_methods = J.JSInt.prototype;
     B.JSString_methods = J.JSString.prototype;
     B.JavaScriptFunction_methods = J.JavaScriptFunction.prototype;
     B.JavaScriptObject_methods = J.JavaScriptObject.prototype;
