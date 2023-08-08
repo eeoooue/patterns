@@ -17,12 +17,12 @@ abstract class BoardWithPieces implements ChessBoard {
   void setupEnemyPieces(String colour);
   void setupFriendlyPieces(String colour);
 
-  void placePiece(GamePiece piece, int i, int j) {
-    base.placePiece(piece, i, j);
+  void removePiece(int i, int j) {
+    base.removePiece(i, j);
   }
 
-  void movePiece(ChessPiece piece, int i, int j) {
-    return base.movePiece(piece, i, j);
+  void placePiece(GamePiece piece, int i, int j) {
+    base.placePiece(piece, i, j);
   }
 
   GamePiece? getPiece(int i, int j) {

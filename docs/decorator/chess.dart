@@ -4,8 +4,8 @@ import 'strategy.dart';
 import 'decorators.dart';
 
 abstract class ChessBoard {
+  void removePiece(int i, int j);
   void setupPieces(String playerColour);
-  void movePiece(ChessPiece piece, int i, int j);
   GamePiece? getPiece(int i, int j);
   bool tileIsEmpty(int i, int j);
   void placePiece(GamePiece piece, int i, int j);
@@ -13,6 +13,8 @@ abstract class ChessBoard {
 
 class ChessGame extends Game {
   int turnCount = 0;
+  late ChessBoard chessBoard;
+  ChessPiece? activePiece = null;
 
   ChessGame(Element container) : super(container) {}
 
@@ -26,13 +28,30 @@ class ChessGame extends Game {
 
   void submitMove(int i, int j) {
     print("Chess: move was made at board[${i}][${j}]");
+
+    dynamic chessBoard = board;
+
+    if (chessBoard is ChessBoard) {
+      dynamic piece = chessBoard.getPiece(i, j);
+
+      if (piece is ChessPiece) {
+        piece.move(chessBoard);
+      }
+    }
+  }
+
+  void movePiece(ChessPiece piece, int i, int j) {
+    chessBoard.removePiece(piece.i, piece.j);
+    chessBoard.placePiece(piece, i, j);
+    piece.hasMoved = true;
+    activePiece = null;
   }
 
   void setupPieces() {
-    var chessBoard = board;
+    var thing = board;
 
-    if (chessBoard is ChequeredBoard) {
-      ChessBoard decoratedBoard = chessBoard;
+    if (thing is ChequeredBoard) {
+      ChessBoard decoratedBoard = thing;
       decoratedBoard = BoardWithPawns(decoratedBoard);
       decoratedBoard = BoardWithBishops(decoratedBoard);
       decoratedBoard = BoardWithKnights(decoratedBoard);
@@ -41,6 +60,8 @@ class ChessGame extends Game {
       decoratedBoard = BoardWithKings(decoratedBoard);
 
       decoratedBoard.setupPieces("w");
+
+      chessBoard = decoratedBoard;
     }
   }
 }
@@ -48,10 +69,6 @@ class ChessGame extends Game {
 class ChequeredBoard extends GameBoard implements ChessBoard {
   List<List<Element>> board = List.empty(growable: true);
   List<List<GamePiece?>> pieces = List.empty(growable: true);
-
-  List<Element> highlights = List.empty(growable: true);
-
-  ChessPiece? activePiece = null;
 
   ChequeredBoard(Game game, Element container) : super(game, container) {}
 
@@ -66,10 +83,6 @@ class ChequeredBoard extends GameBoard implements ChessBoard {
       piece.i = i;
       piece.j = j;
     }
-  }
-
-  ChessPiece? getActivePiece() {
-    return activePiece;
   }
 
   bool canMoveHere(GamePiece piece, int i, int j) {
@@ -88,33 +101,6 @@ class ChequeredBoard extends GameBoard implements ChessBoard {
     Element tile = board[i][j];
     tile.children.clear();
     pieces[i][j] = null;
-  }
-
-  void setActivePiece(ChessPiece piece) {
-    activePiece = piece;
-  }
-
-  void movePiece(ChessPiece piece, int i, int j) {
-    clearHighlights();
-    removePiece(piece.i, piece.j);
-    placePiece(piece, i, j);
-    piece.hasMoved = true;
-    activePiece = null;
-  }
-
-  void clearHighlights() {
-    for (Element highlight in highlights) {
-      highlight.remove();
-    }
-  }
-
-  void highlightOptions(List<MoveOption> options) {
-    for (MoveOption move in options) {
-      Element highlight = createHighlight();
-      highlights.add(highlight);
-      Element tile = board[move.i][move.j];
-      tile.children.add(highlight);
-    }
   }
 
   Element createHighlight() {

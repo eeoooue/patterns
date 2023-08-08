@@ -20,7 +20,35 @@ class ChessPiece extends GamePiece {
   }
 
   List<MoveOption> move(ChessBoard board) {
-    return moveStrategy.move(board, this);
+    List<MoveOption> options = moveStrategy.move(board, this);
+    print("the piece has ${options.length} options");
+    return options;
+  }
+
+  bool canCapture(ChessBoard board, int i, int j) {
+    if (validCoords(i, j)) {
+      GamePiece? target = board.getPiece(i, j);
+      if (target is ChessPiece && target.colour != colour) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  bool canMove(ChessBoard board, int i, int j) {
+    if (validCoords(i, j)) {
+      GamePiece? target = board.getPiece(i, j);
+      if (target == null) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  bool validCoords(int i, int j) {
+    return (0 <= i && i < 8) & (0 <= j && j < 8);
   }
 }
 
@@ -89,7 +117,10 @@ class KnightMovement implements MovementStrategy {
       for (int b in components) {
         if (a.abs() + b.abs() == 3) {
           MoveOption move = MoveOption(piece.i + a, piece.j + b);
-          if (board.tileIsEmpty(move.i, move.j)) {
+
+          if (piece.canMove(board, move.i, move.j)) {
+            options.add(move);
+          } else if (piece.canCapture(board, move.i, move.j)) {
             options.add(move);
           }
         }
