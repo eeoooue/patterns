@@ -9,6 +9,8 @@ abstract class ChessBoard {
   GamePiece? getPiece(int i, int j);
   bool tileIsEmpty(int i, int j);
   void placePiece(GamePiece piece, int i, int j);
+  void addMarker(int i, int j, String marker);
+  void clearHighlights();
 }
 
 class ChessGame extends Game {
@@ -45,6 +47,7 @@ class ChessGame extends Game {
   }
 
   void endTurn() {
+    chessBoard.clearHighlights();
     turnCount += 1;
   }
 
@@ -180,5 +183,21 @@ class ChequeredBoard extends GameBoard implements ChessBoard {
       return tile.children.length == 0;
     }
     return false;
+  }
+
+  void clearHighlights() {
+    List<Element> elements = document.querySelectorAll(".marker");
+
+    for (Element highlight in elements) {
+      highlight.remove();
+    }
+  }
+
+  void addMarker(int i, int j, String marker) {
+    Element tile = board[i][j];
+    Element mark = document.createElement("div");
+    mark.classes.add("marker");
+    mark.classes.add(marker);
+    tile.children.add(mark);
   }
 }

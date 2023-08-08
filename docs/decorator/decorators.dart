@@ -32,6 +32,14 @@ abstract class BoardWithPieces implements ChessBoard {
   bool tileIsEmpty(int i, int j) {
     return base.tileIsEmpty(i, j);
   }
+
+  void addMarker(int i, int j, String marker) {
+    base.addMarker(i, j, marker);
+  }
+
+  void clearHighlights() {
+    base.clearHighlights();
+  }
 }
 
 class BoardWithPawns extends BoardWithPieces {

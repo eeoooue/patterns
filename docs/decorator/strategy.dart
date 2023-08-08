@@ -29,6 +29,7 @@ class ChessPiece extends GamePiece {
     if (validCoords(i, j)) {
       GamePiece? target = board.getPiece(i, j);
       if (target is ChessPiece && target.colour != colour) {
+        board.addMarker(i, j, "circle");
         return true;
       }
     }
@@ -40,6 +41,7 @@ class ChessPiece extends GamePiece {
     if (validCoords(i, j)) {
       GamePiece? target = board.getPiece(i, j);
       if (target == null) {
+        board.addMarker(i, j, "dot");
         return true;
       }
     }
