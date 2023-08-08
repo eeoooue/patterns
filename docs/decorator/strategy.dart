@@ -177,6 +177,11 @@ class BishopMovement implements MovementStrategy {
       j += dj;
       MoveOption move = MoveOption(i, j);
 
+      if (piece.canCapture(board, i, j)) {
+        options.add(move);
+        return options;
+      }
+
       if (piece.canMove(board, i, j)) {
         options.add(move);
       } else {
@@ -221,6 +226,11 @@ class RookMovement implements MovementStrategy {
       i += di;
       j += dj;
       MoveOption move = MoveOption(i, j);
+
+      if (piece.canCapture(board, i, j)) {
+        options.add(move);
+        return options;
+      }
 
       if (piece.canMove(board, i, j)) {
         options.add(move);

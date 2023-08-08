@@ -4831,12 +4831,18 @@
       return options;
     },
     exploreDiagonal$6(piece, board, i, j, di, dj) {
-      var options = J.JSArray_JSArray$growable(0, type$.MoveOption);
+      var move,
+        options = J.JSArray_JSArray$growable(0, type$.MoveOption);
       for (; true;) {
         i += di;
         j += dj;
+        move = new A.MoveOption(i, j);
+        if (piece.canCapture$3(board, i, j)) {
+          B.JSArray_methods.add$1(options, move);
+          return options;
+        }
         if (piece.canMove$3(board, i, j))
-          B.JSArray_methods.add$1(options, new A.MoveOption(i, j));
+          B.JSArray_methods.add$1(options, move);
         else
           return options;
       }
@@ -4858,12 +4864,18 @@
       return options;
     },
     exploreImpulse$6(piece, board, i, j, di, dj) {
-      var options = J.JSArray_JSArray$growable(0, type$.MoveOption);
+      var move,
+        options = J.JSArray_JSArray$growable(0, type$.MoveOption);
       for (; true;) {
         i += di;
         j += dj;
+        move = new A.MoveOption(i, j);
+        if (piece.canCapture$3(board, i, j)) {
+          B.JSArray_methods.add$1(options, move);
+          return options;
+        }
         if (piece.canMove$3(board, i, j))
-          B.JSArray_methods.add$1(options, new A.MoveOption(i, j));
+          B.JSArray_methods.add$1(options, move);
         else
           return options;
       }
