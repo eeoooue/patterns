@@ -2962,7 +2962,7 @@
         t1.insertTiles$0();
         game.__Game_board_A = t1;
         decoratedBoard = new A.BoardWithKings(new A.BoardWithQueens(new A.BoardWithRooks(new A.BoardWithKnights(new A.BoardWithBishops(new A.BoardWithPawns(t1))))));
-        decoratedBoard.setupPieces$1("b");
+        decoratedBoard.setupPieces$1("w");
         game.__ChessGame_chessBoard_A = decoratedBoard;
       }
     }

@@ -83,7 +83,7 @@ class ChessGame extends Game {
       decoratedBoard = BoardWithQueens(decoratedBoard);
       decoratedBoard = BoardWithKings(decoratedBoard);
 
-      decoratedBoard.setupPieces("b");
+      decoratedBoard.setupPieces("w");
 
       chessBoard = decoratedBoard;
     }
