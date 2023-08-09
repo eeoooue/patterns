@@ -2936,7 +2936,7 @@
         t1 = J.JSArray_JSArray$growable(0, type$.List_ChessPiece);
         t1 = game.__ChessGame_chessBoard_A = new A.ChequeredBoard(t1);
         decoratedBoard = new A.BoardWithKings(new A.BoardWithQueens(new A.BoardWithRooks(new A.BoardWithKnights(new A.BoardWithBishops(new A.BoardWithPawns(t1))))));
-        decoratedBoard.setupPieces$1("w");
+        decoratedBoard.setupPieces$0();
         game.__ChessGame_chessBoard_A = decoratedBoard;
         t1 = decoratedBoard;
         game.__ChessGame_view_A.displayBoard$1(t1.getBoardState$0());
@@ -4352,13 +4352,6 @@
     }
   };
   A.BoardWithPieces.prototype = {
-    setupPieces$1(playerColour) {
-      var enemyColour;
-      this.base.setupPieces$1(playerColour);
-      enemyColour = playerColour === "w" ? "b" : "w";
-      this.setupFriendlyPieces$1(playerColour);
-      this.setupEnemyPieces$1(enemyColour);
-    },
     removePiece$2(i, j) {
       this.base.removePiece$2(i, j);
     },
@@ -4374,93 +4367,77 @@
     $isChessBoard: 1
   };
   A.BoardWithPawns.prototype = {
-    setupEnemyPieces$1(colour) {
-      var t1, j, pawn;
-      for (t1 = this.base, j = 0; j < 8; ++j) {
-        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn");
-        pawn.__GamePiece_src_A = "./assets/chess/pawn_" + colour + ".png";
+    setupPieces$0() {
+      var j, pawn,
+        t1 = this.base;
+      t1.setupPieces$0();
+      for (j = 0; j < 8; ++j) {
+        pawn = new A.ChessPiece(new A.PawnMovement(), "b", "pawn");
+        pawn.__GamePiece_src_A = "./assets/chess/pawn_b.png";
         t1.placePiece$3(pawn, 1, j);
-      }
-    },
-    setupFriendlyPieces$1(colour) {
-      var t1, j, pawn;
-      for (t1 = this.base, j = 0; j < 8; ++j) {
-        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn");
-        pawn.__GamePiece_src_A = "./assets/chess/pawn_" + colour + ".png";
+        pawn = new A.ChessPiece(new A.PawnMovement(), "w", "pawn");
+        pawn.__GamePiece_src_A = "./assets/chess/pawn_w.png";
         t1.placePiece$3(pawn, 6, j);
       }
     }
   };
   A.BoardWithBishops.prototype = {
-    setupEnemyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 0, 2);
-      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 0, 5);
+    setupPieces$0() {
+      var _this = this;
+      _this.base.setupPieces$0();
+      _this.placeBishop$3("b", 0, 2);
+      _this.placeBishop$3("b", 0, 5);
+      _this.placeBishop$3("w", 7, 2);
+      _this.placeBishop$3("w", 7, 5);
     },
-    setupFriendlyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 7, 2);
-      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 7, 5);
+    placeBishop$3(colour, i, j) {
+      this.base.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), i, j);
     }
   };
   A.BoardWithKnights.prototype = {
-    setupEnemyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 0, 1);
-      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 0, 6);
+    setupPieces$0() {
+      var _this = this;
+      _this.base.setupPieces$0();
+      _this.placeKnight$3("b", 0, 1);
+      _this.placeKnight$3("b", 0, 6);
+      _this.placeKnight$3("w", 7, 1);
+      _this.placeKnight$3("w", 7, 6);
     },
-    setupFriendlyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 7, 1);
-      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 7, 6);
+    placeKnight$3(colour, i, j) {
+      this.base.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), i, j);
     }
   };
   A.BoardWithRooks.prototype = {
-    setupEnemyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 0, 0);
-      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 0, 7);
+    setupPieces$0() {
+      var _this = this;
+      _this.base.setupPieces$0();
+      _this.placeRook$3("b", 0, 0);
+      _this.placeRook$3("b", 0, 7);
+      _this.placeRook$3("w", 7, 0);
+      _this.placeRook$3("w", 7, 7);
     },
-    setupFriendlyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 7, 0);
-      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 7, 7);
+    placeRook$3(colour, i, j) {
+      this.base.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), i, j);
     }
   };
   A.BoardWithKings.prototype = {
-    setupEnemyPieces$1(colour) {
-      var king = A.ChessPiece$(colour, "king", new A.KingMovement()),
-        t1 = this.base;
-      if (colour === "b")
-        t1.placePiece$3(king, 0, 4);
-      else
-        t1.placePiece$3(king, 0, 3);
+    setupPieces$0() {
+      this.base.setupPieces$0();
+      this.placeKing$3("b", 0, 4);
+      this.placeKing$3("w", 7, 4);
     },
-    setupFriendlyPieces$1(colour) {
-      var king = A.ChessPiece$(colour, "king", new A.KingMovement()),
-        t1 = this.base;
-      if (colour === "b")
-        t1.placePiece$3(king, 7, 3);
-      else
-        t1.placePiece$3(king, 7, 4);
+    placeKing$3(colour, i, j) {
+      this.base.placePiece$3(A.ChessPiece$(colour, "king", new A.KingMovement()), i, j);
     }
   };
   A.BoardWithQueens.prototype = {
-    setupEnemyPieces$1(colour) {
-      var queen = A.ChessPiece$(colour, "queen", new A.QueenMovement()),
-        t1 = this.base;
-      if (colour === "b")
-        t1.placePiece$3(queen, 0, 3);
-      else
-        t1.placePiece$3(queen, 0, 4);
+    setupPieces$0() {
+      this.base.setupPieces$0();
+      this.placeQueen$3("b", 0, 3);
+      this.placeQueen$3("w", 7, 3);
     },
-    setupFriendlyPieces$1(colour) {
-      var queen = A.ChessPiece$(colour, "queen", new A.QueenMovement()),
-        t1 = this.base;
-      if (colour === "b")
-        t1.placePiece$3(queen, 7, 4);
-      else
-        t1.placePiece$3(queen, 7, 3);
+    placeQueen$3(colour, i, j) {
+      this.base.placePiece$3(A.ChessPiece$(colour, "queen", new A.QueenMovement()), i, j);
     }
   };
   A.ChessBoardView.prototype = {
@@ -4585,7 +4562,7 @@
     }
   };
   A.ChequeredBoard.prototype = {
-    setupPieces$1(playerColour) {
+    setupPieces$0() {
       var t1, t2, i, row, j;
       for (t1 = this.pieces, t2 = type$.JSArray_ChessPiece, i = 0; i < 8; ++i) {
         row = A._setArrayType(new Array(0), t2);

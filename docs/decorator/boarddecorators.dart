@@ -7,15 +7,7 @@ abstract class BoardWithPieces implements ChessBoard {
 
   BoardWithPieces(this.base) {}
 
-  void setupPieces(String playerColour) {
-    base.setupPieces(playerColour);
-    String enemyColour = (playerColour == "w") ? "b" : "w";
-    setupFriendlyPieces(playerColour);
-    setupEnemyPieces(enemyColour);
-  }
-
-  void setupEnemyPieces(String colour);
-  void setupFriendlyPieces(String colour);
+  void setupPieces();
 
   void removePiece(int i, int j) {
     base.removePiece(i, j);
@@ -37,119 +29,97 @@ abstract class BoardWithPieces implements ChessBoard {
 class BoardWithPawns extends BoardWithPieces {
   BoardWithPawns(ChessBoard base) : super(base) {}
 
-  void setupEnemyPieces(String colour) {
+  void setupPieces() {
+    base.setupPieces();
     for (int j = 0; j < 8; j++) {
-      ChessPiece pawn = ChessPiece(colour, "pawn", PawnMovement());
-      base.placePiece(pawn, 1, j);
+      placePawn("b", 1, j);
+      placePawn("w", 6, j);
     }
   }
 
-  void setupFriendlyPieces(String colour) {
-    for (int j = 0; j < 8; j++) {
-      ChessPiece pawn = ChessPiece(colour, "pawn", PawnMovement());
-      base.placePiece(pawn, 6, j);
-    }
+  void placePawn(String colour, int i, int j) {
+    ChessPiece pawn = ChessPiece(colour, "pawn", PawnMovement());
+    base.placePiece(pawn, i, j);
   }
 }
 
 class BoardWithBishops extends BoardWithPieces {
   BoardWithBishops(ChessBoard base) : super(base) {}
 
-  void setupEnemyPieces(String colour) {
-    ChessPiece bishopL = ChessPiece(colour, "bishop", BishopMovement());
-    base.placePiece(bishopL, 0, 2);
-    ChessPiece bishopR = ChessPiece(colour, "bishop", BishopMovement());
-    base.placePiece(bishopR, 0, 5);
+  void setupPieces() {
+    base.setupPieces();
+    placeBishop("b", 0, 2);
+    placeBishop("b", 0, 5);
+    placeBishop("w", 7, 2);
+    placeBishop("w", 7, 5);
   }
 
-  void setupFriendlyPieces(String colour) {
-    ChessPiece bishopL = ChessPiece(colour, "bishop", BishopMovement());
-    base.placePiece(bishopL, 7, 2);
-    ChessPiece bishopR = ChessPiece(colour, "bishop", BishopMovement());
-    base.placePiece(bishopR, 7, 5);
+  void placeBishop(String colour, int i, int j) {
+    ChessPiece bishop = ChessPiece(colour, "bishop", BishopMovement());
+    base.placePiece(bishop, i, j);
   }
 }
 
 class BoardWithKnights extends BoardWithPieces {
   BoardWithKnights(ChessBoard base) : super(base) {}
 
-  void setupEnemyPieces(String colour) {
-    ChessPiece eKnightL = ChessPiece(colour, "knight", KnightMovement());
-    base.placePiece(eKnightL, 0, 1);
-    ChessPiece eKnightR = ChessPiece(colour, "knight", KnightMovement());
-    base.placePiece(eKnightR, 0, 6);
+  void setupPieces() {
+    base.setupPieces();
+    placeKnight("b", 0, 1);
+    placeKnight("b", 0, 6);
+    placeKnight("w", 7, 1);
+    placeKnight("w", 7, 6);
   }
 
-  void setupFriendlyPieces(String colour) {
-    ChessPiece knightL = ChessPiece(colour, "knight", KnightMovement());
-    base.placePiece(knightL, 7, 1);
-    ChessPiece knightR = ChessPiece(colour, "knight", KnightMovement());
-    base.placePiece(knightR, 7, 6);
+  void placeKnight(String colour, int i, int j) {
+    ChessPiece knight = ChessPiece(colour, "knight", KnightMovement());
+    base.placePiece(knight, i, j);
   }
 }
 
 class BoardWithRooks extends BoardWithPieces {
   BoardWithRooks(ChessBoard base) : super(base) {}
 
-  void setupEnemyPieces(String colour) {
-    ChessPiece rookL = ChessPiece(colour, "rook", RookMovement());
-    base.placePiece(rookL, 0, 0);
-    ChessPiece rookR = ChessPiece(colour, "rook", RookMovement());
-    base.placePiece(rookR, 0, 7);
+  void setupPieces() {
+    base.setupPieces();
+    placeRook("b", 0, 0);
+    placeRook("b", 0, 7);
+    placeRook("w", 7, 0);
+    placeRook("w", 7, 7);
   }
 
-  void setupFriendlyPieces(String colour) {
-    ChessPiece rookL = ChessPiece(colour, "rook", RookMovement());
-    base.placePiece(rookL, 7, 0);
-    ChessPiece rookR = ChessPiece(colour, "rook", RookMovement());
-    base.placePiece(rookR, 7, 7);
+  void placeRook(String colour, int i, int j) {
+    ChessPiece rook = ChessPiece(colour, "rook", RookMovement());
+    base.placePiece(rook, i, j);
   }
 }
 
 class BoardWithKings extends BoardWithPieces {
   BoardWithKings(ChessBoard base) : super(base) {}
 
-  void setupEnemyPieces(String colour) {
-    ChessPiece king = ChessPiece(colour, "king", KingMovement());
-
-    if (colour == "b") {
-      base.placePiece(king, 0, 4);
-    } else {
-      base.placePiece(king, 0, 3);
-    }
+  void setupPieces() {
+    base.setupPieces();
+    placeKing("b", 0, 4);
+    placeKing("w", 7, 4);
   }
 
-  void setupFriendlyPieces(String colour) {
+  void placeKing(String colour, int i, int j) {
     ChessPiece king = ChessPiece(colour, "king", KingMovement());
-
-    if (colour == "b") {
-      base.placePiece(king, 7, 3);
-    } else {
-      base.placePiece(king, 7, 4);
-    }
+    base.placePiece(king, i, j);
   }
 }
 
 class BoardWithQueens extends BoardWithPieces {
   BoardWithQueens(ChessBoard base) : super(base) {}
 
-  void setupEnemyPieces(String colour) {
-    ChessPiece queen = ChessPiece(colour, "queen", QueenMovement());
-
-    if (colour == "b") {
-      base.placePiece(queen, 0, 3);
-    } else {
-      base.placePiece(queen, 0, 4);
-    }
+  void setupPieces() {
+    base.setupPieces();
+    placeQueen("b", 0, 3);
+    placeQueen("w", 7, 3);
   }
 
-  void setupFriendlyPieces(String colour) {
+  void placeQueen(String colour, int i, int j) {
     ChessPiece queen = ChessPiece(colour, "queen", QueenMovement());
-
-    if (colour == "b") {
-      base.placePiece(queen, 7, 4);
-    } else {
-      base.placePiece(queen, 7, 3);
-    }
+    base.placePiece(queen, i, j);
   }
 }

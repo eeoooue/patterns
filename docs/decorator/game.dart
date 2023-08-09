@@ -106,7 +106,7 @@ class ChessGame extends Game {
       decoratedBoard = BoardWithRooks(decoratedBoard);
       decoratedBoard = BoardWithQueens(decoratedBoard);
       decoratedBoard = BoardWithKings(decoratedBoard);
-      decoratedBoard.setupPieces("w");
+      decoratedBoard.setupPieces();
       chessBoard = decoratedBoard;
     }
   }
