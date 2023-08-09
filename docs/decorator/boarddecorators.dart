@@ -1,6 +1,6 @@
-import 'boardgames.dart';
 import 'strategy.dart';
-import 'chess.dart';
+import 'gameboard.dart';
+import 'pieces.dart';
 
 abstract class BoardWithPieces implements ChessBoard {
   ChessBoard base;
@@ -8,10 +8,10 @@ abstract class BoardWithPieces implements ChessBoard {
   BoardWithPieces(this.base) {}
 
   void setupPieces(String playerColour) {
+    base.setupPieces(playerColour);
     String enemyColour = (playerColour == "w") ? "b" : "w";
     setupFriendlyPieces(playerColour);
     setupEnemyPieces(enemyColour);
-    base.setupPieces(playerColour);
   }
 
   void setupEnemyPieces(String colour);
@@ -21,20 +21,16 @@ abstract class BoardWithPieces implements ChessBoard {
     base.removePiece(i, j);
   }
 
-  void placePiece(GamePiece piece, int i, int j) {
+  void placePiece(ChessPiece piece, int i, int j) {
     base.placePiece(piece, i, j);
   }
 
-  GamePiece? getPiece(int i, int j) {
+  ChessPiece getPiece(int i, int j) {
     return base.getPiece(i, j);
   }
 
-  void addMarker(int i, int j, String marker) {
-    base.addMarker(i, j, marker);
-  }
-
-  void clearHighlights() {
-    base.clearHighlights();
+  List<List<ChessPiece>> getBoardState() {
+    return base.getBoardState();
   }
 }
 
