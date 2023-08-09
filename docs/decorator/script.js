@@ -363,13 +363,13 @@
       throw A.wrapException(A.diagnoseIndexError(receiver, index));
     },
     diagnoseIndexError(indexable, index) {
-      var $length, _s5_ = "index";
+      var $length, _s5_ = "index", _null = null;
       if (!A._isInt(index))
-        return new A.ArgumentError(true, index, _s5_, null);
+        return new A.ArgumentError(true, index, _s5_, _null);
       $length = A._asInt(J.get$length$asx(indexable));
       if (index < 0 || index >= $length)
-        return A.IndexError$withLength(index, $length, indexable, _s5_);
-      return new A.RangeError(null, null, true, index, _s5_, "Value not in range");
+        return A.IndexError$withLength(index, $length, indexable, _null, _s5_);
+      return new A.RangeError(_null, _null, true, index, _s5_, "Value not in range");
     },
     argumentErrorValue(object) {
       return new A.ArgumentError(true, object, null, null);
@@ -2495,8 +2495,8 @@
     },
     List_List$filled($length, fill, growable, $E) {
       var i,
-        result = J.JSArray_JSArray$growable($length, $E);
-      if ($length !== 0 && true)
+        result = growable ? J.JSArray_JSArray$growable($length, $E) : J.JSArray_JSArray$fixed($length, $E);
+      if ($length !== 0 && fill != null)
         for (i = 0; i < result.length; ++i)
           result[i] = fill;
       return result;
@@ -2562,7 +2562,7 @@
         throw A.wrapException(A.RangeError$range(value, 0, null, $name, null));
       return value;
     },
-    IndexError$withLength(invalidValue, $length, indexable, $name) {
+    IndexError$withLength(invalidValue, $length, indexable, message, $name) {
       return new A.IndexError($length, true, invalidValue, $name, "Index out of range");
     },
     UnsupportedError$(message) {
@@ -2761,7 +2761,7 @@
     DomTokenList: function DomTokenList() {
     },
     _ChildrenElementList: function _ChildrenElementList(t0, t1) {
-      this._element = t0;
+      this._html$_element = t0;
       this._childElements = t1;
     },
     Element: function Element() {
@@ -2788,7 +2788,7 @@
     _NamedNodeMap: function _NamedNodeMap() {
     },
     _ElementCssClassSet: function _ElementCssClassSet(t0) {
-      this._element = t0;
+      this._html$_element = t0;
     },
     ImmutableListMixin: function ImmutableListMixin() {
     },
@@ -2825,7 +2825,7 @@
     FilteredElementList__iterable_closure0: function FilteredElementList__iterable_closure0() {
     },
     AttributeClassSet: function AttributeClassSet(t0) {
-      this._svg$_element = t0;
+      this._element = t0;
     },
     SvgElement: function SvgElement() {
     },
@@ -2857,15 +2857,13 @@
       this.$this = t0;
       this.piece = t1;
     },
-    Game: function Game() {
-    },
-    ChessGame: function ChessGame(t0) {
+    ChessGame: function ChessGame(t0, t1) {
       var _ = this;
       _.turnCount = 0;
-      _.__ChessGame_chessBoard_A = $;
-      _.activePiece = null;
+      _.__ChessGame_board_AI = $;
+      _.activePiece = t0;
       _.__ChessGame_view_A = $;
-      _.container = t0;
+      _.container = t1;
     },
     ChequeredBoard: function ChequeredBoard(t0) {
       this.pieces = t0;
@@ -2890,9 +2888,7 @@
       _.moveStrategy = t0;
       _.colour = t1;
       _.name = t2;
-      _.hasMoved = false;
-      _.initialRow = -1;
-      _.threatened = false;
+      _.threatened = _.hasMoved = false;
       _.__GamePiece_src_A = $;
     },
     EmptyPiece: function EmptyPiece(t0, t1, t2) {
@@ -2901,9 +2897,7 @@
       _.moveStrategy = t0;
       _.colour = t1;
       _.name = t2;
-      _.hasMoved = false;
-      _.initialRow = -1;
-      _.threatened = false;
+      _.threatened = _.hasMoved = false;
       _.__GamePiece_src_A = $;
     },
     NoMovement: function NoMovement() {
@@ -2927,19 +2921,19 @@
       return A.throwExpression(new A.LateError("Field '" + fieldName + "' has been assigned during initialization."));
     },
     main() {
-      var game, t1, decoratedBoard,
+      var game,
         gameContainer = document.getElementById("game-container");
       if (type$.Element._is(gameContainer)) {
-        game = new A.ChessGame(gameContainer);
+        game = new A.ChessGame(A.EmptyPiece$(0, 0), gameContainer);
         game.__ChessGame_view_A = new A.ChessBoardView(gameContainer, game);
-        J.get$children$x(gameContainer).clear$0(0);
-        t1 = J.JSArray_JSArray$growable(0, type$.List_ChessPiece);
-        t1 = game.__ChessGame_chessBoard_A = new A.ChequeredBoard(t1);
-        decoratedBoard = new A.BoardWithKings(new A.BoardWithQueens(new A.BoardWithRooks(new A.BoardWithKnights(new A.BoardWithBishops(new A.BoardWithPawns(t1))))));
-        decoratedBoard.setupPieces$1("w");
-        game.__ChessGame_chessBoard_A = decoratedBoard;
-        t1 = decoratedBoard;
-        game.__ChessGame_view_A.displayBoard$1(t1.getBoardState$0());
+        game.__ChessGame_board_AI = new A.BoardWithPawns(game.get$board());
+        game.__ChessGame_board_AI = new A.BoardWithBishops(game.get$board());
+        game.__ChessGame_board_AI = new A.BoardWithKnights(game.get$board());
+        game.__ChessGame_board_AI = new A.BoardWithRooks(game.get$board());
+        game.__ChessGame_board_AI = new A.BoardWithQueens(game.get$board());
+        game.__ChessGame_board_AI = new A.BoardWithKings(game.get$board());
+        game.get$board().setupPieces$0();
+        game.refreshView$0();
       }
     }
   },
@@ -2997,10 +2991,18 @@
       }
       return B.UnknownJavaScriptObject_methods;
     },
+    JSArray_JSArray$fixed($length, $E) {
+      if ($length < 0 || $length > 4294967295)
+        throw A.wrapException(A.RangeError$range($length, 0, 4294967295, "length", null));
+      return J.JSArray_JSArray$markFixed(new Array($length), $E);
+    },
     JSArray_JSArray$growable($length, $E) {
       if ($length < 0)
         throw A.wrapException(A.ArgumentError$("Length must be a non-negative integer: " + $length));
       return A._setArrayType(new Array($length), $E._eval$1("JSArray<0>"));
+    },
+    JSArray_JSArray$markFixed(allocation, $E) {
+      return J.JSArray_markFixedList(A._setArrayType(allocation, $E._eval$1("JSArray<0>")), $E);
     },
     JSArray_markFixedList(list, $T) {
       list.fixed$length = Array;
@@ -3763,7 +3765,7 @@
     get$isEmpty(receiver) {
       return this.get$length(receiver) === 0;
     },
-    toList$0(receiver) {
+    toList$1$growable(receiver, growable) {
       var t1, first, result, i, _this = this;
       if (_this.get$isEmpty(receiver)) {
         t1 = J.JSArray_JSArray$growable(0, A.instanceType(receiver)._eval$1("ListBase.E"));
@@ -3774,6 +3776,9 @@
       for (i = 1; i < _this.get$length(receiver); ++i)
         B.JSArray_methods.$indexSet(result, i, _this.$index(receiver, i));
       return result;
+    },
+    toList$0($receiver) {
+      return this.toList$1$growable($receiver, true);
     },
     toString$0(receiver) {
       return A.Iterable_iterableToFullString(receiver, "[", "]");
@@ -3823,7 +3828,7 @@
         }
         --skipCount;
       }
-      throw A.wrapException(A.IndexError$withLength(index, index - skipCount, this, "index"));
+      throw A.wrapException(A.IndexError$withLength(index, index - skipCount, this, null, "index"));
     },
     $isIterable: 1,
     $isSet: 1
@@ -3909,7 +3914,8 @@
   };
   A.UnimplementedError.prototype = {
     toString$0(_) {
-      return "UnimplementedError: " + this.message;
+      var message = this.message;
+      return message != null ? "UnimplementedError: " + message : "UnimplementedError";
     }
   };
   A.ConcurrentModificationError.prototype = {
@@ -3952,7 +3958,7 @@
           return iterator.get$current();
         --skipCount;
       }
-      throw A.wrapException(A.IndexError$withLength(index, index - skipCount, this, "index"));
+      throw A.wrapException(A.IndexError$withLength(index, index - skipCount, this, null, "index"));
     },
     toString$0(_) {
       return A.Iterable_iterableToShortString(this, "(", ")");
@@ -4028,7 +4034,7 @@
   };
   A._ChildrenElementList.prototype = {
     get$isEmpty(_) {
-      return this._element.firstElementChild == null;
+      return this._html$_element.firstElementChild == null;
     },
     get$length(_) {
       return this._childElements.length;
@@ -4040,7 +4046,7 @@
       return type$.Element._as(t1[index]);
     },
     add$1(_, value) {
-      this._element.appendChild(value).toString;
+      this._html$_element.appendChild(value).toString;
       return value;
     },
     get$iterator(_) {
@@ -4048,7 +4054,7 @@
       return new J.ArrayIterator(t1, t1.length, A._arrayInstanceType(t1)._eval$1("ArrayIterator<1>"));
     },
     clear$0(_) {
-      J._clearChildren$0$x(this._element);
+      J._clearChildren$0$x(this._html$_element);
     }
   };
   A.Element.prototype = {
@@ -4089,7 +4095,7 @@
         t2 = index >>> 0 !== index || index >= t1;
       t2.toString;
       if (t2)
-        throw A.wrapException(A.IndexError$withLength(index, t1, receiver, null));
+        throw A.wrapException(A.IndexError$withLength(index, t1, receiver, null, null));
       t1 = receiver[index];
       t1.toString;
       return t1;
@@ -4148,7 +4154,7 @@
         t2 = index >>> 0 !== index || index >= t1;
       t2.toString;
       if (t2)
-        throw A.wrapException(A.IndexError$withLength(index, t1, receiver, null));
+        throw A.wrapException(A.IndexError$withLength(index, t1, receiver, null, null));
       t1 = receiver[index];
       t1.toString;
       return t1;
@@ -4178,7 +4184,7 @@
         t2 = index >>> 0 !== index || index >= t1;
       t2.toString;
       if (t2)
-        throw A.wrapException(A.IndexError$withLength(index, t1, receiver, null));
+        throw A.wrapException(A.IndexError$withLength(index, t1, receiver, null, null));
       t1 = receiver[index];
       t1.toString;
       return t1;
@@ -4196,7 +4202,7 @@
     readClasses$0() {
       var t1, t2, _i, trimmed,
         s = A.LinkedHashSet_LinkedHashSet(type$.String);
-      for (t1 = this._element.className.split(" "), t2 = t1.length, _i = 0; _i < t2; ++_i) {
+      for (t1 = this._html$_element.className.split(" "), t2 = t1.length, _i = 0; _i < t2; ++_i) {
         trimmed = J.trim$0$s(t1[_i]);
         if (trimmed.length !== 0)
           s.add$1(0, trimmed);
@@ -4204,15 +4210,15 @@
       return s;
     },
     writeClasses$1(s) {
-      this._element.className = type$.Set_String._as(s).join$1(0, " ");
+      this._html$_element.className = type$.Set_String._as(s).join$1(0, " ");
     },
     get$length(_) {
-      var t1 = this._element.classList.length;
+      var t1 = this._html$_element.classList.length;
       t1.toString;
       return t1;
     },
     add$1(_, value) {
-      var list = this._element.classList,
+      var list = this._html$_element.classList,
         t1 = list.contains(value);
       t1.toString;
       list.add(value);
@@ -4328,7 +4334,7 @@
   A.AttributeClassSet.prototype = {
     readClasses$0() {
       var t1, t2, _i, trimmed,
-        classname = this._svg$_element.getAttribute("class"),
+        classname = this._element.getAttribute("class"),
         s = A.LinkedHashSet_LinkedHashSet(type$.String);
       if (classname == null)
         return s;
@@ -4340,7 +4346,7 @@
       return s;
     },
     writeClasses$1(s) {
-      this._svg$_element.setAttribute("class", s.join$1(0, " "));
+      this._element.setAttribute("class", s.join$1(0, " "));
     }
   };
   A.SvgElement.prototype = {
@@ -4352,13 +4358,6 @@
     }
   };
   A.BoardWithPieces.prototype = {
-    setupPieces$1(playerColour) {
-      var enemyColour;
-      this.base.setupPieces$1(playerColour);
-      enemyColour = playerColour === "w" ? "b" : "w";
-      this.setupFriendlyPieces$1(playerColour);
-      this.setupEnemyPieces$1(enemyColour);
-    },
     removePiece$2(i, j) {
       this.base.removePiece$2(i, j);
     },
@@ -4374,146 +4373,127 @@
     $isChessBoard: 1
   };
   A.BoardWithPawns.prototype = {
-    setupEnemyPieces$1(colour) {
-      var t1, j, pawn;
-      for (t1 = this.base, j = 0; j < 8; ++j) {
-        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn");
-        pawn.__GamePiece_src_A = "./assets/chess/pawn_" + colour + ".png";
+    setupPieces$0() {
+      var j, pawn,
+        t1 = this.base;
+      t1.setupPieces$0();
+      for (j = 0; j < 8; ++j) {
+        pawn = new A.ChessPiece(new A.PawnMovement(), "b", "pawn");
+        pawn.__GamePiece_src_A = "./assets/chess/pawn_b.png";
         t1.placePiece$3(pawn, 1, j);
-      }
-    },
-    setupFriendlyPieces$1(colour) {
-      var t1, j, pawn;
-      for (t1 = this.base, j = 0; j < 8; ++j) {
-        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn");
-        pawn.__GamePiece_src_A = "./assets/chess/pawn_" + colour + ".png";
+        pawn = new A.ChessPiece(new A.PawnMovement(), "w", "pawn");
+        pawn.__GamePiece_src_A = "./assets/chess/pawn_w.png";
         t1.placePiece$3(pawn, 6, j);
       }
     }
   };
   A.BoardWithBishops.prototype = {
-    setupEnemyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 0, 2);
-      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 0, 5);
+    setupPieces$0() {
+      var _this = this;
+      _this.base.setupPieces$0();
+      _this.placeBishop$3("b", 0, 2);
+      _this.placeBishop$3("b", 0, 5);
+      _this.placeBishop$3("w", 7, 2);
+      _this.placeBishop$3("w", 7, 5);
     },
-    setupFriendlyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 7, 2);
-      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 7, 5);
+    placeBishop$3(colour, i, j) {
+      this.base.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), i, j);
     }
   };
   A.BoardWithKnights.prototype = {
-    setupEnemyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 0, 1);
-      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 0, 6);
+    setupPieces$0() {
+      var _this = this;
+      _this.base.setupPieces$0();
+      _this.placeKnight$3("b", 0, 1);
+      _this.placeKnight$3("b", 0, 6);
+      _this.placeKnight$3("w", 7, 1);
+      _this.placeKnight$3("w", 7, 6);
     },
-    setupFriendlyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 7, 1);
-      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 7, 6);
+    placeKnight$3(colour, i, j) {
+      this.base.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), i, j);
     }
   };
   A.BoardWithRooks.prototype = {
-    setupEnemyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 0, 0);
-      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 0, 7);
+    setupPieces$0() {
+      var _this = this;
+      _this.base.setupPieces$0();
+      _this.placeRook$3("b", 0, 0);
+      _this.placeRook$3("b", 0, 7);
+      _this.placeRook$3("w", 7, 0);
+      _this.placeRook$3("w", 7, 7);
     },
-    setupFriendlyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 7, 0);
-      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 7, 7);
+    placeRook$3(colour, i, j) {
+      this.base.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), i, j);
     }
   };
   A.BoardWithKings.prototype = {
-    setupEnemyPieces$1(colour) {
-      var king = A.ChessPiece$(colour, "king", new A.KingMovement()),
-        t1 = this.base;
-      if (colour === "b")
-        t1.placePiece$3(king, 0, 4);
-      else
-        t1.placePiece$3(king, 0, 3);
+    setupPieces$0() {
+      this.base.setupPieces$0();
+      this.placeKing$3("b", 0, 4);
+      this.placeKing$3("w", 7, 4);
     },
-    setupFriendlyPieces$1(colour) {
-      var king = A.ChessPiece$(colour, "king", new A.KingMovement()),
-        t1 = this.base;
-      if (colour === "b")
-        t1.placePiece$3(king, 7, 3);
-      else
-        t1.placePiece$3(king, 7, 4);
+    placeKing$3(colour, i, j) {
+      this.base.placePiece$3(A.ChessPiece$(colour, "king", new A.KingMovement()), i, j);
     }
   };
   A.BoardWithQueens.prototype = {
-    setupEnemyPieces$1(colour) {
-      var queen = A.ChessPiece$(colour, "queen", new A.QueenMovement()),
-        t1 = this.base;
-      if (colour === "b")
-        t1.placePiece$3(queen, 0, 3);
-      else
-        t1.placePiece$3(queen, 0, 4);
+    setupPieces$0() {
+      this.base.setupPieces$0();
+      this.placeQueen$3("b", 0, 3);
+      this.placeQueen$3("w", 7, 3);
     },
-    setupFriendlyPieces$1(colour) {
-      var queen = A.ChessPiece$(colour, "queen", new A.QueenMovement()),
-        t1 = this.base;
-      if (colour === "b")
-        t1.placePiece$3(queen, 7, 4);
-      else
-        t1.placePiece$3(queen, 7, 3);
+    placeQueen$3(colour, i, j) {
+      this.base.placePiece$3(A.ChessPiece$(colour, "queen", new A.QueenMovement()), i, j);
     }
   };
   A.ChessBoardView.prototype = {
     displayBoard$1(boardstate) {
-      var t1, t2, t3, _i, list, row, t4, t5, tile;
+      var t1, t2, t3, t4, _i, rowOfPieces, t5, row, t6, t7, t8, tile, t9, img, t10, element, subtype;
       type$.List_List_ChessPiece._as(boardstate);
       t1 = this.container;
       t2 = J.getInterceptor$x(t1);
       t2.get$children(t1).clear$0(0);
-      for (t3 = boardstate.length, _i = 0; _i < boardstate.length; boardstate.length === t3 || (0, A.throwConcurrentModificationError)(boardstate), ++_i) {
-        list = boardstate[_i];
-        row = document.createElement("div");
-        t4 = J.getInterceptor$x(row);
-        t4.get$classes(row).add$1(0, "board-row");
-        for (t5 = B.JSArray_methods.get$iterator(list); t5.moveNext$0();) {
-          tile = this.createTile$1(t5.get$current());
-          t4.get$children(row).add$1(0, tile);
+      for (t3 = boardstate.length, t4 = type$.ImageElement, _i = 0; _i < boardstate.length; boardstate.length === t3 || (0, A.throwConcurrentModificationError)(boardstate), ++_i) {
+        rowOfPieces = boardstate[_i];
+        t5 = document;
+        row = t5.createElement("div");
+        t6 = J.getInterceptor$x(row);
+        t6.get$classes(row).add$1(0, "board-row");
+        for (t7 = B.JSArray_methods.get$iterator(rowOfPieces); t7.moveNext$0();) {
+          t8 = t7.get$current();
+          tile = this.createTile$1(t8);
+          t9 = t8 instanceof A.EmptyPiece;
+          if (!t9) {
+            img = t5.createElement("img");
+            J.get$classes$x(img).add$1(0, "piece-img");
+            if (t4._is(img)) {
+              t10 = t8.__GamePiece_src_A;
+              t10 === $ && A.throwLateFieldNI("src");
+              B.ImageElement_methods.set$src(img, t10);
+            }
+            J.get$children$x(tile).add$1(0, img);
+          }
+          if (t8.threatened) {
+            element = t5.createElement("div");
+            t8 = J.getInterceptor$x(element);
+            t8.get$classes(element).add$1(0, "marker");
+            subtype = t9 ? "dot" : "circle";
+            t8.get$classes(element).add$1(0, subtype);
+            J.get$children$x(tile).add$1(0, element);
+          }
+          t6.get$children(row).add$1(0, tile);
         }
         t2.get$children(t1).add$1(0, row);
       }
     },
     createTile$1(piece) {
-      var t3, img, marker,
-        t1 = document,
-        tile = t1.createElement("div"),
-        t2 = J.getInterceptor$x(tile);
-      t2.get$classes(tile).add$1(0, "chess-tile");
+      var tile = document.createElement("div"),
+        t1 = J.getInterceptor$x(tile);
+      t1.get$classes(tile).add$1(0, "chess-tile");
       if (B.JSInt_methods.$mod(piece.i + piece.j, 2) !== 0)
-        t2.get$classes(tile).add$1(0, "dark");
-      t3 = piece instanceof A.EmptyPiece;
-      if (!t3) {
-        img = t1.createElement("img");
-        J.get$classes$x(img).add$1(0, "piece-img");
-        if (type$.ImageElement._is(img)) {
-          t1 = piece.__GamePiece_src_A;
-          t1 === $ && A.throwLateFieldNI("src");
-          B.ImageElement_methods.set$src(img, t1);
-        }
-        t2.get$children(tile).add$1(0, img);
-      }
-      if (piece.threatened) {
-        marker = t3 ? this.createMarker$1("dot") : this.createMarker$1("circle");
-        t2.get$children(tile).add$1(0, marker);
-      }
-      t2._addEventListener$3(tile, "click", type$.nullable_dynamic_Function_Event._as(new A.ChessBoardView_createTile_closure(this, piece)), null);
+        t1.get$classes(tile).add$1(0, "dark");
+      t1._addEventListener$3(tile, "click", type$.nullable_dynamic_Function_Event._as(new A.ChessBoardView_createTile_closure(this, piece)), null);
       return tile;
-    },
-    createMarker$1(markerType) {
-      var element = document.createElement("div"),
-        t1 = J.getInterceptor$x(element);
-      t1.get$classes(element).add$1(0, "marker");
-      t1.get$classes(element).add$1(0, markerType);
-      return element;
     },
     $isChessView: 1
   };
@@ -4526,66 +4506,60 @@
     },
     $signature: 6
   };
-  A.Game.prototype = {};
   A.ChessGame.prototype = {
+    get$board() {
+      var t1,
+        value = this.__ChessGame_board_AI;
+      if (value === $) {
+        t1 = J.JSArray_JSArray$growable(0, type$.List_ChessPiece);
+        value = this.__ChessGame_board_AI = new A.ChequeredBoard(t1);
+      }
+      return value;
+    },
     submitMove$2(i, j) {
-      var t2, piece, _this = this,
-        _s10_ = "chessBoard",
+      var t1, piece, _this = this;
+      if (_this.get$board().getPiece$2(i, j).threatened) {
         t1 = _this.activePiece;
-      if (t1 != null) {
-        if (_this.validMove$3(t1, i, j)) {
-          t1 = _this.activePiece;
-          t1.toString;
-          t2 = _this.__ChessGame_chessBoard_A;
-          t2 === $ && A.throwLateFieldNI(_s10_);
-          t2.removePiece$2(t1.i, t1.j);
-          _this.__ChessGame_chessBoard_A.removePiece$2(i, j);
-          _this.__ChessGame_chessBoard_A.placePiece$3(t1, i, j);
-          t1.hasMoved = true;
-          _this.activePiece = null;
-          ++_this.turnCount;
-          _this.clearMoveOptions$0();
-          t1 = _this.__ChessGame_view_A;
-          t1 === $ && A.throwLateFieldNI("view");
-          t1.displayBoard$1(_this.__ChessGame_chessBoard_A.getBoardState$0());
-          return;
-        }
+        _this.get$board().removePiece$2(t1.i, t1.j);
+        _this.get$board().removePiece$2(i, j);
+        _this.get$board().placePiece$3(t1, i, j);
+        t1.hasMoved = true;
+        ++_this.turnCount;
+        _this.activePiece = A.EmptyPiece$(0, 0);
         _this.clearMoveOptions$0();
-        _this.activePiece = null;
+        _this.refreshView$0();
+        return;
       }
-      t1 = _this.__ChessGame_chessBoard_A;
-      t1 === $ && A.throwLateFieldNI(_s10_);
-      piece = t1.getPiece$2(i, j);
+      _this.clearMoveOptions$0();
+      _this.activePiece = A.EmptyPiece$(0, 0);
+      piece = _this.get$board().getPiece$2(i, j);
       t1 = B.JSInt_methods.$mod(_this.turnCount, 2) === 0 ? "w" : "b";
-      t1 = piece.colour === t1;
-      if (t1) {
-        piece.moveStrategy.move$2(_this.__ChessGame_chessBoard_A, piece);
+      if (piece.colour === t1) {
+        piece.moveStrategy.move$2(_this.get$board(), piece);
         _this.activePiece = piece;
-        t1 = _this.__ChessGame_view_A;
-        t1 === $ && A.throwLateFieldNI("view");
-        t1.displayBoard$1(_this.__ChessGame_chessBoard_A.getBoardState$0());
       }
+      _this.refreshView$0();
+    },
+    refreshView$0() {
+      var t1 = this.__ChessGame_view_A;
+      t1 === $ && A.throwLateFieldNI("view");
+      t1.displayBoard$1(this.get$board().getBoardState$0());
     },
     clearMoveOptions$0() {
-      var i, j, t1;
-      for (i = 0; i < 8; ++i)
+      var t1, i, j, value, t2;
+      for (t1 = type$.JSArray_List_ChessPiece, i = 0; i < 8; ++i)
         for (j = 0; j < 8; ++j) {
-          t1 = this.__ChessGame_chessBoard_A;
-          t1 === $ && A.throwLateFieldNI("chessBoard");
-          t1.getPiece$2(i, j).threatened = false;
+          value = this.__ChessGame_board_AI;
+          if (value === $) {
+            t2 = A._setArrayType(new Array(0), t1);
+            value = this.__ChessGame_board_AI = new A.ChequeredBoard(t2);
+          }
+          value.getPiece$2(i, j).threatened = false;
         }
-    },
-    validMove$3(piece, i, j) {
-      var t1;
-      if (piece == null)
-        return false;
-      t1 = this.__ChessGame_chessBoard_A;
-      t1 === $ && A.throwLateFieldNI("chessBoard");
-      return t1.getPiece$2(i, j).threatened;
     }
   };
   A.ChequeredBoard.prototype = {
-    setupPieces$1(playerColour) {
+    setupPieces$0() {
       var t1, t2, i, row, j;
       for (t1 = this.pieces, t2 = type$.JSArray_ChessPiece, i = 0; i < 8; ++i) {
         row = A._setArrayType(new Array(0), t2);
@@ -4604,8 +4578,6 @@
       B.JSArray_methods.$indexSet(t1[i], j, piece);
       piece.i = i;
       piece.j = j;
-      if (piece.initialRow === -1)
-        piece.initialRow = i;
     },
     removePiece$2(i, j) {
       var t1 = this.pieces;
@@ -4657,7 +4629,7 @@
   };
   A.PawnMovement.prototype = {
     move$2(board, piece) {
-      if (piece.initialRow === 6) {
+      if (piece.colour === "w") {
         if (piece.canMove$3(board, piece.i - 1, piece.j))
           if (!piece.hasMoved)
             piece.canMove$3(board, piece.i - 2, piece.j);
@@ -4703,23 +4675,21 @@
   };
   A.BishopMovement.prototype = {
     move$2(board, piece) {
-      var t1, _i, a, _i0, b,
+      var t1, _i, a, _i0,
         components = A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal([1, -1], type$.dynamic), true, type$.int);
       for (t1 = components.length, _i = 0; _i < t1; ++_i) {
         a = components[_i];
-        for (_i0 = 0; _i0 < t1; ++_i0) {
-          b = components[_i0];
-          this.exploreDiagonal$6(piece, board, piece.i, piece.j, a, b);
-        }
+        for (_i0 = 0; _i0 < t1; ++_i0)
+          this.exploreImpulse$4(piece, board, a, components[_i0]);
       }
     },
-    exploreDiagonal$6(piece, board, i, j, di, dj) {
+    exploreImpulse$4(piece, board, di, dj) {
+      var i = piece.i,
+        j = piece.j;
       for (; true;) {
         i += di;
         j += dj;
-        if (piece.canCapture$3(board, i, j))
-          return;
-        if (!piece.canMove$3(board, i, j))
+        if (piece.canCapture$3(board, i, j) || !piece.canMove$3(board, i, j))
           return;
       }
     },
@@ -4728,18 +4698,18 @@
   A.RookMovement.prototype = {
     move$2(board, piece) {
       var _this = this;
-      _this.exploreImpulse$6(piece, board, piece.i, piece.j, 0, 1);
-      _this.exploreImpulse$6(piece, board, piece.i, piece.j, 0, -1);
-      _this.exploreImpulse$6(piece, board, piece.i, piece.j, 1, 0);
-      _this.exploreImpulse$6(piece, board, piece.i, piece.j, -1, 0);
+      _this.exploreImpulse$4(piece, board, 0, 1);
+      _this.exploreImpulse$4(piece, board, 0, -1);
+      _this.exploreImpulse$4(piece, board, 1, 0);
+      _this.exploreImpulse$4(piece, board, -1, 0);
     },
-    exploreImpulse$6(piece, board, i, j, di, dj) {
+    exploreImpulse$4(piece, board, di, dj) {
+      var i = piece.i,
+        j = piece.j;
       for (; true;) {
         i += di;
         j += dj;
-        if (piece.canCapture$3(board, i, j))
-          return;
-        if (!piece.canMove$3(board, i, j))
+        if (piece.canCapture$3(board, i, j) || !piece.canMove$3(board, i, j))
           return;
       }
     },
@@ -4787,7 +4757,7 @@
       _inherit = hunkHelpers.inherit,
       _inheritMany = hunkHelpers.inheritMany;
     _inherit(A.Object, null);
-    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.BoardWithPieces, A.ChessBoardView, A.Game, A.ChequeredBoard, A.GamePiece, A.NoMovement, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement]);
+    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.BoardWithPieces, A.ChessBoardView, A.ChessGame, A.ChequeredBoard, A.GamePiece, A.NoMovement, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement]);
     _inheritMany(J.Interceptor, [J.JSBool, J.JSNull, J.JavaScriptObject, J.JSNumber, J.JSString]);
     _inheritMany(J.JavaScriptObject, [J.LegacyJavaScriptObject, J.JSArray, A.EventTarget, A.DomException, A.DomTokenList, A.Event, A._HtmlCollection_JavaScriptObject_ListMixin, A._NodeList_JavaScriptObject_ListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin]);
     _inheritMany(J.LegacyJavaScriptObject, [J.PlainJavaScriptObject, J.UnknownJavaScriptObject, J.JavaScriptFunction]);
@@ -4816,7 +4786,6 @@
     _inherit(A._NamedNodeMap, A.__NamedNodeMap_JavaScriptObject_ListMixin_ImmutableListMixin);
     _inheritMany(A.CssClassSetImpl, [A._ElementCssClassSet, A.AttributeClassSet]);
     _inheritMany(A.BoardWithPieces, [A.BoardWithPawns, A.BoardWithBishops, A.BoardWithKnights, A.BoardWithRooks, A.BoardWithKings, A.BoardWithQueens]);
-    _inherit(A.ChessGame, A.Game);
     _inherit(A.ChessPiece, A.GamePiece);
     _inherit(A.EmptyPiece, A.ChessPiece);
     _mixin(A._HtmlCollection_JavaScriptObject_ListMixin, A.ListBase);
@@ -4846,6 +4815,7 @@
       ImageElement: findType("ImageElement"),
       Iterable_dynamic: findType("Iterable<@>"),
       JSArray_ChessPiece: findType("JSArray<ChessPiece>"),
+      JSArray_List_ChessPiece: findType("JSArray<List<ChessPiece>>"),
       JSArray_String: findType("JSArray<String>"),
       JSArray_dynamic: findType("JSArray<@>"),
       JSNull: findType("JSNull"),

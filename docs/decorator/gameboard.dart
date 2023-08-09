@@ -1,9 +1,8 @@
 import 'pieces.dart';
-import 'game.dart';
 
 abstract class ChessBoard {
   void removePiece(int i, int j);
-  void setupPieces(String playerColour);
+  void setupPieces();
   ChessPiece getPiece(int i, int j);
   void placePiece(ChessPiece piece, int i, int j);
   List<List<ChessPiece>> getBoardState();
@@ -12,9 +11,9 @@ abstract class ChessBoard {
 class ChequeredBoard implements ChessBoard {
   List<List<ChessPiece>> pieces = List.empty(growable: true);
 
-  ChequeredBoard(Game game) {}
+  ChequeredBoard() {}
 
-  void setupPieces(String playerColour) {
+  void setupPieces() {
     for (int i = 0; i < 8; i++) {
       List<ChessPiece> row = List.empty(growable: true);
       for (int j = 0; j < 8; j++) {
@@ -30,13 +29,8 @@ class ChequeredBoard implements ChessBoard {
 
   void placePiece(ChessPiece piece, int i, int j) {
     pieces[i][j] = piece;
-
     piece.i = i;
     piece.j = j;
-
-    if (piece.initialRow == -1) {
-      piece.initialRow = i;
-    }
   }
 
   void removePiece(int i, int j) {

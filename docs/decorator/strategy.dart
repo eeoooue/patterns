@@ -11,7 +11,7 @@ class NoMovement implements MovementStrategy {
 
 class PawnMovement implements MovementStrategy {
   void move(ChessBoard board, ChessPiece piece) {
-    if (piece.initialRow == 6) {
+    if (piece.colour == "w") {
       return moveNorth(board, piece);
     } else {
       return moveSouth(board, piece);
@@ -20,7 +20,7 @@ class PawnMovement implements MovementStrategy {
 
   void moveSouth(ChessBoard board, ChessPiece piece) {
     if (piece.canMove(board, piece.i + 1, piece.j)) {
-      if (piece.hasMoved == false) {
+      if (!piece.hasMoved) {
         piece.canMove(board, piece.i + 2, piece.j);
       }
     }
@@ -66,22 +66,18 @@ class BishopMovement implements MovementStrategy {
 
     for (int a in components) {
       for (int b in components) {
-        exploreDiagonal(piece, board, piece.i, piece.j, a, b);
+        exploreImpulse(piece, board, a, b);
       }
     }
   }
 
-  void exploreDiagonal(
-      ChessPiece piece, ChessBoard board, int i, int j, int di, int dj) {
+  void exploreImpulse(ChessPiece piece, ChessBoard board, int di, int dj) {
+    int i = piece.i;
+    int j = piece.j;
     while (true) {
       i += di;
       j += dj;
-
-      if (piece.canCapture(board, i, j)) {
-        return;
-      }
-
-      if (piece.canMove(board, i, j) == false) {
+      if (piece.canCapture(board, i, j) || !piece.canMove(board, i, j)) {
         return;
       }
     }
@@ -90,23 +86,19 @@ class BishopMovement implements MovementStrategy {
 
 class RookMovement implements MovementStrategy {
   void move(ChessBoard board, ChessPiece piece) {
-    exploreImpulse(piece, board, piece.i, piece.j, 0, 1);
-    exploreImpulse(piece, board, piece.i, piece.j, 0, -1);
-    exploreImpulse(piece, board, piece.i, piece.j, 1, 0);
-    exploreImpulse(piece, board, piece.i, piece.j, -1, 0);
+    exploreImpulse(piece, board, 0, 1);
+    exploreImpulse(piece, board, 0, -1);
+    exploreImpulse(piece, board, 1, 0);
+    exploreImpulse(piece, board, -1, 0);
   }
 
-  void exploreImpulse(
-      ChessPiece piece, ChessBoard board, int i, int j, int di, int dj) {
+  void exploreImpulse(ChessPiece piece, ChessBoard board, int di, int dj) {
+    int i = piece.i;
+    int j = piece.j;
     while (true) {
       i += di;
       j += dj;
-
-      if (piece.canCapture(board, i, j)) {
-        return;
-      }
-
-      if (piece.canMove(board, i, j) == false) {
+      if (piece.canCapture(board, i, j) || !piece.canMove(board, i, j)) {
         return;
       }
     }
