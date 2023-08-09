@@ -2860,7 +2860,7 @@
     ChessGame: function ChessGame(t0, t1) {
       var _ = this;
       _.turnCount = 0;
-      _.__ChessGame_chessBoard_A = $;
+      _.__ChessGame_board_AI = $;
       _.activePiece = t0;
       _.__ChessGame_view_A = $;
       _.container = t1;
@@ -2888,9 +2888,7 @@
       _.moveStrategy = t0;
       _.colour = t1;
       _.name = t2;
-      _.hasMoved = false;
-      _.initialRow = -1;
-      _.threatened = false;
+      _.threatened = _.hasMoved = false;
       _.__GamePiece_src_A = $;
     },
     EmptyPiece: function EmptyPiece(t0, t1, t2) {
@@ -2899,9 +2897,7 @@
       _.moveStrategy = t0;
       _.colour = t1;
       _.name = t2;
-      _.hasMoved = false;
-      _.initialRow = -1;
-      _.threatened = false;
+      _.threatened = _.hasMoved = false;
       _.__GamePiece_src_A = $;
     },
     NoMovement: function NoMovement() {
@@ -2925,28 +2921,19 @@
       return A.throwExpression(new A.LateError("Field '" + fieldName + "' has been assigned during initialization."));
     },
     main() {
-      var game, t1,
+      var game,
         gameContainer = document.getElementById("game-container");
       if (type$.Element._is(gameContainer)) {
         game = new A.ChessGame(A.EmptyPiece$(0, 0), gameContainer);
         game.__ChessGame_view_A = new A.ChessBoardView(gameContainer, game);
-        t1 = J.JSArray_JSArray$growable(0, type$.List_ChessPiece);
-        t1 = new A.ChequeredBoard(t1);
-        game.__ChessGame_chessBoard_A = t1;
-        t1 = new A.BoardWithPawns(t1);
-        game.__ChessGame_chessBoard_A = t1;
-        t1 = new A.BoardWithBishops(t1);
-        game.__ChessGame_chessBoard_A = t1;
-        t1 = new A.BoardWithKnights(t1);
-        game.__ChessGame_chessBoard_A = t1;
-        t1 = new A.BoardWithRooks(t1);
-        game.__ChessGame_chessBoard_A = t1;
-        t1 = new A.BoardWithQueens(t1);
-        game.__ChessGame_chessBoard_A = t1;
-        t1 = new A.BoardWithKings(t1);
-        game.__ChessGame_chessBoard_A = t1;
-        t1.setupPieces$0();
-        game.__ChessGame_view_A.displayBoard$1(game.__ChessGame_chessBoard_A.getBoardState$0());
+        game.__ChessGame_board_AI = new A.BoardWithPawns(game.get$board());
+        game.__ChessGame_board_AI = new A.BoardWithBishops(game.get$board());
+        game.__ChessGame_board_AI = new A.BoardWithKnights(game.get$board());
+        game.__ChessGame_board_AI = new A.BoardWithRooks(game.get$board());
+        game.__ChessGame_board_AI = new A.BoardWithQueens(game.get$board());
+        game.__ChessGame_board_AI = new A.BoardWithKings(game.get$board());
+        game.get$board().setupPieces$0();
+        game.__ChessGame_view_A.displayBoard$1(game.get$board().getBoardState$0());
       }
     }
   },
@@ -4508,43 +4495,53 @@
     $signature: 6
   };
   A.ChessGame.prototype = {
+    get$board() {
+      var t1,
+        value = this.__ChessGame_board_AI;
+      if (value === $) {
+        t1 = J.JSArray_JSArray$growable(0, type$.List_ChessPiece);
+        value = this.__ChessGame_board_AI = new A.ChequeredBoard(t1);
+      }
+      return value;
+    },
     submitMove$2(i, j) {
-      var piece, _this = this,
-        t1 = _this.__ChessGame_chessBoard_A;
-      t1 === $ && A.throwLateFieldNI("chessBoard");
-      if (t1.getPiece$2(i, j).threatened) {
+      var t1, piece, _this = this;
+      if (_this.get$board().getPiece$2(i, j).threatened) {
         t1 = _this.activePiece;
-        _this.__ChessGame_chessBoard_A.removePiece$2(t1.i, t1.j);
-        _this.__ChessGame_chessBoard_A.removePiece$2(i, j);
-        _this.__ChessGame_chessBoard_A.placePiece$3(t1, i, j);
+        _this.get$board().removePiece$2(t1.i, t1.j);
+        _this.get$board().removePiece$2(i, j);
+        _this.get$board().placePiece$3(t1, i, j);
         t1.hasMoved = true;
         ++_this.turnCount;
         _this.activePiece = A.EmptyPiece$(0, 0);
         _this.clearMoveOptions$0();
         t1 = _this.__ChessGame_view_A;
         t1 === $ && A.throwLateFieldNI("view");
-        t1.displayBoard$1(_this.__ChessGame_chessBoard_A.getBoardState$0());
+        t1.displayBoard$1(_this.get$board().getBoardState$0());
         return;
       }
       _this.clearMoveOptions$0();
       _this.activePiece = A.EmptyPiece$(0, 0);
-      piece = _this.__ChessGame_chessBoard_A.getPiece$2(i, j);
+      piece = _this.get$board().getPiece$2(i, j);
       t1 = B.JSInt_methods.$mod(_this.turnCount, 2) === 0 ? "w" : "b";
       if (piece.colour === t1) {
-        piece.moveStrategy.move$2(_this.__ChessGame_chessBoard_A, piece);
+        piece.moveStrategy.move$2(_this.get$board(), piece);
         _this.activePiece = piece;
       }
       t1 = _this.__ChessGame_view_A;
       t1 === $ && A.throwLateFieldNI("view");
-      t1.displayBoard$1(_this.__ChessGame_chessBoard_A.getBoardState$0());
+      t1.displayBoard$1(_this.get$board().getBoardState$0());
     },
     clearMoveOptions$0() {
-      var i, j, t1;
-      for (i = 0; i < 8; ++i)
+      var t1, i, j, value, t2;
+      for (t1 = type$.JSArray_List_ChessPiece, i = 0; i < 8; ++i)
         for (j = 0; j < 8; ++j) {
-          t1 = this.__ChessGame_chessBoard_A;
-          t1 === $ && A.throwLateFieldNI("chessBoard");
-          t1.getPiece$2(i, j).threatened = false;
+          value = this.__ChessGame_board_AI;
+          if (value === $) {
+            t2 = A._setArrayType(new Array(0), t1);
+            value = this.__ChessGame_board_AI = new A.ChequeredBoard(t2);
+          }
+          value.getPiece$2(i, j).threatened = false;
         }
     }
   };
@@ -4568,8 +4565,6 @@
       B.JSArray_methods.$indexSet(t1[i], j, piece);
       piece.i = i;
       piece.j = j;
-      if (piece.initialRow === -1)
-        piece.initialRow = i;
     },
     removePiece$2(i, j) {
       var t1 = this.pieces;
@@ -4621,7 +4616,7 @@
   };
   A.PawnMovement.prototype = {
     move$2(board, piece) {
-      if (piece.initialRow === 6) {
+      if (piece.colour === "w") {
         if (piece.canMove$3(board, piece.i - 1, piece.j))
           if (!piece.hasMoved)
             piece.canMove$3(board, piece.i - 2, piece.j);
@@ -4667,23 +4662,21 @@
   };
   A.BishopMovement.prototype = {
     move$2(board, piece) {
-      var t1, _i, a, _i0, b,
+      var t1, _i, a, _i0,
         components = A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal([1, -1], type$.dynamic), true, type$.int);
       for (t1 = components.length, _i = 0; _i < t1; ++_i) {
         a = components[_i];
-        for (_i0 = 0; _i0 < t1; ++_i0) {
-          b = components[_i0];
-          this.exploreDiagonal$6(piece, board, piece.i, piece.j, a, b);
-        }
+        for (_i0 = 0; _i0 < t1; ++_i0)
+          this.exploreImpulse$4(piece, board, a, components[_i0]);
       }
     },
-    exploreDiagonal$6(piece, board, i, j, di, dj) {
+    exploreImpulse$4(piece, board, di, dj) {
+      var i = piece.i,
+        j = piece.j;
       for (; true;) {
         i += di;
         j += dj;
-        if (piece.canCapture$3(board, i, j))
-          return;
-        if (!piece.canMove$3(board, i, j))
+        if (piece.canCapture$3(board, i, j) || !piece.canMove$3(board, i, j))
           return;
       }
     },
@@ -4692,18 +4685,18 @@
   A.RookMovement.prototype = {
     move$2(board, piece) {
       var _this = this;
-      _this.exploreImpulse$6(piece, board, piece.i, piece.j, 0, 1);
-      _this.exploreImpulse$6(piece, board, piece.i, piece.j, 0, -1);
-      _this.exploreImpulse$6(piece, board, piece.i, piece.j, 1, 0);
-      _this.exploreImpulse$6(piece, board, piece.i, piece.j, -1, 0);
+      _this.exploreImpulse$4(piece, board, 0, 1);
+      _this.exploreImpulse$4(piece, board, 0, -1);
+      _this.exploreImpulse$4(piece, board, 1, 0);
+      _this.exploreImpulse$4(piece, board, -1, 0);
     },
-    exploreImpulse$6(piece, board, i, j, di, dj) {
+    exploreImpulse$4(piece, board, di, dj) {
+      var i = piece.i,
+        j = piece.j;
       for (; true;) {
         i += di;
         j += dj;
-        if (piece.canCapture$3(board, i, j))
-          return;
-        if (!piece.canMove$3(board, i, j))
+        if (piece.canCapture$3(board, i, j) || !piece.canMove$3(board, i, j))
           return;
       }
     },
@@ -4809,6 +4802,7 @@
       ImageElement: findType("ImageElement"),
       Iterable_dynamic: findType("Iterable<@>"),
       JSArray_ChessPiece: findType("JSArray<ChessPiece>"),
+      JSArray_List_ChessPiece: findType("JSArray<List<ChessPiece>>"),
       JSArray_String: findType("JSArray<String>"),
       JSArray_dynamic: findType("JSArray<@>"),
       JSNull: findType("JSNull"),

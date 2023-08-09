@@ -28,9 +28,7 @@ class ChessPiece extends GamePiece {
   MovementStrategy moveStrategy;
   String colour;
   String name;
-  bool selected = false;
   bool hasMoved = false;
-  int initialRow = -1;
   bool threatened = false;
 
   ChessPiece(this.colour, this.name, this.moveStrategy) {

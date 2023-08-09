@@ -6,7 +6,7 @@ import 'pieces.dart';
 
 class ChessGame {
   int turnCount = 0;
-  late ChessBoard chessBoard;
+  late ChessBoard board = ChequeredBoard();
   ChessPiece activePiece = EmptyPiece(0, 0);
   late ChessView view;
   Element container;
@@ -16,13 +16,8 @@ class ChessGame {
   }
 
   void startGame() {
-    chessBoard = createBoard();
     setupPieces();
     refreshView();
-  }
-
-  ChessBoard createBoard() {
-    return ChequeredBoard(this);
   }
 
   String getTurnPlayer() {
@@ -38,9 +33,9 @@ class ChessGame {
     clearMoveOptions();
     activePiece = EmptyPiece(0, 0);
 
-    ChessPiece piece = chessBoard.getPiece(i, j);
+    ChessPiece piece = board.getPiece(i, j);
     if (piece.colour == getTurnPlayer()) {
-      piece.move(chessBoard);
+      piece.move(board);
       activePiece = piece;
     }
 
@@ -48,13 +43,13 @@ class ChessGame {
   }
 
   void refreshView() {
-    view.displayBoard(chessBoard.getBoardState());
+    view.displayBoard(board.getBoardState());
   }
 
   void clearMoveOptions() {
     for (int i = 0; i < 8; i++) {
       for (int j = 0; j < 8; j++) {
-        ChessPiece piece = chessBoard.getPiece(i, j);
+        ChessPiece piece = board.getPiece(i, j);
         piece.threatened = false;
       }
     }
@@ -68,24 +63,24 @@ class ChessGame {
   }
 
   bool validMove(ChessPiece piece, int i, int j) {
-    ChessPiece target = chessBoard.getPiece(i, j);
+    ChessPiece target = board.getPiece(i, j);
     return target.threatened;
   }
 
   void movePiece(ChessPiece piece, int i, int j) {
-    chessBoard.removePiece(piece.i, piece.j);
-    chessBoard.removePiece(i, j);
-    chessBoard.placePiece(piece, i, j);
+    board.removePiece(piece.i, piece.j);
+    board.removePiece(i, j);
+    board.placePiece(piece, i, j);
     piece.hasMoved = true;
   }
 
   void setupPieces() {
-    chessBoard = BoardWithPawns(chessBoard);
-    chessBoard = BoardWithBishops(chessBoard);
-    chessBoard = BoardWithKnights(chessBoard);
-    chessBoard = BoardWithRooks(chessBoard);
-    chessBoard = BoardWithQueens(chessBoard);
-    chessBoard = BoardWithKings(chessBoard);
-    chessBoard.setupPieces();
+    board = BoardWithPawns(board);
+    board = BoardWithBishops(board);
+    board = BoardWithKnights(board);
+    board = BoardWithRooks(board);
+    board = BoardWithQueens(board);
+    board = BoardWithKings(board);
+    board.setupPieces();
   }
 }
