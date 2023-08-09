@@ -12,6 +12,12 @@ abstract class MovementStrategy {
   List<MoveOption> move(ChessBoard board, ChessPiece piece);
 }
 
+class NoMovement implements MovementStrategy {
+  List<MoveOption> move(ChessBoard board, ChessPiece piece) {
+    return List.empty();
+  }
+}
+
 class PawnMovement implements MovementStrategy {
   List<MoveOption> move(ChessBoard board, ChessPiece piece) {
     print("the pawn's initial row = ${piece.initialRow}");

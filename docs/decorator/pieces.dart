@@ -76,3 +76,7 @@ class ChessPiece extends GamePiece {
     return (0 <= i && i < 8) & (0 <= j && j < 8);
   }
 }
+
+class EmptyPiece extends ChessPiece {
+  EmptyPiece() : super("empty", "empty", NoMovement()) {}
+}
