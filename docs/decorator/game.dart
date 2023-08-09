@@ -53,7 +53,6 @@ class ChessGame extends Game {
         return;
       }
       activePiece = null;
-      chessBoard.clearHighlights();
     }
 
     dynamic piece = chessBoard.getPiece(i, j);
@@ -65,7 +64,6 @@ class ChessGame extends Game {
   }
 
   void endTurn() {
-    chessBoard.clearHighlights();
     turnCount += 1;
   }
 

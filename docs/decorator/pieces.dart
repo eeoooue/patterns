@@ -50,9 +50,8 @@ class ChessPiece extends GamePiece {
 
   bool canCapture(ChessBoard board, int i, int j) {
     if (validCoords(i, j)) {
-      GamePiece? target = board.getPiece(i, j);
-      if (target is ChessPiece && target.colour != colour) {
-        board.addMarker(i, j, "circle");
+      ChessPiece target = board.getPiece(i, j);
+      if (!(target is EmptyPiece) && target.colour != colour) {
         return true;
       }
     }
@@ -62,9 +61,8 @@ class ChessPiece extends GamePiece {
 
   bool canMove(ChessBoard board, int i, int j) {
     if (validCoords(i, j)) {
-      GamePiece? target = board.getPiece(i, j);
-      if (target == null) {
-        board.addMarker(i, j, "dot");
+      GamePiece target = board.getPiece(i, j);
+      if (target is EmptyPiece) {
         return true;
       }
     }
