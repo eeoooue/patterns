@@ -56,6 +56,16 @@ class ChessBoardView implements ChessView {
       tile.children.add(img);
     }
 
+    if (piece.threatened) {
+      Element marker;
+      if (piece is EmptyPiece) {
+        marker = createMarker("dot");
+      } else {
+        marker = createMarker("circle");
+      }
+      tile.children.add(marker);
+    }
+
     tile.addEventListener("click", (event) {
       game.submitMove(piece.i, piece.j);
     });

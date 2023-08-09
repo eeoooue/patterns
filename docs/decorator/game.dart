@@ -59,6 +59,7 @@ class ChessGame extends Game {
     if (piece is ChessPiece && piece.colour == getTurnPlayer()) {
       piece.move(chessBoard);
       activePiece = piece;
+      view.displayBoard(chessBoard.getBoardState());
     }
   }
 

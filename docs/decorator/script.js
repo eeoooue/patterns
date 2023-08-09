@@ -4483,14 +4483,15 @@
       }
     },
     createTile$1(piece) {
-      var img,
+      var t3, img, marker,
         t1 = document,
         tile = t1.createElement("div"),
         t2 = J.getInterceptor$x(tile);
       t2.get$classes(tile).add$1(0, "chess-tile");
       if (B.JSInt_methods.$mod(piece.i + piece.j, 2) !== 0)
         t2.get$classes(tile).add$1(0, "dark");
-      if (!(piece instanceof A.EmptyPiece)) {
+      t3 = piece instanceof A.EmptyPiece;
+      if (!t3) {
         img = t1.createElement("img");
         J.get$classes$x(img).add$1(0, "piece-img");
         if (type$.ImageElement._is(img)) {
@@ -4500,8 +4501,19 @@
         }
         t2.get$children(tile).add$1(0, img);
       }
+      if (piece.threatened) {
+        marker = t3 ? this.createMarker$1("dot") : this.createMarker$1("circle");
+        t2.get$children(tile).add$1(0, marker);
+      }
       t2._addEventListener$3(tile, "click", type$.nullable_dynamic_Function_Event._as(new A.ChessBoardView_createTile_closure(this, piece)), null);
       return tile;
+    },
+    createMarker$1(markerType) {
+      var element = document.createElement("div"),
+        t1 = J.getInterceptor$x(element);
+      t1.get$classes(element).add$1(0, "marker");
+      t1.get$classes(element).add$1(0, markerType);
+      return element;
     },
     $isChessView: 1
   };
@@ -4549,6 +4561,9 @@
       if (t1) {
         piece.moveStrategy.move$2(_this.__ChessGame_chessBoard_A, piece);
         _this.activePiece = piece;
+        t1 = _this.__ChessGame_view_A;
+        t1 === $ && A.throwLateFieldNI("view");
+        t1.displayBoard$1(_this.__ChessGame_chessBoard_A.getBoardState$0());
       }
     },
     clearMoveOptions$0() {
