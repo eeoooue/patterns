@@ -12,7 +12,7 @@ abstract class ChessBoard {
 class ChequeredBoard implements ChessBoard {
   List<List<ChessPiece>> pieces = List.empty(growable: true);
 
-  ChequeredBoard(Game game) {}
+  ChequeredBoard(ChessGame game) {}
 
   void setupPieces() {
     for (int i = 0; i < 8; i++) {

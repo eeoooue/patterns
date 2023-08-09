@@ -4,35 +4,21 @@ import 'boarddecorators.dart';
 import 'gameboard.dart';
 import 'pieces.dart';
 
-abstract class Game {
-  Element container;
-
-  Game(this.container) {}
-
-  void startGame();
-
-  void clearPlayArea() {
-    container.children.clear();
-  }
-
-  void submitMove(int i, int j);
-}
-
-class ChessGame extends Game {
+class ChessGame {
   int turnCount = 0;
   late ChessBoard chessBoard;
-  ChessPiece? activePiece = null;
+  ChessPiece activePiece = EmptyPiece(0, 0);
   late ChessView view;
+  Element container;
 
-  ChessGame(Element container) : super(container) {
+  ChessGame(this.container) {
     view = ChessBoardView(this, container);
   }
 
   void startGame() {
-    clearPlayArea();
     chessBoard = createBoard();
     setupPieces();
-    view.displayBoard(chessBoard.getBoardState());
+    refreshView();
   }
 
   ChessBoard createBoard() {
@@ -44,23 +30,25 @@ class ChessGame extends Game {
   }
 
   void submitMove(int i, int j) {
-    if (activePiece != null) {
-      if (validMove(activePiece, i, j)) {
-        movePiece(activePiece!, i, j);
-        endTurn();
-        return;
-      }
-      clearMoveOptions();
-      activePiece = null;
+    if (validMove(activePiece, i, j)) {
+      movePiece(activePiece, i, j);
+      endTurn();
+      return;
     }
+    clearMoveOptions();
+    activePiece = EmptyPiece(0, 0);
 
-    dynamic piece = chessBoard.getPiece(i, j);
-
-    if (piece is ChessPiece && piece.colour == getTurnPlayer()) {
+    ChessPiece piece = chessBoard.getPiece(i, j);
+    if (piece.colour == getTurnPlayer()) {
       piece.move(chessBoard);
       activePiece = piece;
-      view.displayBoard(chessBoard.getBoardState());
     }
+
+    refreshView();
+  }
+
+  void refreshView() {
+    view.displayBoard(chessBoard.getBoardState());
   }
 
   void clearMoveOptions() {
@@ -74,15 +62,12 @@ class ChessGame extends Game {
 
   void endTurn() {
     turnCount += 1;
+    activePiece = EmptyPiece(0, 0);
     clearMoveOptions();
-    view.displayBoard(chessBoard.getBoardState());
+    refreshView();
   }
 
-  bool validMove(ChessPiece? piece, int i, int j) {
-    if (piece == null) {
-      return false;
-    }
-
+  bool validMove(ChessPiece piece, int i, int j) {
     ChessPiece target = chessBoard.getPiece(i, j);
     return target.threatened;
   }
@@ -92,22 +77,15 @@ class ChessGame extends Game {
     chessBoard.removePiece(i, j);
     chessBoard.placePiece(piece, i, j);
     piece.hasMoved = true;
-    activePiece = null;
   }
 
   void setupPieces() {
-    var thing = chessBoard;
-
-    if (thing is ChequeredBoard) {
-      ChessBoard decoratedBoard = thing;
-      decoratedBoard = BoardWithPawns(decoratedBoard);
-      decoratedBoard = BoardWithBishops(decoratedBoard);
-      decoratedBoard = BoardWithKnights(decoratedBoard);
-      decoratedBoard = BoardWithRooks(decoratedBoard);
-      decoratedBoard = BoardWithQueens(decoratedBoard);
-      decoratedBoard = BoardWithKings(decoratedBoard);
-      decoratedBoard.setupPieces();
-      chessBoard = decoratedBoard;
-    }
+    chessBoard = BoardWithPawns(chessBoard);
+    chessBoard = BoardWithBishops(chessBoard);
+    chessBoard = BoardWithKnights(chessBoard);
+    chessBoard = BoardWithRooks(chessBoard);
+    chessBoard = BoardWithQueens(chessBoard);
+    chessBoard = BoardWithKings(chessBoard);
+    chessBoard.setupPieces();
   }
 }
