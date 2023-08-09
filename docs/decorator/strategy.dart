@@ -1,13 +1,6 @@
 import 'gameboard.dart';
 import 'pieces.dart';
 
-class MoveOption {
-  int i;
-  int j;
-
-  MoveOption(this.i, this.j) {}
-}
-
 abstract class MovementStrategy {
   void move(ChessBoard board, ChessPiece piece);
 }
@@ -57,11 +50,8 @@ class KnightMovement implements MovementStrategy {
     for (int a in components) {
       for (int b in components) {
         if (a.abs() + b.abs() == 3) {
-          MoveOption move = MoveOption(piece.i + a, piece.j + b);
-
-          if (piece.canMove(board, move.i, move.j) == false) {
-            piece.canCapture(board, move.i, move.j);
-          }
+          piece.canMove(board, piece.i + a, piece.j + b);
+          piece.canCapture(board, piece.i + a, piece.j + b);
         }
       }
     }
@@ -138,9 +128,8 @@ class KingMovement implements MovementStrategy {
 
     for (int a in components) {
       for (int b in components) {
-        MoveOption move = MoveOption(piece.i + a, piece.j + b);
-        piece.canCapture(board, move.i, move.j);
-        piece.canMove(board, move.i, move.j);
+        piece.canCapture(board, piece.i + a, piece.j + b);
+        piece.canMove(board, piece.i + a, piece.j + b);
       }
     }
   }

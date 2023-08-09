@@ -33,8 +33,6 @@ class ChessPiece extends GamePiece {
   int initialRow = -1;
   bool threatened = false;
 
-  List<MoveOption> options = List.empty(growable: true);
-
   ChessPiece(this.colour, this.name, this.moveStrategy) {
     setSource("./assets/chess/${name}_${colour}.png");
   }

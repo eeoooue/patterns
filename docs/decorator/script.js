@@ -1251,12 +1251,6 @@
     _failedAsCheck(object, testRti) {
       throw A.wrapException(A._TypeError$fromMessage(A._Error_compose(object, A._rtiToString(testRti, null))));
     },
-    checkTypeBound(type, bound, variable, methodName) {
-      var _null = null;
-      if (A._isSubtype(init.typeUniverse, type, _null, bound, _null))
-        return type;
-      throw A.wrapException(A._TypeError$fromMessage("The type argument '" + A._rtiToString(type, _null) + "' is not a subtype of the type variable bound '" + A._rtiToString(bound, _null) + "' of type variable '" + variable + "' in '" + methodName + "'."));
-    },
     _Error_compose(object, checkedTypeDescription) {
       return A.Error_safeToString(object) + ": type '" + A._rtiToString(A._structuralTypeOf(object), null) + "' is not a subtype of type '" + checkedTypeDescription + "'";
     },
@@ -2770,10 +2764,6 @@
       this._element = t0;
       this._childElements = t1;
     },
-    _FrozenElementList: function _FrozenElementList(t0, t1) {
-      this._nodeList = t0;
-      this.$ti = t1;
-    },
     Element: function Element() {
     },
     Event: function Event() {
@@ -2881,14 +2871,12 @@
       this.pieces = t0;
     },
     ChessPiece$(colour, $name, moveStrategy) {
-      var t1 = J.JSArray_JSArray$growable(0, type$.MoveOption);
-      t1 = new A.ChessPiece(moveStrategy, colour, $name, t1);
+      var t1 = new A.ChessPiece(moveStrategy, colour, $name);
       t1.__GamePiece_src_A = "./assets/chess/" + $name + "_" + colour + ".png";
       return t1;
     },
     EmptyPiece$(iPosition, jPosition) {
-      var t1 = J.JSArray_JSArray$growable(0, type$.MoveOption);
-      t1 = new A.EmptyPiece(new A.NoMovement(), "empty", "empty", t1);
+      var t1 = new A.EmptyPiece(new A.NoMovement(), "empty", "empty");
       t1.__GamePiece_src_A = "./assets/chess/empty_empty.png";
       t1.i = iPosition;
       t1.j = jPosition;
@@ -2896,7 +2884,7 @@
     },
     GamePiece: function GamePiece() {
     },
-    ChessPiece: function ChessPiece(t0, t1, t2, t3) {
+    ChessPiece: function ChessPiece(t0, t1, t2) {
       var _ = this;
       _.j = _.i = 0;
       _.moveStrategy = t0;
@@ -2905,10 +2893,9 @@
       _.hasMoved = false;
       _.initialRow = -1;
       _.threatened = false;
-      _.options = t3;
       _.__GamePiece_src_A = $;
     },
-    EmptyPiece: function EmptyPiece(t0, t1, t2, t3) {
+    EmptyPiece: function EmptyPiece(t0, t1, t2) {
       var _ = this;
       _.j = _.i = 0;
       _.moveStrategy = t0;
@@ -2917,7 +2904,6 @@
       _.hasMoved = false;
       _.initialRow = -1;
       _.threatened = false;
-      _.options = t3;
       _.__GamePiece_src_A = $;
     },
     NoMovement: function NoMovement() {
@@ -4065,17 +4051,6 @@
       J._clearChildren$0$x(this._element);
     }
   };
-  A._FrozenElementList.prototype = {
-    get$length(_) {
-      return this._nodeList.length;
-    },
-    $index(_, index) {
-      var t1 = this._nodeList;
-      if (!(index >= 0 && index < t1.length))
-        return A.ioore(t1, index);
-      return this.$ti._precomputed1._as(t1[index]);
-    }
-  };
   A.Element.prototype = {
     get$children(receiver) {
       var t1 = receiver.children;
@@ -4400,19 +4375,17 @@
   };
   A.BoardWithPawns.prototype = {
     setupEnemyPieces$1(colour) {
-      var t1, t2, j, t3, pawn;
-      for (t1 = this.base, t2 = type$.JSArray_MoveOption, j = 0; j < 8; ++j) {
-        t3 = A._setArrayType(new Array(0), t2);
-        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn", t3);
+      var t1, j, pawn;
+      for (t1 = this.base, j = 0; j < 8; ++j) {
+        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn");
         pawn.__GamePiece_src_A = "./assets/chess/pawn_" + colour + ".png";
         t1.placePiece$3(pawn, 1, j);
       }
     },
     setupFriendlyPieces$1(colour) {
-      var t1, t2, j, t3, pawn;
-      for (t1 = this.base, t2 = type$.JSArray_MoveOption, j = 0; j < 8; ++j) {
-        t3 = A._setArrayType(new Array(0), t2);
-        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn", t3);
+      var t1, j, pawn;
+      for (t1 = this.base, j = 0; j < 8; ++j) {
+        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn");
         pawn.__GamePiece_src_A = "./assets/chess/pawn_" + colour + ".png";
         t1.placePiece$3(pawn, 6, j);
       }
@@ -4530,41 +4503,6 @@
       t2._addEventListener$3(tile, "click", type$.nullable_dynamic_Function_Event._as(new A.ChessBoardView_createTile_closure(this, piece)), null);
       return tile;
     },
-    highlightMoves$1(piece) {
-      var t1, t2, t3, _i, move, t4, t5, t6, row, tile, element, marker,
-        _s16_ = "querySelectorAll";
-      for (t1 = piece.options, t2 = this.container, t3 = type$.Element, _i = 0; false; ++_i) {
-        move = t1[_i];
-        t4 = move.i;
-        t5 = move.j;
-        A.checkTypeBound(t3, t3, "T", _s16_);
-        t6 = t2.querySelectorAll(".board-row");
-        if (!(t4 >= 0 && t4 < t6.length))
-          return A.ioore(t6, t4);
-        row = t3._as(t6[t4]);
-        A.checkTypeBound(t3, t3, "T", _s16_);
-        t4 = row.querySelectorAll(".chess-tile");
-        if (!(t5 >= 0 && t5 < t4.length))
-          return A.ioore(t4, t5);
-        tile = t3._as(t4[t5]);
-        t4 = J.getInterceptor$x(tile);
-        t5 = t4.get$children(tile);
-        if (t5.get$length(t5) === 0) {
-          element = document.createElement("div");
-          t5 = J.getInterceptor$x(element);
-          t5.get$classes(element).add$1(0, "marker");
-          t5.get$classes(element).add$1(0, "dot");
-          marker = element;
-        } else {
-          element = document.createElement("div");
-          t5 = J.getInterceptor$x(element);
-          t5.get$classes(element).add$1(0, "marker");
-          t5.get$classes(element).add$1(0, "circle");
-          marker = element;
-        }
-        t4.get$children(tile).add$1(0, marker);
-      }
-    },
     $isChessView: 1
   };
   A.ChessBoardView_createTile_closure.prototype = {
@@ -4611,9 +4549,6 @@
       if (t1) {
         piece.moveStrategy.move$2(_this.__ChessGame_chessBoard_A, piece);
         _this.activePiece = piece;
-        t1 = _this.__ChessGame_view_A;
-        t1 === $ && A.throwLateFieldNI("view");
-        t1.highlightMoves$1(piece);
       }
     },
     clearMoveOptions$0() {
@@ -4739,13 +4674,11 @@
             t3 = piece.i;
             if (typeof a !== "number")
               return A.iae(a);
-            t3 += a;
             t4 = piece.j;
             if (typeof b !== "number")
               return A.iae(b);
-            t4 += b;
-            if (!piece.canMove$3(board, t3, t4))
-              piece.canCapture$3(board, t3, t4);
+            piece.canMove$3(board, t3 + a, t4 + b);
+            piece.canCapture$3(board, piece.i + a, piece.j + b);
           }
         }
       }
@@ -4818,13 +4751,11 @@
           t2 = piece.i;
           if (typeof a !== "number")
             return A.iae(a);
-          t2 += a;
           t3 = piece.j;
           if (typeof b !== "number")
             return A.iae(b);
-          t3 += b;
-          piece.canCapture$3(board, t2, t3);
-          piece.canMove$3(board, t2, t3);
+          piece.canCapture$3(board, t2 + a, t3 + b);
+          piece.canMove$3(board, piece.i + a, piece.j + b);
         }
       }
     },
@@ -4861,7 +4792,7 @@
     _inheritMany(A.Node, [A.Element, A.CharacterData]);
     _inheritMany(A.Element, [A.HtmlElement, A.SvgElement]);
     _inheritMany(A.HtmlElement, [A.AnchorElement, A.AreaElement, A.FormElement, A.ImageElement, A.SelectElement]);
-    _inheritMany(A.ListBase, [A._ChildrenElementList, A._FrozenElementList, A._ChildNodeListLazy, A.FilteredElementList]);
+    _inheritMany(A.ListBase, [A._ChildrenElementList, A._ChildNodeListLazy, A.FilteredElementList]);
     _inherit(A._HtmlCollection_JavaScriptObject_ListMixin_ImmutableListMixin, A._HtmlCollection_JavaScriptObject_ListMixin);
     _inherit(A.HtmlCollection, A._HtmlCollection_JavaScriptObject_ListMixin_ImmutableListMixin);
     _inherit(A._NodeList_JavaScriptObject_ListMixin_ImmutableListMixin, A._NodeList_JavaScriptObject_ListMixin);
@@ -4889,7 +4820,7 @@
     leafTags: null,
     arrayRti: Symbol("$ti")
   };
-  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"int":{"num":[]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"_FrozenElementList":{"ListBase":["1"],"List":["1"],"Iterable":["1"],"ListBase.E":"1"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"BoardWithPieces":{"ChessBoard":[]},"BoardWithPawns":{"ChessBoard":[]},"BoardWithBishops":{"ChessBoard":[]},"BoardWithKnights":{"ChessBoard":[]},"BoardWithRooks":{"ChessBoard":[]},"BoardWithKings":{"ChessBoard":[]},"BoardWithQueens":{"ChessBoard":[]},"ChessBoardView":{"ChessView":[]},"ChequeredBoard":{"ChessBoard":[]},"EmptyPiece":{"ChessPiece":[]},"NoMovement":{"MovementStrategy":[]},"PawnMovement":{"MovementStrategy":[]},"KnightMovement":{"MovementStrategy":[]},"BishopMovement":{"MovementStrategy":[]},"RookMovement":{"MovementStrategy":[]},"QueenMovement":{"MovementStrategy":[]},"KingMovement":{"MovementStrategy":[]}}'));
+  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"int":{"num":[]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"BoardWithPieces":{"ChessBoard":[]},"BoardWithPawns":{"ChessBoard":[]},"BoardWithBishops":{"ChessBoard":[]},"BoardWithKnights":{"ChessBoard":[]},"BoardWithRooks":{"ChessBoard":[]},"BoardWithKings":{"ChessBoard":[]},"BoardWithQueens":{"ChessBoard":[]},"ChessBoardView":{"ChessView":[]},"ChequeredBoard":{"ChessBoard":[]},"EmptyPiece":{"ChessPiece":[]},"NoMovement":{"MovementStrategy":[]},"PawnMovement":{"MovementStrategy":[]},"KnightMovement":{"MovementStrategy":[]},"BishopMovement":{"MovementStrategy":[]},"RookMovement":{"MovementStrategy":[]},"QueenMovement":{"MovementStrategy":[]},"KingMovement":{"MovementStrategy":[]}}'));
   A._Universe_addErasedTypes(init.typeUniverse, JSON.parse('{"_SetBase":1}'));
   var type$ = (function rtii() {
     var findType = A.findType;
@@ -4900,7 +4831,6 @@
       ImageElement: findType("ImageElement"),
       Iterable_dynamic: findType("Iterable<@>"),
       JSArray_ChessPiece: findType("JSArray<ChessPiece>"),
-      JSArray_MoveOption: findType("JSArray<MoveOption>"),
       JSArray_String: findType("JSArray<String>"),
       JSArray_dynamic: findType("JSArray<@>"),
       JSNull: findType("JSNull"),
@@ -4908,7 +4838,6 @@
       JavaScriptIndexingBehavior_dynamic: findType("JavaScriptIndexingBehavior<@>"),
       List_ChessPiece: findType("List<ChessPiece>"),
       List_List_ChessPiece: findType("List<List<ChessPiece>>"),
-      MoveOption: findType("MoveOption"),
       MovementStrategy: findType("MovementStrategy"),
       Node: findType("Node"),
       Null: findType("Null"),

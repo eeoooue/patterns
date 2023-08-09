@@ -1,13 +1,11 @@
 import 'dart:html';
 import 'game.dart';
 import 'pieces.dart';
-import 'strategy.dart';
 
 abstract class ChessView {
   void clearAll();
   void displayBoard(List<List<ChessPiece>> boardstate);
   Element createTile(ChessPiece piece);
-  void highlightMoves(ChessPiece piece);
 }
 
 class ChessBoardView implements ChessView {
@@ -63,21 +61,6 @@ class ChessBoardView implements ChessView {
     });
 
     return tile;
-  }
-
-  void highlightMoves(ChessPiece piece) {
-    for (MoveOption move in piece.options) {
-      Element tile = getTile(move.i, move.j);
-      Element marker;
-
-      if (tile.children.length == 0) {
-        marker = createMarker("dot");
-      } else {
-        marker = createMarker("circle");
-      }
-
-      tile.children.add(marker);
-    }
   }
 
   Element createMarker(String markerType) {
