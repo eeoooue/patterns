@@ -16,7 +16,14 @@ class ChessBoardView {
     container.children.clear();
   }
 
-  void displayBoard(List<List<ChessPiece>> boardstate) {}
+  void displayBoard(List<List<ChessPiece>> boardstate) {
+    clearAll();
+    for (List<ChessPiece> list in boardstate) {
+      for (ChessPiece piece in list) {
+        createTile(piece);
+      }
+    }
+  }
 
   Element createTile(ChessPiece piece) {
     Element tile = document.createElement("div");
