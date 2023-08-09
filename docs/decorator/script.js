@@ -4522,7 +4522,7 @@
         tile = t1.createElement("div"),
         t2 = J.getInterceptor$x(tile);
       t2.get$classes(tile).add$1(0, "chess-tile");
-      if (B.JSInt_methods.$mod(piece.j + piece.i, 2) === 0)
+      if (B.JSInt_methods.$mod(piece.i + piece.j, 2) !== 0)
         t2.get$classes(tile).add$1(0, "dark");
       if (!(piece instanceof A.EmptyPiece)) {
         img = t1.createElement("img");

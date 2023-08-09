@@ -49,7 +49,7 @@ class ChessBoardView implements ChessView {
     Element tile = document.createElement("div");
     tile.classes.add("chess-tile");
 
-    if ((piece.j + piece.i) % 2 == 0) {
+    if ((piece.i + piece.j) % 2 != 0) {
       tile.classes.add("dark");
     }
 
