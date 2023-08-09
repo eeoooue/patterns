@@ -71,12 +71,7 @@ body {
     flex-direction: column;
 }
 
-#side-tray {
-    background-color: #eee;
-    padding: 24px;
-    width: 420px;
-    margin: 0px 10px;
-}
+
 
 .chess-tile {
     background-color: #e0c46e;
@@ -93,4 +88,24 @@ body {
 
 .chess-tile.dark {
     background-color: #735e47;
+}
+
+
+#side-tray {
+    background-color: #eee;
+    padding: 24px;
+    width: 300px;
+    margin: 0px 10px;
+}
+
+.deco-cbox {
+    margin: 10px 10px;
+    padding: 10px 10px;
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.cbox-label {
+    padding: 0 10px;
 }

@@ -17,7 +17,15 @@ class ChessGame {
   }
 
   void startGame() {
-    setupPieces();
+    List<bool> initState = List.empty(growable: true);
+    initState.add(true);
+    initState.add(true);
+    initState.add(true);
+    initState.add(true);
+    initState.add(true);
+    initState.add(true);
+
+    setupPieces(initState);
     refreshView();
   }
 
@@ -78,13 +86,28 @@ class ChessGame {
     piece.hasMoved = true;
   }
 
-  void setupPieces() {
-    board = BoardWithPawns(board);
-    board = BoardWithBishops(board);
-    board = BoardWithKnights(board);
-    board = BoardWithRooks(board);
-    board = BoardWithQueens(board);
-    board = BoardWithKings(board);
+  void setupPieces(List<bool> state) {
+    board = ChequeredBoard();
+    if (state[0]) {
+      board = BoardWithPawns(board);
+    }
+    if (state[1]) {
+      board = BoardWithBishops(board);
+    }
+    if (state[2]) {
+      board = BoardWithKnights(board);
+    }
+    if (state[3]) {
+      board = BoardWithRooks(board);
+    }
+    if (state[4]) {
+      board = BoardWithQueens(board);
+    }
+    if (state[5]) {
+      board = BoardWithKings(board);
+    }
+
     board.setupPieces();
+    refreshView();
   }
 }
