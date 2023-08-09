@@ -3,7 +3,6 @@ import 'game.dart';
 import 'pieces.dart';
 
 abstract class ChessView {
-  void clearAll();
   void displayBoard(List<List<ChessPiece>> boardstate);
   Element createTile(ChessPiece piece);
 }
@@ -14,33 +13,38 @@ class ChessBoardView implements ChessView {
 
   ChessBoardView(this.game, this.container) {}
 
-  void clearAll() {
-    container.children.clear();
-  }
-
-  Element getTile(int i, int j) {
-    List<Element> rows = container.querySelectorAll(".board-row");
-    Element row = rows[i];
-    List<Element> tiles = row.querySelectorAll(".chess-tile");
-    return tiles[j];
-  }
-
   void displayBoard(List<List<ChessPiece>> boardstate) {
-    clearAll();
-    for (List<ChessPiece> list in boardstate) {
-      Element row = createRow();
-      for (ChessPiece piece in list) {
-        Element tile = createTile(piece);
+    container.children.clear();
+    for (List<ChessPiece> rowOfPieces in boardstate) {
+      Element row = createRowContainer();
+      for (ChessPiece piece in rowOfPieces) {
+        Element tile = buildTile(piece);
         row.children.add(tile);
       }
       container.children.add(row);
     }
   }
 
-  Element createRow() {
+  Element createRowContainer() {
     Element row = document.createElement("div");
     row.classes.add("board-row");
     return row;
+  }
+
+  Element buildTile(ChessPiece piece) {
+    Element tile = createTile(piece);
+
+    if (!(piece is EmptyPiece)) {
+      Element img = piece.getElement();
+      tile.children.add(img);
+    }
+
+    if (piece.threatened) {
+      Element marker = createMarker(piece);
+      tile.children.add(marker);
+    }
+
+    return tile;
   }
 
   Element createTile(ChessPiece piece) {
@@ -51,21 +55,6 @@ class ChessBoardView implements ChessView {
       tile.classes.add("dark");
     }
 
-    if (!(piece is EmptyPiece)) {
-      Element img = getPieceImage(piece);
-      tile.children.add(img);
-    }
-
-    if (piece.threatened) {
-      Element marker;
-      if (piece is EmptyPiece) {
-        marker = createMarker("dot");
-      } else {
-        marker = createMarker("circle");
-      }
-      tile.children.add(marker);
-    }
-
     tile.addEventListener("click", (event) {
       game.submitMove(piece.i, piece.j);
     });
@@ -73,14 +62,11 @@ class ChessBoardView implements ChessView {
     return tile;
   }
 
-  Element createMarker(String markerType) {
+  Element createMarker(ChessPiece piece) {
     Element element = document.createElement("div");
     element.classes.add("marker");
-    element.classes.add(markerType);
+    String subtype = (piece is EmptyPiece) ? "dot" : "circle";
+    element.classes.add(subtype);
     return element;
-  }
-
-  Element getPieceImage(ChessPiece piece) {
-    return piece.getElement();
   }
 }

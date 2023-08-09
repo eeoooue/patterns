@@ -4442,55 +4442,52 @@
   };
   A.ChessBoardView.prototype = {
     displayBoard$1(boardstate) {
-      var t1, t2, t3, _i, list, row, t4, t5, tile;
+      var t1, t2, t3, t4, _i, rowOfPieces, t5, row, t6, t7, t8, tile, t9, img, t10, element, subtype;
       type$.List_List_ChessPiece._as(boardstate);
       t1 = this.container;
       t2 = J.getInterceptor$x(t1);
       t2.get$children(t1).clear$0(0);
-      for (t3 = boardstate.length, _i = 0; _i < boardstate.length; boardstate.length === t3 || (0, A.throwConcurrentModificationError)(boardstate), ++_i) {
-        list = boardstate[_i];
-        row = document.createElement("div");
-        t4 = J.getInterceptor$x(row);
-        t4.get$classes(row).add$1(0, "board-row");
-        for (t5 = B.JSArray_methods.get$iterator(list); t5.moveNext$0();) {
-          tile = this.createTile$1(t5.get$current());
-          t4.get$children(row).add$1(0, tile);
+      for (t3 = boardstate.length, t4 = type$.ImageElement, _i = 0; _i < boardstate.length; boardstate.length === t3 || (0, A.throwConcurrentModificationError)(boardstate), ++_i) {
+        rowOfPieces = boardstate[_i];
+        t5 = document;
+        row = t5.createElement("div");
+        t6 = J.getInterceptor$x(row);
+        t6.get$classes(row).add$1(0, "board-row");
+        for (t7 = B.JSArray_methods.get$iterator(rowOfPieces); t7.moveNext$0();) {
+          t8 = t7.get$current();
+          tile = this.createTile$1(t8);
+          t9 = t8 instanceof A.EmptyPiece;
+          if (!t9) {
+            img = t5.createElement("img");
+            J.get$classes$x(img).add$1(0, "piece-img");
+            if (t4._is(img)) {
+              t10 = t8.__GamePiece_src_A;
+              t10 === $ && A.throwLateFieldNI("src");
+              B.ImageElement_methods.set$src(img, t10);
+            }
+            J.get$children$x(tile).add$1(0, img);
+          }
+          if (t8.threatened) {
+            element = t5.createElement("div");
+            t8 = J.getInterceptor$x(element);
+            t8.get$classes(element).add$1(0, "marker");
+            subtype = t9 ? "dot" : "circle";
+            t8.get$classes(element).add$1(0, subtype);
+            J.get$children$x(tile).add$1(0, element);
+          }
+          t6.get$children(row).add$1(0, tile);
         }
         t2.get$children(t1).add$1(0, row);
       }
     },
     createTile$1(piece) {
-      var t3, img, marker,
-        t1 = document,
-        tile = t1.createElement("div"),
-        t2 = J.getInterceptor$x(tile);
-      t2.get$classes(tile).add$1(0, "chess-tile");
+      var tile = document.createElement("div"),
+        t1 = J.getInterceptor$x(tile);
+      t1.get$classes(tile).add$1(0, "chess-tile");
       if (B.JSInt_methods.$mod(piece.i + piece.j, 2) !== 0)
-        t2.get$classes(tile).add$1(0, "dark");
-      t3 = piece instanceof A.EmptyPiece;
-      if (!t3) {
-        img = t1.createElement("img");
-        J.get$classes$x(img).add$1(0, "piece-img");
-        if (type$.ImageElement._is(img)) {
-          t1 = piece.__GamePiece_src_A;
-          t1 === $ && A.throwLateFieldNI("src");
-          B.ImageElement_methods.set$src(img, t1);
-        }
-        t2.get$children(tile).add$1(0, img);
-      }
-      if (piece.threatened) {
-        marker = t3 ? this.createMarker$1("dot") : this.createMarker$1("circle");
-        t2.get$children(tile).add$1(0, marker);
-      }
-      t2._addEventListener$3(tile, "click", type$.nullable_dynamic_Function_Event._as(new A.ChessBoardView_createTile_closure(this, piece)), null);
+        t1.get$classes(tile).add$1(0, "dark");
+      t1._addEventListener$3(tile, "click", type$.nullable_dynamic_Function_Event._as(new A.ChessBoardView_createTile_closure(this, piece)), null);
       return tile;
-    },
-    createMarker$1(markerType) {
-      var element = document.createElement("div"),
-        t1 = J.getInterceptor$x(element);
-      t1.get$classes(element).add$1(0, "marker");
-      t1.get$classes(element).add$1(0, markerType);
-      return element;
     },
     $isChessView: 1
   };
