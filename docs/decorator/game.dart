@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'boardviews.dart';
 import 'strategy.dart';
 import 'boarddecorators.dart';
 import 'gameboard.dart';
@@ -6,25 +7,16 @@ import 'pieces.dart';
 
 abstract class Game {
   Element container;
-  late GameBoard board;
 
   Game(this.container) {}
 
-  void startGame() {
-    clearPlayArea();
-    board = createBoard();
-    setupPieces();
-  }
+  void startGame();
 
   void clearPlayArea() {
     container.children.clear();
   }
 
   void submitMove(int i, int j);
-
-  GameBoard createBoard();
-
-  void setupPieces();
 }
 
 class ChessGame extends Game {
@@ -32,11 +24,21 @@ class ChessGame extends Game {
   late ChessBoard chessBoard;
   ChessPiece? activePiece = null;
   List<MoveOption> options = List.empty(growable: true);
+  late ChessBoardView view;
 
-  ChessGame(Element container) : super(container) {}
+  ChessGame(Element container) : super(container) {
+    view = ChessBoardView(this, container);
+  }
 
-  GameBoard createBoard() {
-    return ChequeredBoard(this, container);
+  void startGame() {
+    clearPlayArea();
+    chessBoard = createBoard();
+    setupPieces();
+    view.displayBoard(chessBoard.getBoardState());
+  }
+
+  ChessBoard createBoard() {
+    return ChequeredBoard(this);
   }
 
   String getTurnPlayer() {
@@ -65,9 +67,12 @@ class ChessGame extends Game {
 
   void endTurn() {
     turnCount += 1;
+    view.displayBoard(chessBoard.getBoardState());
   }
 
   bool validMove(int i, int j) {
+    print("checking for move[${i}][${j}] in ${options.length} options");
+
     for (MoveOption move in options) {
       if ((move.i == i) && (move.j == j)) {
         return true;
@@ -85,7 +90,7 @@ class ChessGame extends Game {
   }
 
   void setupPieces() {
-    var thing = board;
+    var thing = chessBoard;
 
     if (thing is ChequeredBoard) {
       ChessBoard decoratedBoard = thing;

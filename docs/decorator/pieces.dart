@@ -4,22 +4,21 @@ import 'gameboard.dart';
 
 abstract class GamePiece {
   late String src;
-  late ImageElement element;
 
   GamePiece() {}
 
   void setSource(String address) {
     src = address;
-    buildElement();
   }
 
-  void buildElement() {
+  Element getElement() {
     Element img = document.createElement("img");
     img.classes.add("piece-img");
     if (img is ImageElement) {
       img.src = src;
-      element = img;
     }
+
+    return img;
   }
 }
 
@@ -76,5 +75,9 @@ class ChessPiece extends GamePiece {
 }
 
 class EmptyPiece extends ChessPiece {
-  EmptyPiece() : super("empty", "empty", NoMovement()) {}
+  EmptyPiece(int iPosition, int jPosition)
+      : super("empty", "empty", NoMovement()) {
+    i = iPosition;
+    j = jPosition;
+  }
 }

@@ -8,10 +8,10 @@ abstract class BoardWithPieces implements ChessBoard {
   BoardWithPieces(this.base) {}
 
   void setupPieces(String playerColour) {
+    base.setupPieces(playerColour);
     String enemyColour = (playerColour == "w") ? "b" : "w";
     setupFriendlyPieces(playerColour);
     setupEnemyPieces(enemyColour);
-    base.setupPieces(playerColour);
   }
 
   void setupEnemyPieces(String colour);
@@ -27,6 +27,10 @@ abstract class BoardWithPieces implements ChessBoard {
 
   ChessPiece getPiece(int i, int j) {
     return base.getPiece(i, j);
+  }
+
+  List<List<ChessPiece>> getBoardState() {
+    return base.getBoardState();
   }
 }
 
