@@ -9,17 +9,15 @@ class MoveOption {
 }
 
 abstract class MovementStrategy {
-  List<MoveOption> move(ChessBoard board, ChessPiece piece);
+  void move(ChessBoard board, ChessPiece piece);
 }
 
 class NoMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, ChessPiece piece) {
-    return List.empty();
-  }
+  void move(ChessBoard board, ChessPiece piece) {}
 }
 
 class PawnMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, ChessPiece piece) {
+  void move(ChessBoard board, ChessPiece piece) {
     if (piece.initialRow == 6) {
       return moveNorth(board, piece);
     } else {
@@ -27,59 +25,32 @@ class PawnMovement implements MovementStrategy {
     }
   }
 
-  List<MoveOption> moveSouth(ChessBoard board, ChessPiece piece) {
-    List<MoveOption> options = List.empty(growable: true);
-
-    MoveOption move = MoveOption(piece.i + 1, piece.j);
-    if (piece.canMove(board, move.i, move.j)) {
-      options.add(move);
+  void moveSouth(ChessBoard board, ChessPiece piece) {
+    if (piece.canMove(board, piece.i + 1, piece.j)) {
       if (piece.hasMoved == false) {
-        MoveOption firstBonus = MoveOption(piece.i + 2, piece.j);
-        if (piece.canMove(board, firstBonus.i, firstBonus.j)) {
-          options.add(firstBonus);
-        }
+        piece.canMove(board, piece.i + 2, piece.j);
       }
     }
 
-    MoveOption capEast = MoveOption(piece.i + 1, piece.j + 1);
-    MoveOption capWest = MoveOption(piece.i + 1, piece.j - 1);
-    for (MoveOption cap in List.from({capEast, capWest})) {
-      if (piece.canCapture(board, cap.i, cap.j)) {
-        options.add(cap);
-      }
-    }
-
-    return options;
+    piece.canCapture(board, piece.i + 1, piece.j + 1);
+    piece.canCapture(board, piece.i + 1, piece.j - 1);
   }
 
-  List<MoveOption> moveNorth(ChessBoard board, ChessPiece piece) {
-    List<MoveOption> options = List.empty(growable: true);
-
-    MoveOption move = MoveOption(piece.i - 1, piece.j);
-    if (piece.canMove(board, move.i, move.j)) {
-      options.add(move);
+  void moveNorth(ChessBoard board, ChessPiece piece) {
+    if (piece.canMove(board, piece.i - 1, piece.j)) {
       if (piece.hasMoved == false) {
-        MoveOption firstBonus = MoveOption(piece.i - 2, piece.j);
-        if (piece.canMove(board, firstBonus.i, firstBonus.j)) {
-          options.add(firstBonus);
-        }
+        piece.canMove(board, piece.i - 2, piece.j);
       }
     }
 
-    MoveOption capEast = MoveOption(piece.i - 1, piece.j + 1);
-    MoveOption capWest = MoveOption(piece.i - 1, piece.j - 1);
-    for (MoveOption cap in List.from({capEast, capWest})) {
-      if (piece.canCapture(board, cap.i, cap.j)) {
-        options.add(cap);
-      }
-    }
-    return options;
+    piece.canCapture(board, piece.i - 1, piece.j + 1);
+    piece.canCapture(board, piece.i - 1, piece.j - 1);
   }
 }
 
 class KnightMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, ChessPiece piece) {
-    List<MoveOption> options = List.empty(growable: true);
+  void move(ChessBoard board, ChessPiece piece) {
+    void options = List.empty(growable: true);
 
     List<int> components = List.from({1, 2, -2, -1});
 
@@ -88,10 +59,8 @@ class KnightMovement implements MovementStrategy {
         if (a.abs() + b.abs() == 3) {
           MoveOption move = MoveOption(piece.i + a, piece.j + b);
 
-          if (piece.canMove(board, move.i, move.j)) {
-            options.add(move);
-          } else if (piece.canCapture(board, move.i, move.j)) {
-            options.add(move);
+          if (piece.canMove(board, move.i, move.j) == false) {
+            piece.canCapture(board, move.i, move.j);
           }
         }
       }
@@ -102,129 +71,77 @@ class KnightMovement implements MovementStrategy {
 }
 
 class BishopMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, ChessPiece piece) {
-    List<MoveOption> options = List.empty(growable: true);
-
+  void move(ChessBoard board, ChessPiece piece) {
     List<int> components = List.from({1, -1});
 
     for (int a in components) {
       for (int b in components) {
-        for (MoveOption move
-            in exploreDiagonal(piece, board, piece.i, piece.j, a, b)) {
-          options.add(move);
-        }
+        exploreDiagonal(piece, board, piece.i, piece.j, a, b);
       }
     }
-
-    return options;
   }
 
-  List<MoveOption> exploreDiagonal(
+  void exploreDiagonal(
       ChessPiece piece, ChessBoard board, int i, int j, int di, int dj) {
-    List<MoveOption> options = List.empty(growable: true);
-
     while (true) {
       i += di;
       j += dj;
-      MoveOption move = MoveOption(i, j);
 
       if (piece.canCapture(board, i, j)) {
-        options.add(move);
-        return options;
+        return;
       }
 
-      if (piece.canMove(board, i, j)) {
-        options.add(move);
-      } else {
-        return options;
+      if (piece.canMove(board, i, j) == false) {
+        return;
       }
     }
   }
 }
 
 class RookMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, ChessPiece piece) {
-    List<MoveOption> options = List.empty(growable: true);
-
-    for (MoveOption move
-        in exploreImpulse(piece, board, piece.i, piece.j, 0, 1)) {
-      options.add(move);
-    }
-
-    for (MoveOption move
-        in exploreImpulse(piece, board, piece.i, piece.j, 0, -1)) {
-      options.add(move);
-    }
-
-    for (MoveOption move
-        in exploreImpulse(piece, board, piece.i, piece.j, 1, 0)) {
-      options.add(move);
-    }
-
-    for (MoveOption move
-        in exploreImpulse(piece, board, piece.i, piece.j, -1, 0)) {
-      options.add(move);
-    }
-
-    return options;
+  void move(ChessBoard board, ChessPiece piece) {
+    exploreImpulse(piece, board, piece.i, piece.j, 0, 1);
+    exploreImpulse(piece, board, piece.i, piece.j, 0, -1);
+    exploreImpulse(piece, board, piece.i, piece.j, 1, 0);
+    exploreImpulse(piece, board, piece.i, piece.j, -1, 0);
   }
 
-  List<MoveOption> exploreImpulse(
+  void exploreImpulse(
       ChessPiece piece, ChessBoard board, int i, int j, int di, int dj) {
-    List<MoveOption> options = List.empty(growable: true);
-
     while (true) {
       i += di;
       j += dj;
-      MoveOption move = MoveOption(i, j);
 
       if (piece.canCapture(board, i, j)) {
-        options.add(move);
-        return options;
+        return;
       }
 
-      if (piece.canMove(board, i, j)) {
-        options.add(move);
-      } else {
-        return options;
+      if (piece.canMove(board, i, j) == false) {
+        return;
       }
     }
   }
 }
 
 class QueenMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, ChessPiece piece) {
-    List<MoveOption> options = List.empty(growable: true);
-
+  void move(ChessBoard board, ChessPiece piece) {
     var pair = List.from({RookMovement(), BishopMovement()});
     for (MovementStrategy strategy in pair) {
-      for (MoveOption move in strategy.move(board, piece)) {
-        options.add(move);
-      }
+      strategy.move(board, piece);
     }
-
-    return options;
   }
 }
 
 class KingMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, ChessPiece piece) {
-    List<MoveOption> options = List.empty(growable: true);
-
+  void move(ChessBoard board, ChessPiece piece) {
     List<int> components = List.from({-1, 0, 1});
 
     for (int a in components) {
       for (int b in components) {
         MoveOption move = MoveOption(piece.i + a, piece.j + b);
-        if (piece.canCapture(board, move.i, move.j)) {
-          options.add(move);
-        }
-        if (piece.canMove(board, move.i, move.j)) {
-          options.add(move);
-        }
+        piece.canCapture(board, move.i, move.j);
+        piece.canMove(board, move.i, move.j);
       }
     }
-
-    return options;
   }
 }

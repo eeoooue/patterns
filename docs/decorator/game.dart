@@ -1,6 +1,5 @@
 import 'dart:html';
 import 'boardviews.dart';
-import 'strategy.dart';
 import 'boarddecorators.dart';
 import 'gameboard.dart';
 import 'pieces.dart';
@@ -51,6 +50,7 @@ class ChessGame extends Game {
         endTurn();
         return;
       }
+      clearMoveOptions();
       activePiece = null;
     }
 
@@ -63,8 +63,18 @@ class ChessGame extends Game {
     }
   }
 
+  void clearMoveOptions() {
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 8; j++) {
+        ChessPiece piece = chessBoard.getPiece(i, j);
+        piece.threatened = false;
+      }
+    }
+  }
+
   void endTurn() {
     turnCount += 1;
+    clearMoveOptions();
     view.displayBoard(chessBoard.getBoardState());
   }
 
@@ -73,12 +83,8 @@ class ChessGame extends Game {
       return false;
     }
 
-    for (MoveOption move in piece.options) {
-      if ((move.i == i) && (move.j == j)) {
-        return true;
-      }
-    }
-    return false;
+    ChessPiece target = chessBoard.getPiece(i, j);
+    return target.threatened;
   }
 
   void movePiece(ChessPiece piece, int i, int j) {

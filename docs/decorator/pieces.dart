@@ -31,6 +31,7 @@ class ChessPiece extends GamePiece {
   bool selected = false;
   bool hasMoved = false;
   int initialRow = -1;
+  bool threatened = false;
 
   List<MoveOption> options = List.empty(growable: true);
 
@@ -43,15 +44,15 @@ class ChessPiece extends GamePiece {
     j = jInput;
   }
 
-  List<MoveOption> move(ChessBoard board) {
-    options = moveStrategy.move(board, this);
-    return options;
+  void move(ChessBoard board) {
+    moveStrategy.move(board, this);
   }
 
   bool canCapture(ChessBoard board, int i, int j) {
     if (validCoords(i, j)) {
       ChessPiece target = board.getPiece(i, j);
       if (!(target is EmptyPiece) && target.colour != colour) {
+        target.threatened = true;
         return true;
       }
     }
@@ -63,6 +64,7 @@ class ChessPiece extends GamePiece {
     if (validCoords(i, j)) {
       GamePiece target = board.getPiece(i, j);
       if (target is EmptyPiece) {
+        target.threatened = true;
         return true;
       }
     }
