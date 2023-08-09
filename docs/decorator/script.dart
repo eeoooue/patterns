@@ -87,7 +87,7 @@ class DecoratorCheckbox {
     label.classes.add("cbox-label");
     if (label is LabelElement) {
       label.htmlFor = "${piece}-cbox";
-      label.innerText = "${piece}";
+      label.innerText = "${piece}s";
     }
 
     return label;

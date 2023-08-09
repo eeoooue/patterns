@@ -4720,7 +4720,7 @@
       J.get$classes$x(label).add$1(0, "cbox-label");
       if (type$.LabelElement._is(label)) {
         label.htmlFor = t4;
-        label.innerText = piece;
+        label.innerText = piece + "s";
       }
       t3.get$children(t2).add$1(0, label);
       if (t5)
