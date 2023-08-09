@@ -20,7 +20,6 @@ class NoMovement implements MovementStrategy {
 
 class PawnMovement implements MovementStrategy {
   List<MoveOption> move(ChessBoard board, ChessPiece piece) {
-    print("the pawn's initial row = ${piece.initialRow}");
     if (piece.initialRow == 6) {
       return moveNorth(board, piece);
     } else {

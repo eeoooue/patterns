@@ -21,12 +21,9 @@ class ChessBoardView implements ChessView {
   }
 
   Element getTile(int i, int j) {
-    print("trying to get tile");
     List<Element> rows = container.querySelectorAll(".board-row");
     Element row = rows[i];
-    print("grabbed row[${i}]");
     List<Element> tiles = row.querySelectorAll(".chess-tile");
-    print("found ${tiles.length} tiles");
     return tiles[j];
   }
 

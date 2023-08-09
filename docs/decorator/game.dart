@@ -45,8 +45,6 @@ class ChessGame extends Game {
   }
 
   void submitMove(int i, int j) {
-    print("Chess: move was made at board[${i}][${j}]");
-
     if (activePiece != null) {
       if (validMove(activePiece, i, j)) {
         movePiece(activePiece!, i, j);
@@ -74,8 +72,6 @@ class ChessGame extends Game {
     if (piece == null) {
       return false;
     }
-
-    print("checking for move[${i}][${j}] in ${piece.options.length} options");
 
     for (MoveOption move in piece.options) {
       if ((move.i == i) && (move.j == j)) {

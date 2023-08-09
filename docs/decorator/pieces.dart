@@ -45,7 +45,6 @@ class ChessPiece extends GamePiece {
 
   List<MoveOption> move(ChessBoard board) {
     options = moveStrategy.move(board, this);
-    print("the piece has ${options.length} options");
     return options;
   }
 

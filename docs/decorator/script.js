@@ -2698,9 +2698,6 @@
       B.JSArray_methods.add$1(parts, penultimateString);
       B.JSArray_methods.add$1(parts, ultimateString);
     },
-    print(object) {
-      A.printString(object);
-    },
     Error: function Error() {
     },
     AssertionError: function AssertionError(t0) {
@@ -2938,21 +2935,6 @@
     QueenMovement: function QueenMovement() {
     },
     KingMovement: function KingMovement() {
-    },
-    printString(string) {
-      if (typeof dartPrint == "function") {
-        dartPrint(string);
-        return;
-      }
-      if (typeof console == "object" && typeof console.log != "undefined") {
-        console.log(string);
-        return;
-      }
-      if (typeof print == "function") {
-        print(string);
-        return;
-      }
-      throw "Unable to print message: " + String(string);
     },
     throwLateFieldNI(fieldName) {
       return A.throwExpression(A.LateError$fieldNI(fieldName));
@@ -4558,23 +4540,20 @@
     highlightMoves$1(piece) {
       var t1, t2, t3, t4, _i, move, t5, t6, t7, row, tile, element, marker,
         _s16_ = "querySelectorAll";
-      for (t1 = piece.options, t2 = t1.length, t3 = type$.Element, t4 = this.container, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i) {
+      for (t1 = piece.options, t2 = t1.length, t3 = this.container, t4 = type$.Element, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i) {
         move = t1[_i];
         t5 = move.i;
         t6 = move.j;
-        A.printString("trying to get tile");
-        A.checkTypeBound(t3, t3, "T", _s16_);
-        t7 = t4.querySelectorAll(".board-row");
+        A.checkTypeBound(t4, t4, "T", _s16_);
+        t7 = t3.querySelectorAll(".board-row");
         if (!(t5 >= 0 && t5 < t7.length))
           return A.ioore(t7, t5);
-        row = t3._as(t7[t5]);
-        A.printString("grabbed row[" + t5 + "]");
-        A.checkTypeBound(t3, t3, "T", _s16_);
+        row = t4._as(t7[t5]);
+        A.checkTypeBound(t4, t4, "T", _s16_);
         t5 = row.querySelectorAll(".chess-tile");
-        A.printString("found " + t5.length + " tiles");
         if (!(t6 >= 0 && t6 < t5.length))
           return A.ioore(t5, t6);
-        tile = t3._as(t5[t6]);
+        tile = t4._as(t5[t6]);
         t5 = J.getInterceptor$x(tile);
         t6 = t5.get$children(tile);
         if (t6.get$length(t6) === 0) {
@@ -4607,10 +4586,9 @@
   A.Game.prototype = {};
   A.ChessGame.prototype = {
     submitMove$2(i, j) {
-      var t1, t2, piece, _this = this,
-        _s10_ = "chessBoard";
-      A.print("Chess: move was made at board[" + i + "][" + j + "]");
-      t1 = _this.activePiece;
+      var t2, piece, _this = this,
+        _s10_ = "chessBoard",
+        t1 = _this.activePiece;
       if (t1 != null) {
         if (_this.validMove$3(t1, i, j)) {
           t1 = _this.activePiece;
@@ -4637,7 +4615,6 @@
       t1 = piece.colour === t1;
       if (t1) {
         piece.set$options(0, piece.moveStrategy.move$2(_this.__ChessGame_chessBoard_A, piece));
-        A.print("the piece has " + piece.options.length + " options");
         _this.activePiece = piece;
         t1 = _this.__ChessGame_view_A;
         t1 === $ && A.throwLateFieldNI("view");
@@ -4648,7 +4625,6 @@
       var t1, t2, _i, move;
       if (piece == null)
         return false;
-      A.print("checking for move[" + i + "][" + j + "] in " + piece.options.length + " options");
       for (t1 = piece.options, t2 = t1.length, _i = 0; _i < t2; ++_i) {
         move = t1[_i];
         if (move.i === i && move.j === j)
@@ -4733,7 +4709,6 @@
   };
   A.PawnMovement.prototype = {
     move$2(board, piece) {
-      A.print("the pawn's initial row = " + piece.initialRow);
       if (piece.initialRow === 6)
         return this.moveNorth$2(board, piece);
       else
