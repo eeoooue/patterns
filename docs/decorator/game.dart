@@ -10,6 +10,7 @@ class ChessGame {
   ChessPiece activePiece = EmptyPiece(0, 0);
   late ChessView view;
   Element container;
+  bool rotated = false;
 
   ChessGame(this.container) {
     view = ChessBoardView(this, container);
@@ -44,6 +45,9 @@ class ChessGame {
 
   void refreshView() {
     view.displayBoard(board.getBoardState());
+    if (rotated) {
+      view.rotateBoard();
+    }
   }
 
   void clearMoveOptions() {

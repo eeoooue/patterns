@@ -1,10 +1,12 @@
 import 'dart:html';
 import 'game.dart';
 import 'pieces.dart';
+import 'dart:collection';
 
 abstract class ChessView {
   void displayBoard(List<List<ChessPiece>> boardstate);
   Element buildTile(ChessPiece piece);
+  void rotateBoard();
 }
 
 class ChessBoardView implements ChessView {
@@ -12,6 +14,35 @@ class ChessBoardView implements ChessView {
   ChessGame game;
 
   ChessBoardView(this.game, this.container) {}
+
+  void rotateBoard() {
+    Queue<Element> stack = Queue();
+    for (Element row in container.querySelectorAll(".board-row")) {
+      stack.add(row);
+    }
+
+    container.children.clear();
+
+    while (stack.length > 0) {
+      Element row = stack.removeLast();
+      mirrorRow(row);
+      container.children.add(row);
+    }
+  }
+
+  void mirrorRow(Element row) {
+    Queue<Element> stack = Queue();
+    for (Element tile in row.querySelectorAll(".chess-tile")) {
+      stack.add(tile);
+    }
+
+    row.children.clear();
+
+    while (stack.length > 0) {
+      Element tile = stack.removeLast();
+      row.children.add(tile);
+    }
+  }
 
   void displayBoard(List<List<ChessPiece>> boardstate) {
     container.children.clear();

@@ -363,13 +363,13 @@
       throw A.wrapException(A.diagnoseIndexError(receiver, index));
     },
     diagnoseIndexError(indexable, index) {
-      var $length, _s5_ = "index";
+      var $length, _s5_ = "index", _null = null;
       if (!A._isInt(index))
-        return new A.ArgumentError(true, index, _s5_, null);
+        return new A.ArgumentError(true, index, _s5_, _null);
       $length = A._asInt(J.get$length$asx(indexable));
       if (index < 0 || index >= $length)
-        return A.IndexError$withLength(index, $length, indexable, _s5_);
-      return new A.RangeError(null, null, true, index, _s5_, "Value not in range");
+        return A.IndexError$withLength(index, $length, indexable, _null, _s5_);
+      return new A.RangeError(_null, _null, true, index, _s5_, "Value not in range");
     },
     argumentErrorValue(object) {
       return new A.ArgumentError(true, object, null, null);
@@ -2495,8 +2495,8 @@
     },
     List_List$filled($length, fill, growable, $E) {
       var i,
-        result = J.JSArray_JSArray$growable($length, $E);
-      if ($length !== 0 && true)
+        result = growable ? J.JSArray_JSArray$growable($length, $E) : J.JSArray_JSArray$fixed($length, $E);
+      if ($length !== 0 && fill != null)
         for (i = 0; i < result.length; ++i)
           result[i] = fill;
       return result;
@@ -2562,7 +2562,7 @@
         throw A.wrapException(A.RangeError$range(value, 0, null, $name, null));
       return value;
     },
-    IndexError$withLength(invalidValue, $length, indexable, $name) {
+    IndexError$withLength(invalidValue, $length, indexable, message, $name) {
       return new A.IndexError($length, true, invalidValue, $name, "Index out of range");
     },
     UnsupportedError$(message) {
@@ -2933,7 +2933,7 @@
         game.__ChessGame_board_AI = new A.BoardWithQueens(game.get$board());
         game.__ChessGame_board_AI = new A.BoardWithKings(game.get$board());
         game.get$board().setupPieces$0();
-        game.__ChessGame_view_A.displayBoard$1(game.get$board().getBoardState$0());
+        game.refreshView$0();
       }
     }
   },
@@ -2991,10 +2991,18 @@
       }
       return B.UnknownJavaScriptObject_methods;
     },
+    JSArray_JSArray$fixed($length, $E) {
+      if ($length < 0 || $length > 4294967295)
+        throw A.wrapException(A.RangeError$range($length, 0, 4294967295, "length", null));
+      return J.JSArray_JSArray$markFixed(new Array($length), $E);
+    },
     JSArray_JSArray$growable($length, $E) {
       if ($length < 0)
         throw A.wrapException(A.ArgumentError$("Length must be a non-negative integer: " + $length));
       return A._setArrayType(new Array($length), $E._eval$1("JSArray<0>"));
+    },
+    JSArray_JSArray$markFixed(allocation, $E) {
+      return J.JSArray_markFixedList(A._setArrayType(allocation, $E._eval$1("JSArray<0>")), $E);
     },
     JSArray_markFixedList(list, $T) {
       list.fixed$length = Array;
@@ -3757,7 +3765,7 @@
     get$isEmpty(receiver) {
       return this.get$length(receiver) === 0;
     },
-    toList$0(receiver) {
+    toList$1$growable(receiver, growable) {
       var t1, first, result, i, _this = this;
       if (_this.get$isEmpty(receiver)) {
         t1 = J.JSArray_JSArray$growable(0, A.instanceType(receiver)._eval$1("ListBase.E"));
@@ -3768,6 +3776,9 @@
       for (i = 1; i < _this.get$length(receiver); ++i)
         B.JSArray_methods.$indexSet(result, i, _this.$index(receiver, i));
       return result;
+    },
+    toList$0($receiver) {
+      return this.toList$1$growable($receiver, true);
     },
     toString$0(receiver) {
       return A.Iterable_iterableToFullString(receiver, "[", "]");
@@ -3817,7 +3828,7 @@
         }
         --skipCount;
       }
-      throw A.wrapException(A.IndexError$withLength(index, index - skipCount, this, "index"));
+      throw A.wrapException(A.IndexError$withLength(index, index - skipCount, this, null, "index"));
     },
     $isIterable: 1,
     $isSet: 1
@@ -3903,7 +3914,8 @@
   };
   A.UnimplementedError.prototype = {
     toString$0(_) {
-      return "UnimplementedError: " + this.message;
+      var message = this.message;
+      return message != null ? "UnimplementedError: " + message : "UnimplementedError";
     }
   };
   A.ConcurrentModificationError.prototype = {
@@ -3946,7 +3958,7 @@
           return iterator.get$current();
         --skipCount;
       }
-      throw A.wrapException(A.IndexError$withLength(index, index - skipCount, this, "index"));
+      throw A.wrapException(A.IndexError$withLength(index, index - skipCount, this, null, "index"));
     },
     toString$0(_) {
       return A.Iterable_iterableToShortString(this, "(", ")");
@@ -4083,7 +4095,7 @@
         t2 = index >>> 0 !== index || index >= t1;
       t2.toString;
       if (t2)
-        throw A.wrapException(A.IndexError$withLength(index, t1, receiver, null));
+        throw A.wrapException(A.IndexError$withLength(index, t1, receiver, null, null));
       t1 = receiver[index];
       t1.toString;
       return t1;
@@ -4142,7 +4154,7 @@
         t2 = index >>> 0 !== index || index >= t1;
       t2.toString;
       if (t2)
-        throw A.wrapException(A.IndexError$withLength(index, t1, receiver, null));
+        throw A.wrapException(A.IndexError$withLength(index, t1, receiver, null, null));
       t1 = receiver[index];
       t1.toString;
       return t1;
@@ -4172,7 +4184,7 @@
         t2 = index >>> 0 !== index || index >= t1;
       t2.toString;
       if (t2)
-        throw A.wrapException(A.IndexError$withLength(index, t1, receiver, null));
+        throw A.wrapException(A.IndexError$withLength(index, t1, receiver, null, null));
       t1 = receiver[index];
       t1.toString;
       return t1;
@@ -4515,9 +4527,7 @@
         ++_this.turnCount;
         _this.activePiece = A.EmptyPiece$(0, 0);
         _this.clearMoveOptions$0();
-        t1 = _this.__ChessGame_view_A;
-        t1 === $ && A.throwLateFieldNI("view");
-        t1.displayBoard$1(_this.get$board().getBoardState$0());
+        _this.refreshView$0();
         return;
       }
       _this.clearMoveOptions$0();
@@ -4528,9 +4538,12 @@
         piece.moveStrategy.move$2(_this.get$board(), piece);
         _this.activePiece = piece;
       }
-      t1 = _this.__ChessGame_view_A;
+      _this.refreshView$0();
+    },
+    refreshView$0() {
+      var t1 = this.__ChessGame_view_A;
       t1 === $ && A.throwLateFieldNI("view");
-      t1.displayBoard$1(_this.get$board().getBoardState$0());
+      t1.displayBoard$1(this.get$board().getBoardState$0());
     },
     clearMoveOptions$0() {
       var t1, i, j, value, t2;
