@@ -2842,33 +2842,6 @@
     },
     SvgElement: function SvgElement() {
     },
-    Game: function Game() {
-    },
-    GameBoard: function GameBoard() {
-    },
-    GamePiece: function GamePiece() {
-    },
-    ChessGame: function ChessGame(t0, t1) {
-      var _ = this;
-      _.turnCount = 0;
-      _.__ChessGame_chessBoard_A = $;
-      _.activePiece = null;
-      _.options = t0;
-      _.container = t1;
-      _.__Game_board_A = $;
-    },
-    ChequeredBoard: function ChequeredBoard(t0, t1, t2, t3) {
-      var _ = this;
-      _.board = t0;
-      _.pieces = t1;
-      _.game = t2;
-      _.container = t3;
-    },
-    ChequeredBoard_createTile_closure: function ChequeredBoard_createTile_closure(t0, t1, t2) {
-      this.$this = t0;
-      this.i = t1;
-      this.j = t2;
-    },
     BoardWithPieces: function BoardWithPieces() {
     },
     BoardWithPawns: function BoardWithPawns(t0) {
@@ -2889,6 +2862,31 @@
     BoardWithQueens: function BoardWithQueens(t0) {
       this.base = t0;
     },
+    Game: function Game() {
+    },
+    ChessGame: function ChessGame(t0, t1) {
+      var _ = this;
+      _.turnCount = 0;
+      _.__ChessGame_chessBoard_A = $;
+      _.activePiece = null;
+      _.options = t0;
+      _.container = t1;
+      _.__Game_board_A = $;
+    },
+    GameBoard: function GameBoard() {
+    },
+    ChequeredBoard: function ChequeredBoard(t0, t1, t2, t3) {
+      var _ = this;
+      _.board = t0;
+      _.pieces = t1;
+      _.game = t2;
+      _.container = t3;
+    },
+    ChequeredBoard_createTile_closure: function ChequeredBoard_createTile_closure(t0, t1, t2) {
+      this.$this = t0;
+      this.i = t1;
+      this.j = t2;
+    },
     ChessPiece$(colour, $name, moveStrategy) {
       var img,
         t1 = new A.ChessPiece(moveStrategy, colour, $name),
@@ -2901,6 +2899,8 @@
         t1.__GamePiece_element_A = img;
       }
       return t1;
+    },
+    GamePiece: function GamePiece() {
     },
     ChessPiece: function ChessPiece(t0, t1, t2) {
       var _ = this;
@@ -4386,21 +4386,123 @@
       return new A.FilteredElementList(new A._ChildNodeListLazy(receiver));
     }
   };
-  A.Game.prototype = {};
-  A.GameBoard.prototype = {};
-  A.GamePiece.prototype = {
-    buildElement$0() {
-      var t1,
-        img = document.createElement("img");
-      J.get$classes$x(img).add$1(0, "piece-img");
-      if (type$.ImageElement._is(img)) {
-        t1 = this.__GamePiece_src_A;
-        t1 === $ && A.throwLateFieldNI("src");
-        B.ImageElement_methods.set$src(img, t1);
-        this.__GamePiece_element_A = img;
+  A.BoardWithPieces.prototype = {
+    setupPieces$1(playerColour) {
+      var enemyColour = playerColour === "w" ? "b" : "w";
+      this.setupFriendlyPieces$1(playerColour);
+      this.setupEnemyPieces$1(enemyColour);
+      this.base.setupPieces$1(playerColour);
+    },
+    removePiece$2(i, j) {
+      this.base.removePiece$2(i, j);
+    },
+    placePiece$3(piece, i, j) {
+      this.base.placePiece$3(piece, i, j);
+    },
+    getPiece$2(i, j) {
+      return this.base.getPiece$2(i, j);
+    },
+    addMarker$3(i, j, marker) {
+      this.base.addMarker$3(i, j, marker);
+    },
+    clearHighlights$0() {
+      this.base.clearHighlights$0();
+    },
+    $isChessBoard: 1
+  };
+  A.BoardWithPawns.prototype = {
+    setupEnemyPieces$1(colour) {
+      var t1, j, pawn;
+      for (t1 = this.base, j = 0; j < 8; ++j) {
+        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn");
+        pawn.__GamePiece_src_A = "./assets/chess/pawn_" + colour + ".png";
+        pawn.buildElement$0();
+        t1.placePiece$3(pawn, 1, j);
+      }
+    },
+    setupFriendlyPieces$1(colour) {
+      var t1, j, pawn;
+      for (t1 = this.base, j = 0; j < 8; ++j) {
+        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn");
+        pawn.__GamePiece_src_A = "./assets/chess/pawn_" + colour + ".png";
+        pawn.buildElement$0();
+        t1.placePiece$3(pawn, 6, j);
       }
     }
   };
+  A.BoardWithBishops.prototype = {
+    setupEnemyPieces$1(colour) {
+      var t1 = this.base;
+      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 0, 2);
+      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 0, 5);
+    },
+    setupFriendlyPieces$1(colour) {
+      var t1 = this.base;
+      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 7, 2);
+      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 7, 5);
+    }
+  };
+  A.BoardWithKnights.prototype = {
+    setupEnemyPieces$1(colour) {
+      var t1 = this.base;
+      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 0, 1);
+      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 0, 6);
+    },
+    setupFriendlyPieces$1(colour) {
+      var t1 = this.base;
+      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 7, 1);
+      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 7, 6);
+    }
+  };
+  A.BoardWithRooks.prototype = {
+    setupEnemyPieces$1(colour) {
+      var t1 = this.base;
+      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 0, 0);
+      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 0, 7);
+    },
+    setupFriendlyPieces$1(colour) {
+      var t1 = this.base;
+      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 7, 0);
+      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 7, 7);
+    }
+  };
+  A.BoardWithKings.prototype = {
+    setupEnemyPieces$1(colour) {
+      var king = A.ChessPiece$(colour, "king", new A.KingMovement()),
+        t1 = this.base;
+      if (colour === "b")
+        t1.placePiece$3(king, 0, 4);
+      else
+        t1.placePiece$3(king, 0, 3);
+    },
+    setupFriendlyPieces$1(colour) {
+      var king = A.ChessPiece$(colour, "king", new A.KingMovement()),
+        t1 = this.base;
+      if (colour === "b")
+        t1.placePiece$3(king, 7, 3);
+      else
+        t1.placePiece$3(king, 7, 4);
+    }
+  };
+  A.BoardWithQueens.prototype = {
+    setupEnemyPieces$1(colour) {
+      var queen = A.ChessPiece$(colour, "queen", new A.QueenMovement()),
+        t1 = this.base;
+      if (colour === "b")
+        t1.placePiece$3(queen, 0, 3);
+      else
+        t1.placePiece$3(queen, 0, 4);
+    },
+    setupFriendlyPieces$1(colour) {
+      var queen = A.ChessPiece$(colour, "queen", new A.QueenMovement()),
+        t1 = this.base;
+      if (colour === "b")
+        t1.placePiece$3(queen, 7, 4);
+      else
+        t1.placePiece$3(queen, 7, 3);
+    }
+  };
+  A.Game.prototype = {};
   A.ChessGame.prototype = {
     submitMove$2(i, j) {
       var t1, t2, piece, options, _this = this,
@@ -4455,6 +4557,7 @@
       this.options = type$.List_MoveOption._as(options);
     }
   };
+  A.GameBoard.prototype = {};
   A.ChequeredBoard.prototype = {
     setupPieces$1(playerColour) {
     },
@@ -4581,120 +4684,17 @@
     },
     $signature: 6
   };
-  A.BoardWithPieces.prototype = {
-    setupPieces$1(playerColour) {
-      var enemyColour = playerColour === "w" ? "b" : "w";
-      this.setupFriendlyPieces$1(playerColour);
-      this.setupEnemyPieces$1(enemyColour);
-      this.base.setupPieces$1(playerColour);
-    },
-    removePiece$2(i, j) {
-      this.base.removePiece$2(i, j);
-    },
-    placePiece$3(piece, i, j) {
-      this.base.placePiece$3(piece, i, j);
-    },
-    getPiece$2(i, j) {
-      return this.base.getPiece$2(i, j);
-    },
-    addMarker$3(i, j, marker) {
-      this.base.addMarker$3(i, j, marker);
-    },
-    clearHighlights$0() {
-      this.base.clearHighlights$0();
-    },
-    $isChessBoard: 1
-  };
-  A.BoardWithPawns.prototype = {
-    setupEnemyPieces$1(colour) {
-      var t1, j, pawn;
-      for (t1 = this.base, j = 0; j < 8; ++j) {
-        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn");
-        pawn.__GamePiece_src_A = "./assets/chess/pawn_" + colour + ".png";
-        pawn.buildElement$0();
-        t1.placePiece$3(pawn, 1, j);
+  A.GamePiece.prototype = {
+    buildElement$0() {
+      var t1,
+        img = document.createElement("img");
+      J.get$classes$x(img).add$1(0, "piece-img");
+      if (type$.ImageElement._is(img)) {
+        t1 = this.__GamePiece_src_A;
+        t1 === $ && A.throwLateFieldNI("src");
+        B.ImageElement_methods.set$src(img, t1);
+        this.__GamePiece_element_A = img;
       }
-    },
-    setupFriendlyPieces$1(colour) {
-      var t1, j, pawn;
-      for (t1 = this.base, j = 0; j < 8; ++j) {
-        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn");
-        pawn.__GamePiece_src_A = "./assets/chess/pawn_" + colour + ".png";
-        pawn.buildElement$0();
-        t1.placePiece$3(pawn, 6, j);
-      }
-    }
-  };
-  A.BoardWithBishops.prototype = {
-    setupEnemyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 0, 2);
-      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 0, 5);
-    },
-    setupFriendlyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 7, 2);
-      t1.placePiece$3(A.ChessPiece$(colour, "bishop", new A.BishopMovement()), 7, 5);
-    }
-  };
-  A.BoardWithKnights.prototype = {
-    setupEnemyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 0, 1);
-      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 0, 6);
-    },
-    setupFriendlyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 7, 1);
-      t1.placePiece$3(A.ChessPiece$(colour, "knight", new A.KnightMovement()), 7, 6);
-    }
-  };
-  A.BoardWithRooks.prototype = {
-    setupEnemyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 0, 0);
-      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 0, 7);
-    },
-    setupFriendlyPieces$1(colour) {
-      var t1 = this.base;
-      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 7, 0);
-      t1.placePiece$3(A.ChessPiece$(colour, "rook", new A.RookMovement()), 7, 7);
-    }
-  };
-  A.BoardWithKings.prototype = {
-    setupEnemyPieces$1(colour) {
-      var king = A.ChessPiece$(colour, "king", new A.KingMovement()),
-        t1 = this.base;
-      if (colour === "b")
-        t1.placePiece$3(king, 0, 4);
-      else
-        t1.placePiece$3(king, 0, 3);
-    },
-    setupFriendlyPieces$1(colour) {
-      var king = A.ChessPiece$(colour, "king", new A.KingMovement()),
-        t1 = this.base;
-      if (colour === "b")
-        t1.placePiece$3(king, 7, 3);
-      else
-        t1.placePiece$3(king, 7, 4);
-    }
-  };
-  A.BoardWithQueens.prototype = {
-    setupEnemyPieces$1(colour) {
-      var queen = A.ChessPiece$(colour, "queen", new A.QueenMovement()),
-        t1 = this.base;
-      if (colour === "b")
-        t1.placePiece$3(queen, 0, 3);
-      else
-        t1.placePiece$3(queen, 0, 4);
-    },
-    setupFriendlyPieces$1(colour) {
-      var queen = A.ChessPiece$(colour, "queen", new A.QueenMovement()),
-        t1 = this.base;
-      if (colour === "b")
-        t1.placePiece$3(queen, 7, 4);
-      else
-        t1.placePiece$3(queen, 7, 3);
     }
   };
   A.ChessPiece.prototype = {
@@ -4934,7 +4934,7 @@
       _inherit = hunkHelpers.inherit,
       _inheritMany = hunkHelpers.inheritMany;
     _inherit(A.Object, null);
-    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.Game, A.GameBoard, A.GamePiece, A.BoardWithPieces, A.MoveOption, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement]);
+    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.BoardWithPieces, A.Game, A.GameBoard, A.GamePiece, A.MoveOption, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement]);
     _inheritMany(J.Interceptor, [J.JSBool, J.JSNull, J.JavaScriptObject, J.JSNumber, J.JSString]);
     _inheritMany(J.JavaScriptObject, [J.LegacyJavaScriptObject, J.JSArray, A.EventTarget, A.DomException, A.DomTokenList, A.Event, A._HtmlCollection_JavaScriptObject_ListMixin, A._NodeList_JavaScriptObject_ListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin]);
     _inheritMany(J.LegacyJavaScriptObject, [J.PlainJavaScriptObject, J.UnknownJavaScriptObject, J.JavaScriptFunction]);
@@ -4962,9 +4962,9 @@
     _inherit(A.__NamedNodeMap_JavaScriptObject_ListMixin_ImmutableListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin);
     _inherit(A._NamedNodeMap, A.__NamedNodeMap_JavaScriptObject_ListMixin_ImmutableListMixin);
     _inheritMany(A.CssClassSetImpl, [A._ElementCssClassSet, A.AttributeClassSet]);
+    _inheritMany(A.BoardWithPieces, [A.BoardWithPawns, A.BoardWithBishops, A.BoardWithKnights, A.BoardWithRooks, A.BoardWithKings, A.BoardWithQueens]);
     _inherit(A.ChessGame, A.Game);
     _inherit(A.ChequeredBoard, A.GameBoard);
-    _inheritMany(A.BoardWithPieces, [A.BoardWithPawns, A.BoardWithBishops, A.BoardWithKnights, A.BoardWithRooks, A.BoardWithKings, A.BoardWithQueens]);
     _inherit(A.ChessPiece, A.GamePiece);
     _mixin(A._HtmlCollection_JavaScriptObject_ListMixin, A.ListBase);
     _mixin(A._HtmlCollection_JavaScriptObject_ListMixin_ImmutableListMixin, A.ImmutableListMixin);
@@ -4982,7 +4982,7 @@
     leafTags: null,
     arrayRti: Symbol("$ti")
   };
-  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"int":{"num":[]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"_FrozenElementList":{"ListBase":["1"],"List":["1"],"Iterable":["1"],"ListBase.E":"1"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"ChessGame":{"Game":[]},"ChequeredBoard":{"GameBoard":[],"ChessBoard":[]},"BoardWithPieces":{"ChessBoard":[]},"BoardWithPawns":{"ChessBoard":[]},"BoardWithBishops":{"ChessBoard":[]},"BoardWithKnights":{"ChessBoard":[]},"BoardWithRooks":{"ChessBoard":[]},"BoardWithKings":{"ChessBoard":[]},"BoardWithQueens":{"ChessBoard":[]},"ChessPiece":{"GamePiece":[]},"PawnMovement":{"MovementStrategy":[]},"KnightMovement":{"MovementStrategy":[]},"BishopMovement":{"MovementStrategy":[]},"RookMovement":{"MovementStrategy":[]},"QueenMovement":{"MovementStrategy":[]},"KingMovement":{"MovementStrategy":[]}}'));
+  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"int":{"num":[]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"_FrozenElementList":{"ListBase":["1"],"List":["1"],"Iterable":["1"],"ListBase.E":"1"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"BoardWithPieces":{"ChessBoard":[]},"BoardWithPawns":{"ChessBoard":[]},"BoardWithBishops":{"ChessBoard":[]},"BoardWithKnights":{"ChessBoard":[]},"BoardWithRooks":{"ChessBoard":[]},"BoardWithKings":{"ChessBoard":[]},"BoardWithQueens":{"ChessBoard":[]},"ChessGame":{"Game":[]},"ChequeredBoard":{"GameBoard":[],"ChessBoard":[]},"ChessPiece":{"GamePiece":[]},"PawnMovement":{"MovementStrategy":[]},"KnightMovement":{"MovementStrategy":[]},"BishopMovement":{"MovementStrategy":[]},"RookMovement":{"MovementStrategy":[]},"QueenMovement":{"MovementStrategy":[]},"KingMovement":{"MovementStrategy":[]}}'));
   A._Universe_addErasedTypes(init.typeUniverse, JSON.parse('{"_SetBase":1}'));
   var type$ = (function rtii() {
     var findType = A.findType;

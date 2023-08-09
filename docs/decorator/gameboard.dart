@@ -1,7 +1,25 @@
 import 'dart:html';
-import 'boardgames.dart';
-import 'strategy.dart';
-import 'decorators.dart';
+import 'pieces.dart';
+import 'game.dart';
+
+abstract class GameBoard {
+  Game game;
+  Element container;
+
+  GameBoard(this.game, this.container) {
+    insertTiles();
+  }
+
+  Element createRow() {
+    Element row = document.createElement("div");
+    row.classes.add("board-row");
+    return row;
+  }
+
+  void insertTiles();
+
+  void placePiece(GamePiece piece, int i, int j);
+}
 
 abstract class ChessBoard {
   void removePiece(int i, int j);
@@ -10,84 +28,6 @@ abstract class ChessBoard {
   void placePiece(GamePiece piece, int i, int j);
   void addMarker(int i, int j, String marker);
   void clearHighlights();
-}
-
-class ChessGame extends Game {
-  int turnCount = 0;
-  late ChessBoard chessBoard;
-  ChessPiece? activePiece = null;
-  List<MoveOption> options = List.empty(growable: true);
-
-  ChessGame(Element container) : super(container) {}
-
-  GameBoard createBoard() {
-    return ChequeredBoard(this, container);
-  }
-
-  String getTurnPlayer() {
-    return (turnCount % 2 == 0) ? "w" : "b";
-  }
-
-  void submitMove(int i, int j) {
-    print("Chess: move was made at board[${i}][${j}]");
-
-    if (activePiece != null) {
-      if (validMove(i, j)) {
-        movePiece(activePiece!, i, j);
-        endTurn();
-        return;
-      }
-      activePiece = null;
-      chessBoard.clearHighlights();
-    }
-
-    dynamic piece = chessBoard.getPiece(i, j);
-
-    if (piece is ChessPiece && piece.colour == getTurnPlayer()) {
-      options = piece.move(chessBoard);
-      activePiece = piece;
-    }
-  }
-
-  void endTurn() {
-    chessBoard.clearHighlights();
-    turnCount += 1;
-  }
-
-  bool validMove(int i, int j) {
-    for (MoveOption move in options) {
-      if ((move.i == i) && (move.j == j)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  void movePiece(ChessPiece piece, int i, int j) {
-    chessBoard.removePiece(piece.i, piece.j);
-    chessBoard.removePiece(i, j);
-    chessBoard.placePiece(piece, i, j);
-    piece.hasMoved = true;
-    activePiece = null;
-  }
-
-  void setupPieces() {
-    var thing = board;
-
-    if (thing is ChequeredBoard) {
-      ChessBoard decoratedBoard = thing;
-      decoratedBoard = BoardWithPawns(decoratedBoard);
-      decoratedBoard = BoardWithBishops(decoratedBoard);
-      decoratedBoard = BoardWithKnights(decoratedBoard);
-      decoratedBoard = BoardWithRooks(decoratedBoard);
-      decoratedBoard = BoardWithQueens(decoratedBoard);
-      decoratedBoard = BoardWithKings(decoratedBoard);
-
-      decoratedBoard.setupPieces("w");
-
-      chessBoard = decoratedBoard;
-    }
-  }
 }
 
 class ChequeredBoard extends GameBoard implements ChessBoard {

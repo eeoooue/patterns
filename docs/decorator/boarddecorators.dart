@@ -1,6 +1,6 @@
-import 'boardgames.dart';
 import 'strategy.dart';
-import 'chess.dart';
+import 'gameboard.dart';
+import 'pieces.dart';
 
 abstract class BoardWithPieces implements ChessBoard {
   ChessBoard base;

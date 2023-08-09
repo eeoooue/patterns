@@ -1,5 +1,5 @@
 import 'dart:html';
-import 'chess.dart';
+import 'game.dart';
 
 void main() {
   setupDemo();
