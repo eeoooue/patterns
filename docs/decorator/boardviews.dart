@@ -4,7 +4,7 @@ import 'pieces.dart';
 
 abstract class ChessView {
   void displayBoard(List<List<ChessPiece>> boardstate);
-  Element createTile(ChessPiece piece);
+  Element buildTile(ChessPiece piece);
 }
 
 class ChessBoardView implements ChessView {
