@@ -1,14 +1,16 @@
 import 'dart:html';
 import 'game.dart';
 import 'pieces.dart';
+import 'strategy.dart';
 
 abstract class ChessView {
   void clearAll();
   void displayBoard(List<List<ChessPiece>> boardstate);
   Element createTile(ChessPiece piece);
+  void highlightMoves(ChessPiece piece);
 }
 
-class ChessBoardView {
+class ChessBoardView implements ChessView {
   Element container;
   ChessGame game;
 
@@ -16,6 +18,16 @@ class ChessBoardView {
 
   void clearAll() {
     container.children.clear();
+  }
+
+  Element getTile(int i, int j) {
+    print("trying to get tile");
+    List<Element> rows = container.querySelectorAll(".board-row");
+    Element row = rows[i];
+    print("grabbed row[${i}]");
+    List<Element> tiles = row.querySelectorAll(".chess-tile");
+    print("found ${tiles.length} tiles");
+    return tiles[j];
   }
 
   void displayBoard(List<List<ChessPiece>> boardstate) {
@@ -54,6 +66,28 @@ class ChessBoardView {
     });
 
     return tile;
+  }
+
+  void highlightMoves(ChessPiece piece) {
+    for (MoveOption move in piece.options) {
+      Element tile = getTile(move.i, move.j);
+      Element marker;
+
+      if (tile.children.length == 0) {
+        marker = createMarker("dot");
+      } else {
+        marker = createMarker("circle");
+      }
+
+      tile.children.add(marker);
+    }
+  }
+
+  Element createMarker(String markerType) {
+    Element element = document.createElement("div");
+    element.classes.add("marker");
+    element.classes.add(markerType);
+    return element;
   }
 
   Element getPieceImage(ChessPiece piece) {

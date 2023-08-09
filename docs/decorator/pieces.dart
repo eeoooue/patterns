@@ -32,6 +32,8 @@ class ChessPiece extends GamePiece {
   bool hasMoved = false;
   int initialRow = -1;
 
+  List<MoveOption> options = List.empty(growable: true);
+
   ChessPiece(this.colour, this.name, this.moveStrategy) {
     setSource("./assets/chess/${name}_${colour}.png");
   }
@@ -42,7 +44,7 @@ class ChessPiece extends GamePiece {
   }
 
   List<MoveOption> move(ChessBoard board) {
-    List<MoveOption> options = moveStrategy.move(board, this);
+    options = moveStrategy.move(board, this);
     print("the piece has ${options.length} options");
     return options;
   }

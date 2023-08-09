@@ -23,8 +23,7 @@ class ChessGame extends Game {
   int turnCount = 0;
   late ChessBoard chessBoard;
   ChessPiece? activePiece = null;
-  List<MoveOption> options = List.empty(growable: true);
-  late ChessBoardView view;
+  late ChessView view;
 
   ChessGame(Element container) : super(container) {
     view = ChessBoardView(this, container);
@@ -49,7 +48,7 @@ class ChessGame extends Game {
     print("Chess: move was made at board[${i}][${j}]");
 
     if (activePiece != null) {
-      if (validMove(i, j)) {
+      if (validMove(activePiece, i, j)) {
         movePiece(activePiece!, i, j);
         endTurn();
         return;
@@ -60,8 +59,9 @@ class ChessGame extends Game {
     dynamic piece = chessBoard.getPiece(i, j);
 
     if (piece is ChessPiece && piece.colour == getTurnPlayer()) {
-      options = piece.move(chessBoard);
+      piece.move(chessBoard);
       activePiece = piece;
+      view.highlightMoves(piece);
     }
   }
 
@@ -70,10 +70,14 @@ class ChessGame extends Game {
     view.displayBoard(chessBoard.getBoardState());
   }
 
-  bool validMove(int i, int j) {
-    print("checking for move[${i}][${j}] in ${options.length} options");
+  bool validMove(ChessPiece? piece, int i, int j) {
+    if (piece == null) {
+      return false;
+    }
 
-    for (MoveOption move in options) {
+    print("checking for move[${i}][${j}] in ${piece.options.length} options");
+
+    for (MoveOption move in piece.options) {
       if ((move.i == i) && (move.j == j)) {
         return true;
       }
@@ -100,9 +104,7 @@ class ChessGame extends Game {
       decoratedBoard = BoardWithRooks(decoratedBoard);
       decoratedBoard = BoardWithQueens(decoratedBoard);
       decoratedBoard = BoardWithKings(decoratedBoard);
-
       decoratedBoard.setupPieces("w");
-
       chessBoard = decoratedBoard;
     }
   }

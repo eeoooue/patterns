@@ -1251,6 +1251,12 @@
     _failedAsCheck(object, testRti) {
       throw A.wrapException(A._TypeError$fromMessage(A._Error_compose(object, A._rtiToString(testRti, null))));
     },
+    checkTypeBound(type, bound, variable, methodName) {
+      var _null = null;
+      if (A._isSubtype(init.typeUniverse, type, _null, bound, _null))
+        return type;
+      throw A.wrapException(A._TypeError$fromMessage("The type argument '" + A._rtiToString(type, _null) + "' is not a subtype of the type variable bound '" + A._rtiToString(bound, _null) + "' of type variable '" + variable + "' in '" + methodName + "'."));
+    },
     _Error_compose(object, checkedTypeDescription) {
       return A.Error_safeToString(object) + ": type '" + A._rtiToString(A._structuralTypeOf(object), null) + "' is not a subtype of type '" + checkedTypeDescription + "'";
     },
@@ -2767,6 +2773,10 @@
       this._element = t0;
       this._childElements = t1;
     },
+    _FrozenElementList: function _FrozenElementList(t0, t1) {
+      this._nodeList = t0;
+      this.$ti = t1;
+    },
     Element: function Element() {
     },
     Event: function Event() {
@@ -2862,25 +2872,26 @@
     },
     Game: function Game() {
     },
-    ChessGame: function ChessGame(t0, t1) {
+    ChessGame: function ChessGame(t0) {
       var _ = this;
       _.turnCount = 0;
       _.__ChessGame_chessBoard_A = $;
       _.activePiece = null;
-      _.options = t0;
       _.__ChessGame_view_A = $;
-      _.container = t1;
+      _.container = t0;
     },
     ChequeredBoard: function ChequeredBoard(t0) {
       this.pieces = t0;
     },
     ChessPiece$(colour, $name, moveStrategy) {
-      var t1 = new A.ChessPiece(moveStrategy, colour, $name);
+      var t1 = J.JSArray_JSArray$growable(0, type$.MoveOption);
+      t1 = new A.ChessPiece(moveStrategy, colour, $name, t1);
       t1.__GamePiece_src_A = "./assets/chess/" + $name + "_" + colour + ".png";
       return t1;
     },
     EmptyPiece$(iPosition, jPosition) {
-      var t1 = new A.EmptyPiece(new A.NoMovement(), "empty", "empty");
+      var t1 = J.JSArray_JSArray$growable(0, type$.MoveOption);
+      t1 = new A.EmptyPiece(new A.NoMovement(), "empty", "empty", t1);
       t1.__GamePiece_src_A = "./assets/chess/empty_empty.png";
       t1.i = iPosition;
       t1.j = jPosition;
@@ -2888,7 +2899,7 @@
     },
     GamePiece: function GamePiece() {
     },
-    ChessPiece: function ChessPiece(t0, t1, t2) {
+    ChessPiece: function ChessPiece(t0, t1, t2, t3) {
       var _ = this;
       _.j = _.i = 0;
       _.moveStrategy = t0;
@@ -2896,9 +2907,10 @@
       _.name = t2;
       _.hasMoved = false;
       _.initialRow = -1;
+      _.options = t3;
       _.__GamePiece_src_A = $;
     },
-    EmptyPiece: function EmptyPiece(t0, t1, t2) {
+    EmptyPiece: function EmptyPiece(t0, t1, t2, t3) {
       var _ = this;
       _.j = _.i = 0;
       _.moveStrategy = t0;
@@ -2906,6 +2918,7 @@
       _.name = t2;
       _.hasMoved = false;
       _.initialRow = -1;
+      _.options = t3;
       _.__GamePiece_src_A = $;
     },
     MoveOption: function MoveOption(t0, t1) {
@@ -2948,11 +2961,10 @@
       return A.throwExpression(new A.LateError("Field '" + fieldName + "' has been assigned during initialization."));
     },
     main() {
-      var t1, game, decoratedBoard,
+      var game, t1, decoratedBoard,
         gameContainer = document.getElementById("game-container");
       if (type$.Element._is(gameContainer)) {
-        t1 = J.JSArray_JSArray$growable(0, type$.MoveOption);
-        game = new A.ChessGame(t1, gameContainer);
+        game = new A.ChessGame(gameContainer);
         game.__ChessGame_view_A = new A.ChessBoardView(gameContainer, game);
         J.get$children$x(gameContainer).clear$0(0);
         t1 = J.JSArray_JSArray$growable(0, type$.List_ChessPiece);
@@ -4078,6 +4090,17 @@
       J._clearChildren$0$x(this._element);
     }
   };
+  A._FrozenElementList.prototype = {
+    get$length(_) {
+      return this._nodeList.length;
+    },
+    $index(_, index) {
+      var t1 = this._nodeList;
+      if (!(index >= 0 && index < t1.length))
+        return A.ioore(t1, index);
+      return this.$ti._precomputed1._as(t1[index]);
+    }
+  };
   A.Element.prototype = {
     get$children(receiver) {
       var t1 = receiver.children;
@@ -4402,17 +4425,19 @@
   };
   A.BoardWithPawns.prototype = {
     setupEnemyPieces$1(colour) {
-      var t1, j, pawn;
-      for (t1 = this.base, j = 0; j < 8; ++j) {
-        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn");
+      var t1, t2, j, t3, pawn;
+      for (t1 = this.base, t2 = type$.JSArray_MoveOption, j = 0; j < 8; ++j) {
+        t3 = A._setArrayType(new Array(0), t2);
+        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn", t3);
         pawn.__GamePiece_src_A = "./assets/chess/pawn_" + colour + ".png";
         t1.placePiece$3(pawn, 1, j);
       }
     },
     setupFriendlyPieces$1(colour) {
-      var t1, j, pawn;
-      for (t1 = this.base, j = 0; j < 8; ++j) {
-        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn");
+      var t1, t2, j, t3, pawn;
+      for (t1 = this.base, t2 = type$.JSArray_MoveOption, j = 0; j < 8; ++j) {
+        t3 = A._setArrayType(new Array(0), t2);
+        pawn = new A.ChessPiece(new A.PawnMovement(), colour, "pawn", t3);
         pawn.__GamePiece_src_A = "./assets/chess/pawn_" + colour + ".png";
         t1.placePiece$3(pawn, 6, j);
       }
@@ -4529,7 +4554,46 @@
       }
       t2._addEventListener$3(tile, "click", type$.nullable_dynamic_Function_Event._as(new A.ChessBoardView_createTile_closure(this, piece)), null);
       return tile;
-    }
+    },
+    highlightMoves$1(piece) {
+      var t1, t2, t3, t4, _i, move, t5, t6, t7, row, tile, element, marker,
+        _s16_ = "querySelectorAll";
+      for (t1 = piece.options, t2 = t1.length, t3 = type$.Element, t4 = this.container, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i) {
+        move = t1[_i];
+        t5 = move.i;
+        t6 = move.j;
+        A.printString("trying to get tile");
+        A.checkTypeBound(t3, t3, "T", _s16_);
+        t7 = t4.querySelectorAll(".board-row");
+        if (!(t5 >= 0 && t5 < t7.length))
+          return A.ioore(t7, t5);
+        row = t3._as(t7[t5]);
+        A.printString("grabbed row[" + t5 + "]");
+        A.checkTypeBound(t3, t3, "T", _s16_);
+        t5 = row.querySelectorAll(".chess-tile");
+        A.printString("found " + t5.length + " tiles");
+        if (!(t6 >= 0 && t6 < t5.length))
+          return A.ioore(t5, t6);
+        tile = t3._as(t5[t6]);
+        t5 = J.getInterceptor$x(tile);
+        t6 = t5.get$children(tile);
+        if (t6.get$length(t6) === 0) {
+          element = document.createElement("div");
+          t6 = J.getInterceptor$x(element);
+          t6.get$classes(element).add$1(0, "marker");
+          t6.get$classes(element).add$1(0, "dot");
+          marker = element;
+        } else {
+          element = document.createElement("div");
+          t6 = J.getInterceptor$x(element);
+          t6.get$classes(element).add$1(0, "marker");
+          t6.get$classes(element).add$1(0, "circle");
+          marker = element;
+        }
+        t5.get$children(tile).add$1(0, marker);
+      }
+    },
+    $isChessView: 1
   };
   A.ChessBoardView_createTile_closure.prototype = {
     call$1($event) {
@@ -4543,11 +4607,12 @@
   A.Game.prototype = {};
   A.ChessGame.prototype = {
     submitMove$2(i, j) {
-      var t1, t2, piece, options, _this = this,
+      var t1, t2, piece, _this = this,
         _s10_ = "chessBoard";
       A.print("Chess: move was made at board[" + i + "][" + j + "]");
-      if (_this.activePiece != null) {
-        if (_this.validMove$2(i, j)) {
+      t1 = _this.activePiece;
+      if (t1 != null) {
+        if (_this.validMove$3(t1, i, j)) {
           t1 = _this.activePiece;
           t1.toString;
           t2 = _this.__ChessGame_chessBoard_A;
@@ -4571,24 +4636,25 @@
       t1 = B.JSInt_methods.$mod(_this.turnCount, 2) === 0 ? "w" : "b";
       t1 = piece.colour === t1;
       if (t1) {
-        options = piece.moveStrategy.move$2(_this.__ChessGame_chessBoard_A, piece);
-        A.print("the piece has " + options.length + " options");
-        _this.set$options(0, options);
+        piece.set$options(0, piece.moveStrategy.move$2(_this.__ChessGame_chessBoard_A, piece));
+        A.print("the piece has " + piece.options.length + " options");
         _this.activePiece = piece;
+        t1 = _this.__ChessGame_view_A;
+        t1 === $ && A.throwLateFieldNI("view");
+        t1.highlightMoves$1(piece);
       }
     },
-    validMove$2(i, j) {
+    validMove$3(piece, i, j) {
       var t1, t2, _i, move;
-      A.print("checking for move[" + i + "][" + j + "] in " + this.options.length + " options");
-      for (t1 = this.options, t2 = t1.length, _i = 0; _i < t2; ++_i) {
+      if (piece == null)
+        return false;
+      A.print("checking for move[" + i + "][" + j + "] in " + piece.options.length + " options");
+      for (t1 = piece.options, t2 = t1.length, _i = 0; _i < t2; ++_i) {
         move = t1[_i];
         if (move.i === i && move.j === j)
           return true;
       }
       return false;
-    },
-    set$options(_, options) {
-      this.options = type$.List_MoveOption._as(options);
     }
   };
   A.ChequeredBoard.prototype = {
@@ -4651,6 +4717,9 @@
     validCoords$2(i, j) {
       var t1 = 0 <= i && i < 8;
       return B.JSBool_methods.$and(t1, 0 <= j && j < 8);
+    },
+    set$options(_, options) {
+      this.options = type$.List_MoveOption._as(options);
     }
   };
   A.EmptyPiece.prototype = {};
@@ -4889,7 +4958,7 @@
     _inheritMany(A.Node, [A.Element, A.CharacterData]);
     _inheritMany(A.Element, [A.HtmlElement, A.SvgElement]);
     _inheritMany(A.HtmlElement, [A.AnchorElement, A.AreaElement, A.FormElement, A.ImageElement, A.SelectElement]);
-    _inheritMany(A.ListBase, [A._ChildrenElementList, A._ChildNodeListLazy, A.FilteredElementList]);
+    _inheritMany(A.ListBase, [A._ChildrenElementList, A._FrozenElementList, A._ChildNodeListLazy, A.FilteredElementList]);
     _inherit(A._HtmlCollection_JavaScriptObject_ListMixin_ImmutableListMixin, A._HtmlCollection_JavaScriptObject_ListMixin);
     _inherit(A.HtmlCollection, A._HtmlCollection_JavaScriptObject_ListMixin_ImmutableListMixin);
     _inherit(A._NodeList_JavaScriptObject_ListMixin_ImmutableListMixin, A._NodeList_JavaScriptObject_ListMixin);
@@ -4917,7 +4986,7 @@
     leafTags: null,
     arrayRti: Symbol("$ti")
   };
-  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"int":{"num":[]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"BoardWithPieces":{"ChessBoard":[]},"BoardWithPawns":{"ChessBoard":[]},"BoardWithBishops":{"ChessBoard":[]},"BoardWithKnights":{"ChessBoard":[]},"BoardWithRooks":{"ChessBoard":[]},"BoardWithKings":{"ChessBoard":[]},"BoardWithQueens":{"ChessBoard":[]},"ChequeredBoard":{"ChessBoard":[]},"EmptyPiece":{"ChessPiece":[]},"NoMovement":{"MovementStrategy":[]},"PawnMovement":{"MovementStrategy":[]},"KnightMovement":{"MovementStrategy":[]},"BishopMovement":{"MovementStrategy":[]},"RookMovement":{"MovementStrategy":[]},"QueenMovement":{"MovementStrategy":[]},"KingMovement":{"MovementStrategy":[]}}'));
+  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"int":{"num":[]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"_FrozenElementList":{"ListBase":["1"],"List":["1"],"Iterable":["1"],"ListBase.E":"1"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"BoardWithPieces":{"ChessBoard":[]},"BoardWithPawns":{"ChessBoard":[]},"BoardWithBishops":{"ChessBoard":[]},"BoardWithKnights":{"ChessBoard":[]},"BoardWithRooks":{"ChessBoard":[]},"BoardWithKings":{"ChessBoard":[]},"BoardWithQueens":{"ChessBoard":[]},"ChessBoardView":{"ChessView":[]},"ChequeredBoard":{"ChessBoard":[]},"EmptyPiece":{"ChessPiece":[]},"NoMovement":{"MovementStrategy":[]},"PawnMovement":{"MovementStrategy":[]},"KnightMovement":{"MovementStrategy":[]},"BishopMovement":{"MovementStrategy":[]},"RookMovement":{"MovementStrategy":[]},"QueenMovement":{"MovementStrategy":[]},"KingMovement":{"MovementStrategy":[]}}'));
   A._Universe_addErasedTypes(init.typeUniverse, JSON.parse('{"_SetBase":1}'));
   var type$ = (function rtii() {
     var findType = A.findType;
@@ -4928,6 +4997,7 @@
       ImageElement: findType("ImageElement"),
       Iterable_dynamic: findType("Iterable<@>"),
       JSArray_ChessPiece: findType("JSArray<ChessPiece>"),
+      JSArray_MoveOption: findType("JSArray<MoveOption>"),
       JSArray_String: findType("JSArray<String>"),
       JSArray_dynamic: findType("JSArray<@>"),
       JSNull: findType("JSNull"),
