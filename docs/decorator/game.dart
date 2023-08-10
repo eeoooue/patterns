@@ -1,5 +1,10 @@
 import 'dart:html';
 
+abstract class Game {
+  void startGame();
+  void submitMove(int i, int j);
+}
+
 abstract class GameBoard {
   void removePiece(int i, int j);
   void setupPieces();

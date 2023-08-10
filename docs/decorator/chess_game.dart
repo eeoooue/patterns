@@ -4,7 +4,7 @@ import 'chess_pieces.dart';
 import 'chess_view.dart';
 import 'chess_board.dart';
 
-class ChessGame {
+class ChessGame implements Game {
   int turnCount = 0;
   late GameBoard board = ChequeredBoard();
   ChessPiece activePiece = EmptyPiece(0, 0);

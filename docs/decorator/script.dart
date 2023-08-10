@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'game.dart';
 import 'chess_game.dart';
 
 abstract class Demo {
@@ -9,7 +10,7 @@ abstract class Demo {
 class DecoratorDemo implements Demo {
   Element sideTray;
   List<DecoratorCheckbox> checkboxes = List.empty(growable: true);
-  ChessGame game;
+  Game game;
 
   DecoratorDemo(this.sideTray, this.game) {
     insertCheckboxes();
@@ -35,7 +36,11 @@ class DecoratorDemo implements Demo {
     for (int i = 0; i < checkboxes.length; i++) {
       state.add(checkboxes[i].checked);
     }
-    game.setupPieces(state);
+
+    var chessGame = game;
+    if (chessGame is ChessGame) {
+      chessGame.setupPieces(state);
+    }
   }
 }
 
@@ -97,7 +102,7 @@ void setupDemo() {
   Element? sideTray = document.getElementById("side-tray");
 
   if (gameContainer is Element && sideTray is Element) {
-    ChessGame game = ChessGame(gameContainer);
+    Game game = ChessGame(gameContainer);
     game.startGame();
 
     DecoratorDemo(sideTray, game);
