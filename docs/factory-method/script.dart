@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'checkers_game.dart';
 import 'connect_game.dart';
 import 'game.dart';
 import 'chess_game.dart';
@@ -45,7 +46,7 @@ class GameSelector {
   Game getGame(String title) {
     switch (title) {
       case "Checkers":
-        return ChessGame(gameContainer);
+        return CheckersGame(gameContainer);
       case "Chess":
         return ChessGame(gameContainer);
       case "Connect 4":
