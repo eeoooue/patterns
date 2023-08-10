@@ -2,8 +2,9 @@ import 'game.dart';
 
 class ConnectPiece extends GamePiece {
   bool empty = false;
+  String colour;
 
-  ConnectPiece(String colour) {
+  ConnectPiece(this.colour) {
     setSource("./assets/connect/connect_${colour}.png");
   }
 }

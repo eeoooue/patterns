@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'checkers_game.dart';
 import 'connect_game.dart';
 import 'game.dart';
 import 'chess_game.dart';
@@ -8,8 +9,7 @@ class GameSelector {
   Element choicesContainer;
   Element gameContainer;
 
-  List<String> gameChoices =
-      List.from({"Checkers", "Chess", "Connect 4", "Tic-Tac-Toe"});
+  List<String> gameChoices = List.from({"Checkers", "Chess", "Connect 4"});
 
   GameSelector(this.button, this.choicesContainer, this.gameContainer) {
     armButton();
@@ -45,13 +45,11 @@ class GameSelector {
   Game getGame(String title) {
     switch (title) {
       case "Checkers":
-        return ChessGame(gameContainer);
+        return CheckersGame(gameContainer);
       case "Chess":
         return ChessGame(gameContainer);
       case "Connect 4":
         return ConnectGame(gameContainer);
-      case "Tic-Tac-Toe":
-        return ChessGame(gameContainer);
       default:
         return ChessGame(gameContainer);
     }
