@@ -1,4 +1,5 @@
 import 'dart:html';
+import 'connect_game.dart';
 import 'game.dart';
 import 'chess_game.dart';
 
@@ -48,7 +49,7 @@ class GameSelector {
       case "Chess":
         return ChessGame(gameContainer);
       case "Connect 4":
-        return ChessGame(gameContainer);
+        return ConnectGame(gameContainer);
       case "Tic-Tac-Toe":
         return ChessGame(gameContainer);
       default:

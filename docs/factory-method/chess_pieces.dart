@@ -1,8 +1,6 @@
 import 'game.dart';
 
 class ChessPiece extends GamePiece {
-  int i = 0;
-  int j = 0;
   MovementStrategy moveStrategy;
   String colour;
   String name;

@@ -4,6 +4,10 @@ file:///D:/GitHub/patterns/docs/factory-method/chess_board.dart
 file:///D:/GitHub/patterns/docs/factory-method/chess_game.dart
 file:///D:/GitHub/patterns/docs/factory-method/chess_pieces.dart
 file:///D:/GitHub/patterns/docs/factory-method/chess_view.dart
+file:///D:/GitHub/patterns/docs/factory-method/connect_board.dart
+file:///D:/GitHub/patterns/docs/factory-method/connect_game.dart
+file:///D:/GitHub/patterns/docs/factory-method/connect_pieces.dart
+file:///D:/GitHub/patterns/docs/factory-method/connect_view.dart
 file:///D:/GitHub/patterns/docs/factory-method/game.dart
 file:///D:/GitHub/patterns/docs/factory-method/script.dart
 org-dartlang-sdk:///lib/_http/crypto.dart

@@ -21,6 +21,8 @@ abstract class GameView {
 
 abstract class GamePiece {
   late String src;
+  int i = 0;
+  int j = 0;
 
   GamePiece() {}
 
