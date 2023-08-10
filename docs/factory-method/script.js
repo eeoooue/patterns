@@ -2964,32 +2964,36 @@
       this.pieces = t0;
     },
     ConnectGame: function ConnectGame(t0) {
-      this.__ConnectGame_view_A = $;
-      this.board = t0;
-      this.turnCount = 0;
+      var _ = this;
+      _.__ConnectGame_view_A = $;
+      _.board = t0;
+      _.turnCount = 0;
+      _.gameOver = false;
     },
     ConnectPiece$(colour) {
-      var t1 = new A.ConnectPiece();
+      var t1 = new A.ConnectPiece(colour);
       t1.__GamePiece_src_A = "./assets/connect/connect_" + colour + ".png";
       return t1;
     },
     EmptyConnectPiece$(iInput, jInput) {
-      var t1 = new A.EmptyConnectPiece();
+      var t1 = new A.EmptyConnectPiece("none");
       t1.__GamePiece_src_A = "./assets/connect/connect_none.png";
       t1.empty = true;
       t1.i = iInput;
       t1.j = jInput;
       return t1;
     },
-    ConnectPiece: function ConnectPiece() {
+    ConnectPiece: function ConnectPiece(t0) {
       var _ = this;
       _.empty = false;
+      _.colour = t0;
       _.__GamePiece_src_A = $;
       _.j = _.i = 0;
     },
-    EmptyConnectPiece: function EmptyConnectPiece() {
+    EmptyConnectPiece: function EmptyConnectPiece(t0) {
       var _ = this;
       _.empty = false;
+      _.colour = t0;
       _.__GamePiece_src_A = $;
       _.j = _.i = 0;
     },
@@ -4573,6 +4577,45 @@
       t2 === $ && A.throwLateFieldNI("view");
       t2.displayBoard$1(t1.pieces);
     },
+    submitMove$2(i, j) {
+      var t4, t5, t6, t7, _this = this,
+        t1 = _this.board,
+        t2 = t1.pieces,
+        t3 = t2.length;
+      if (!(i >= 0 && i < t3))
+        return A.ioore(t2, i);
+      t4 = t2[i];
+      if (!(j < t4.length))
+        return A.ioore(t4, j);
+      t4 = t4[j];
+      t5 = _this.activePiece;
+      if (!(t5 instanceof A.EmptyCheckersPiece))
+        if (t4 instanceof A.EmptyCheckersPiece) {
+          t6 = t5.i;
+          t7 = t5.j;
+          if (!(t6 >= 0 && t6 < t3))
+            return A.ioore(t2, t6);
+          B.JSArray_methods.$indexSet(t2[t6], t7, A.EmptyCheckersPiece$(t6, t7));
+          if (!(i < t2.length))
+            return A.ioore(t2, i);
+          B.JSArray_methods.$indexSet(t2[i], j, A.EmptyCheckersPiece$(i, j));
+          t1.placePiece$3(t5, i, j);
+          ++_this.turnCount;
+          t5 = _this.__CheckersGame_view_A;
+          t5 === $ && A.throwLateFieldNI("view");
+          t5.displayBoard$1(t2);
+        }
+      _this.activePiece = A.EmptyCheckersPiece$(0, 0);
+      if (!(t4 instanceof A.EmptyCheckersPiece)) {
+        if (t4 instanceof A.CheckersPiece) {
+          t1 = t4.colour;
+          t1 = t1 === (B.JSInt_methods.$mod(_this.turnCount, 2) === 0 ? "red" : "cream");
+        } else
+          t1 = false;
+        if (t1)
+          _this.activePiece = t4;
+      }
+    },
     $isGame: 1
   };
   A.CheckersPiece.prototype = {};
@@ -4621,48 +4664,10 @@
   };
   A.CheckersView_createTile_closure.prototype = {
     call$1($event) {
-      var t1, t2, t3, t4, t5, t6, t7, t8, t9, t10;
+      var t1;
       type$.Event._as($event);
-      t1 = this.$this.game;
-      t2 = this.piece;
-      t3 = t2.i;
-      t2 = t2.j;
-      t4 = t1.board;
-      t5 = t4.pieces;
-      t6 = t5.length;
-      if (!(t3 >= 0 && t3 < t6))
-        return A.ioore(t5, t3);
-      t7 = t5[t3];
-      if (!(t2 < t7.length))
-        return A.ioore(t7, t2);
-      t7 = t7[t2];
-      t8 = t1.activePiece;
-      if (!(t8 instanceof A.EmptyCheckersPiece))
-        if (t7 instanceof A.EmptyCheckersPiece) {
-          t9 = t8.i;
-          t10 = t8.j;
-          if (!(t9 >= 0 && t9 < t6))
-            return A.ioore(t5, t9);
-          B.JSArray_methods.$indexSet(t5[t9], t10, A.EmptyCheckersPiece$(t9, t10));
-          if (!(t3 < t5.length))
-            return A.ioore(t5, t3);
-          B.JSArray_methods.$indexSet(t5[t3], t2, A.EmptyCheckersPiece$(t3, t2));
-          t4.placePiece$3(t8, t3, t2);
-          ++t1.turnCount;
-          t2 = t1.__CheckersGame_view_A;
-          t2 === $ && A.throwLateFieldNI("view");
-          t2.displayBoard$1(t5);
-        }
-      t1.activePiece = A.EmptyCheckersPiece$(0, 0);
-      if (!(t7 instanceof A.EmptyCheckersPiece)) {
-        if (t7 instanceof A.CheckersPiece) {
-          t2 = t7.colour;
-          t2 = t2 === (B.JSInt_methods.$mod(t1.turnCount, 2) === 0 ? "red" : "cream");
-        } else
-          t2 = false;
-        if (t2)
-          t1.activePiece = t7;
-      }
+      t1 = this.piece;
+      this.$this.game.submitMove$2(t1.i, t1.j);
     },
     $signature: 0
   };
@@ -5107,7 +5112,7 @@
       for (t1 = this.pieces, t2 = type$.JSArray_GamePiece, i = 0; i < 6; ++i) {
         row = A._setArrayType(new Array(0), t2);
         for (j = 0; j < 7; ++j) {
-          t3 = new A.EmptyConnectPiece();
+          t3 = new A.EmptyConnectPiece("none");
           t3.__GamePiece_src_A = "./assets/connect/connect_none.png";
           t3.empty = true;
           t3.i = i;
@@ -5161,6 +5166,11 @@
       }
       return -1;
     },
+    submitMove$2(i, j) {
+      if (this.gameOver)
+        return;
+      this.attemptMove$1(j);
+    },
     attemptMove$1(j) {
       var t1, t2, _this = this,
         i = _this.lowestSpaceInColumn$1(j);
@@ -5168,10 +5178,39 @@
         return;
       t1 = _this.board;
       t1.placePiece$3(A.ConnectPiece$(B.JSInt_methods.$mod(_this.turnCount, 2) === 0 ? "red" : "yellow"), i, j);
+      _this.gameOver = _this.checkGameOver$2(i, j);
       ++_this.turnCount;
       t2 = _this.__ConnectGame_view_A;
       t2 === $ && A.throwLateFieldNI("view");
       t2.displayBoard$1(t1.pieces);
+    },
+    checkGameOver$2(i, j) {
+      var _this = this;
+      if (_this.turnCount === 42)
+        return true;
+      return Math.max(Math.max(Math.max(Math.max(0, 1 + _this.explore$5(i, j, -1, -1, 0) + _this.explore$5(i, j, 1, 1, 0)), 1 + _this.explore$5(i, j, -1, 1, 0) + _this.explore$5(i, j, 1, -1, 0)), 1 + _this.explore$5(i, j, 0, -1, 0) + _this.explore$5(i, j, 0, 1, 0)), 1 + _this.explore$5(i, j, -1, 0, 0) + _this.explore$5(i, j, 1, 0, 0)) >= 4;
+    },
+    explore$5(i, j, di, dj, depth) {
+      var t1;
+      i += di;
+      j += dj;
+      if (0 <= i && i < 6 && 0 <= j && j < 7) {
+        t1 = this.board.pieces;
+        if (!(i >= 0 && i < t1.length))
+          return A.ioore(t1, i);
+        t1 = t1[i];
+        if (!(j >= 0 && j < t1.length))
+          return A.ioore(t1, j);
+        t1 = t1[j];
+        if (t1 instanceof A.ConnectPiece) {
+          t1 = t1.colour;
+          t1 = t1 === (B.JSInt_methods.$mod(this.turnCount, 2) === 0 ? "red" : "yellow");
+        } else
+          t1 = false;
+        if (t1)
+          return this.explore$5(i, j, di, dj, depth + 1);
+      }
+      return depth;
     },
     $isGame: 1
   };
@@ -5212,8 +5251,10 @@
   };
   A.ConnectView_buildTile_closure.prototype = {
     call$1($event) {
+      var t1;
       type$.Event._as($event);
-      this.$this.game.attemptMove$1(this.piece.j);
+      t1 = this.piece;
+      this.$this.game.submitMove$2(t1.i, t1.j);
     },
     $signature: 0
   };

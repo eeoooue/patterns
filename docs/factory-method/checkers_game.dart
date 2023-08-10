@@ -29,6 +29,9 @@ class CheckersGame implements Game {
   }
 
   void submitMove(int i, int j) {
+    if (gameIsOver()) {
+      return;
+    }
     GamePiece target = board.getPiece(i, j);
 
     if (!(activePiece is EmptyCheckersPiece)) {

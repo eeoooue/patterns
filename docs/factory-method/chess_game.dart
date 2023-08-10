@@ -38,6 +38,10 @@ class ChessGame implements Game {
   }
 
   void submitMove(int i, int j) {
+    if (gameIsOver()) {
+      return;
+    }
+
     if (validMove(activePiece, i, j)) {
       movePiece(activePiece, i, j);
       endTurn();
