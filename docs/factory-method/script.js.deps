@@ -1,5 +1,10 @@
 file:///C:/tools/dart-sdk/lib/_internal/dart2js_platform.dill
 file:///C:/tools/dart-sdk/lib/libraries.json
+file:///D:/GitHub/patterns/docs/factory-method/chess_board.dart
+file:///D:/GitHub/patterns/docs/factory-method/chess_game.dart
+file:///D:/GitHub/patterns/docs/factory-method/chess_pieces.dart
+file:///D:/GitHub/patterns/docs/factory-method/chess_view.dart
+file:///D:/GitHub/patterns/docs/factory-method/game.dart
 file:///D:/GitHub/patterns/docs/factory-method/script.dart
 org-dartlang-sdk:///lib/_http/crypto.dart
 org-dartlang-sdk:///lib/_http/embedder_config.dart
