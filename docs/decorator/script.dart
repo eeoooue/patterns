@@ -1,5 +1,5 @@
 import 'dart:html';
-import 'game.dart';
+import 'chess.dart';
 
 abstract class Demo {
   void insertCheckboxes();
