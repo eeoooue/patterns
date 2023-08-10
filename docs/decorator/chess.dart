@@ -1,6 +1,6 @@
-import 'pieces.dart';
 import 'dart:html';
 import 'dart:collection';
+import 'game.dart';
 
 class ChessPiece extends GamePiece {
   int i = 0;
@@ -65,7 +65,7 @@ class ChessGame {
   int turnCount = 0;
   late ChessBoard board = ChequeredBoard();
   ChessPiece activePiece = EmptyPiece(0, 0);
-  late ChessView view;
+  late GameView view;
   Element container;
   bool rotated = false;
 
@@ -169,13 +169,7 @@ class ChessGame {
   }
 }
 
-abstract class ChessView {
-  void displayBoard(List<List<ChessPiece>> boardstate);
-  Element buildTile(ChessPiece piece);
-  void rotateBoard();
-}
-
-class ChessBoardView implements ChessView {
+class ChessBoardView implements GameView {
   Element container;
   ChessGame game;
 
@@ -210,11 +204,11 @@ class ChessBoardView implements ChessView {
     }
   }
 
-  void displayBoard(List<List<ChessPiece>> boardstate) {
+  void displayBoard(List<List<GamePiece>> boardstate) {
     container.children.clear();
-    for (List<ChessPiece> rowOfPieces in boardstate) {
+    for (List<GamePiece> rowOfPieces in boardstate) {
       Element row = createRowContainer();
-      for (ChessPiece piece in rowOfPieces) {
+      for (GamePiece piece in rowOfPieces) {
         Element tile = buildTile(piece);
         row.children.add(tile);
       }
@@ -228,7 +222,7 @@ class ChessBoardView implements ChessView {
     return row;
   }
 
-  Element buildTile(ChessPiece piece) {
+  Element buildTile(GamePiece piece) {
     Element tile = createTile(piece);
 
     if (!(piece is EmptyPiece)) {
@@ -236,25 +230,29 @@ class ChessBoardView implements ChessView {
       tile.children.add(img);
     }
 
-    if (piece.threatened) {
-      Element marker = createMarker(piece);
-      tile.children.add(marker);
+    if (piece is ChessPiece) {
+      if (piece.threatened) {
+        Element marker = createMarker(piece);
+        tile.children.add(marker);
+      }
     }
 
     return tile;
   }
 
-  Element createTile(ChessPiece piece) {
+  Element createTile(GamePiece piece) {
     Element tile = document.createElement("div");
     tile.classes.add("chess-tile");
 
-    if ((piece.i + piece.j) % 2 != 0) {
-      tile.classes.add("dark");
-    }
+    if (piece is ChessPiece) {
+      if ((piece.i + piece.j) % 2 != 0) {
+        tile.classes.add("dark");
+      }
 
-    tile.addEventListener("click", (event) {
-      game.submitMove(piece.i, piece.j);
-    });
+      tile.addEventListener("click", (event) {
+        game.submitMove(piece.i, piece.j);
+      });
+    }
 
     return tile;
   }
@@ -265,6 +263,52 @@ class ChessBoardView implements ChessView {
     String subtype = (piece is EmptyPiece) ? "dot" : "circle";
     element.classes.add(subtype);
     return element;
+  }
+}
+
+abstract class ChessBoard {
+  void removePiece(int i, int j);
+  void setupPieces();
+  ChessPiece getPiece(int i, int j);
+  void placePiece(ChessPiece piece, int i, int j);
+  List<List<ChessPiece>> getBoardState();
+}
+
+class ChequeredBoard implements ChessBoard {
+  List<List<ChessPiece>> pieces = List.empty(growable: true);
+
+  ChequeredBoard() {}
+
+  void setupPieces() {
+    for (int i = 0; i < 8; i++) {
+      List<ChessPiece> row = List.empty(growable: true);
+      for (int j = 0; j < 8; j++) {
+        row.add(EmptyPiece(i, j));
+      }
+      pieces.add(row);
+    }
+  }
+
+  List<List<ChessPiece>> getBoardState() {
+    return pieces;
+  }
+
+  void placePiece(ChessPiece piece, int i, int j) {
+    pieces[i][j] = piece;
+    piece.i = i;
+    piece.j = j;
+  }
+
+  void removePiece(int i, int j) {
+    pieces[i][j] = EmptyPiece(i, j);
+  }
+
+  ChessPiece getPiece(int i, int j) {
+    return pieces[i][j];
+  }
+
+  bool validCoordinates(int i, int j) {
+    return (0 <= i && i < 8) && (0 <= j && j < 8);
   }
 }
 
@@ -387,52 +431,6 @@ class BoardWithQueens extends BoardWithPieces {
   void placeQueen(String colour, int i, int j) {
     ChessPiece queen = ChessPiece(colour, "queen", QueenMovement());
     base.placePiece(queen, i, j);
-  }
-}
-
-abstract class ChessBoard {
-  void removePiece(int i, int j);
-  void setupPieces();
-  ChessPiece getPiece(int i, int j);
-  void placePiece(ChessPiece piece, int i, int j);
-  List<List<ChessPiece>> getBoardState();
-}
-
-class ChequeredBoard implements ChessBoard {
-  List<List<ChessPiece>> pieces = List.empty(growable: true);
-
-  ChequeredBoard() {}
-
-  void setupPieces() {
-    for (int i = 0; i < 8; i++) {
-      List<ChessPiece> row = List.empty(growable: true);
-      for (int j = 0; j < 8; j++) {
-        row.add(EmptyPiece(i, j));
-      }
-      pieces.add(row);
-    }
-  }
-
-  List<List<ChessPiece>> getBoardState() {
-    return pieces;
-  }
-
-  void placePiece(ChessPiece piece, int i, int j) {
-    pieces[i][j] = piece;
-    piece.i = i;
-    piece.j = j;
-  }
-
-  void removePiece(int i, int j) {
-    pieces[i][j] = EmptyPiece(i, j);
-  }
-
-  ChessPiece getPiece(int i, int j) {
-    return pieces[i][j];
-  }
-
-  bool validCoordinates(int i, int j) {
-    return (0 <= i && i < 8) && (0 <= j && j < 8);
   }
 }
 

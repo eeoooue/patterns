@@ -2879,6 +2879,9 @@
       this.$this = t0;
       this.piece = t1;
     },
+    ChequeredBoard: function ChequeredBoard(t0) {
+      this.pieces = t0;
+    },
     BoardWithPieces: function BoardWithPieces() {
     },
     BoardWithPawns: function BoardWithPawns(t0) {
@@ -2898,9 +2901,6 @@
     },
     BoardWithQueens: function BoardWithQueens(t0) {
       this.base = t0;
-    },
-    ChequeredBoard: function ChequeredBoard(t0) {
-      this.pieces = t0;
     },
     NoMovement: function NoMovement() {
     },
@@ -4513,7 +4513,7 @@
   A.ChessBoardView.prototype = {
     displayBoard$1(boardstate) {
       var t1, t2, t3, t4, _i, rowOfPieces, t5, row, t6, t7, t8, tile, t9, img, t10, element, subtype;
-      type$.List_List_ChessPiece._as(boardstate);
+      type$.List_List_GamePiece._as(boardstate);
       t1 = this.container;
       t2 = J.getInterceptor$x(t1);
       t2.get$children(t1).clear$0(0);
@@ -4559,7 +4559,7 @@
       t1.addEventListener$2(tile, "click", new A.ChessBoardView_createTile_closure(this, piece));
       return tile;
     },
-    $isChessView: 1
+    $isGameView: 1
   };
   A.ChessBoardView_createTile_closure.prototype = {
     call$1($event) {
@@ -4569,6 +4569,44 @@
       this.$this.game.submitMove$2(t1.i, t1.j);
     },
     $signature: 0
+  };
+  A.ChequeredBoard.prototype = {
+    setupPieces$0() {
+      var t1, t2, i, row, j;
+      for (t1 = this.pieces, t2 = type$.JSArray_ChessPiece, i = 0; i < 8; ++i) {
+        row = A._setArrayType(new Array(0), t2);
+        for (j = 0; j < 8; ++j)
+          B.JSArray_methods.add$1(row, A.EmptyPiece$(i, j));
+        B.JSArray_methods.add$1(t1, row);
+      }
+    },
+    getBoardState$0() {
+      return this.pieces;
+    },
+    placePiece$3(piece, i, j) {
+      var t1 = this.pieces;
+      if (!(i < t1.length))
+        return A.ioore(t1, i);
+      B.JSArray_methods.$indexSet(t1[i], j, piece);
+      piece.i = i;
+      piece.j = j;
+    },
+    removePiece$2(i, j) {
+      var t1 = this.pieces;
+      if (!(i < t1.length))
+        return A.ioore(t1, i);
+      B.JSArray_methods.$indexSet(t1[i], j, A.EmptyPiece$(i, j));
+    },
+    getPiece$2(i, j) {
+      var t1 = this.pieces;
+      if (!(i >= 0 && i < t1.length))
+        return A.ioore(t1, i);
+      t1 = t1[i];
+      if (!(j >= 0 && j < t1.length))
+        return A.ioore(t1, j);
+      return t1[j];
+    },
+    $isChessBoard: 1
   };
   A.BoardWithPieces.prototype = {
     removePiece$2(i, j) {
@@ -4658,44 +4696,6 @@
     placeQueen$3(colour, i, j) {
       this.base.placePiece$3(A.ChessPiece$(colour, "queen", new A.QueenMovement()), i, j);
     }
-  };
-  A.ChequeredBoard.prototype = {
-    setupPieces$0() {
-      var t1, t2, i, row, j;
-      for (t1 = this.pieces, t2 = type$.JSArray_ChessPiece, i = 0; i < 8; ++i) {
-        row = A._setArrayType(new Array(0), t2);
-        for (j = 0; j < 8; ++j)
-          B.JSArray_methods.add$1(row, A.EmptyPiece$(i, j));
-        B.JSArray_methods.add$1(t1, row);
-      }
-    },
-    getBoardState$0() {
-      return this.pieces;
-    },
-    placePiece$3(piece, i, j) {
-      var t1 = this.pieces;
-      if (!(i < t1.length))
-        return A.ioore(t1, i);
-      B.JSArray_methods.$indexSet(t1[i], j, piece);
-      piece.i = i;
-      piece.j = j;
-    },
-    removePiece$2(i, j) {
-      var t1 = this.pieces;
-      if (!(i < t1.length))
-        return A.ioore(t1, i);
-      B.JSArray_methods.$indexSet(t1[i], j, A.EmptyPiece$(i, j));
-    },
-    getPiece$2(i, j) {
-      var t1 = this.pieces;
-      if (!(i >= 0 && i < t1.length))
-        return A.ioore(t1, i);
-      t1 = t1[i];
-      if (!(j >= 0 && j < t1.length))
-        return A.ioore(t1, j);
-      return t1[j];
-    },
-    $isChessBoard: 1
   };
   A.NoMovement.prototype = {
     move$2(board, piece) {
@@ -4887,7 +4887,7 @@
       _inherit = hunkHelpers.inherit,
       _inheritMany = hunkHelpers.inheritMany;
     _inherit(A.Object, null);
-    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.GamePiece, A.ChessGame, A.ChessBoardView, A.BoardWithPieces, A.ChequeredBoard, A.NoMovement, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement, A.DecoratorDemo, A.DecoratorCheckbox]);
+    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.GamePiece, A.ChessGame, A.ChessBoardView, A.ChequeredBoard, A.BoardWithPieces, A.NoMovement, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement, A.DecoratorDemo, A.DecoratorCheckbox]);
     _inheritMany(J.Interceptor, [J.JSBool, J.JSNull, J.JavaScriptObject, J.JSNumber, J.JSString]);
     _inheritMany(J.JavaScriptObject, [J.LegacyJavaScriptObject, J.JSArray, A.EventTarget, A.DomException, A.DomTokenList, A.Event, A._HtmlCollection_JavaScriptObject_ListMixin, A._NodeList_JavaScriptObject_ListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin]);
     _inheritMany(J.LegacyJavaScriptObject, [J.PlainJavaScriptObject, J.UnknownJavaScriptObject, J.JavaScriptFunction]);
@@ -4934,7 +4934,7 @@
     leafTags: null,
     arrayRti: Symbol("$ti")
   };
-  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"int":{"num":[]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"InputElement":{"Element":[],"Node":[]},"LabelElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"EmptyPiece":{"ChessPiece":[]},"ChessBoardView":{"ChessView":[]},"BoardWithPieces":{"ChessBoard":[]},"BoardWithPawns":{"ChessBoard":[]},"BoardWithBishops":{"ChessBoard":[]},"BoardWithKnights":{"ChessBoard":[]},"BoardWithRooks":{"ChessBoard":[]},"BoardWithKings":{"ChessBoard":[]},"BoardWithQueens":{"ChessBoard":[]},"ChequeredBoard":{"ChessBoard":[]},"NoMovement":{"MovementStrategy":[]},"PawnMovement":{"MovementStrategy":[]},"KnightMovement":{"MovementStrategy":[]},"BishopMovement":{"MovementStrategy":[]},"RookMovement":{"MovementStrategy":[]},"QueenMovement":{"MovementStrategy":[]},"KingMovement":{"MovementStrategy":[]},"DecoratorDemo":{"Demo":[]}}'));
+  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"int":{"num":[]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"InputElement":{"Element":[],"Node":[]},"LabelElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"ChessPiece":{"GamePiece":[]},"EmptyPiece":{"ChessPiece":[],"GamePiece":[]},"ChessBoardView":{"GameView":[]},"ChequeredBoard":{"ChessBoard":[]},"BoardWithPieces":{"ChessBoard":[]},"BoardWithPawns":{"ChessBoard":[]},"BoardWithBishops":{"ChessBoard":[]},"BoardWithKnights":{"ChessBoard":[]},"BoardWithRooks":{"ChessBoard":[]},"BoardWithKings":{"ChessBoard":[]},"BoardWithQueens":{"ChessBoard":[]},"NoMovement":{"MovementStrategy":[]},"PawnMovement":{"MovementStrategy":[]},"KnightMovement":{"MovementStrategy":[]},"BishopMovement":{"MovementStrategy":[]},"RookMovement":{"MovementStrategy":[]},"QueenMovement":{"MovementStrategy":[]},"KingMovement":{"MovementStrategy":[]},"DecoratorDemo":{"Demo":[]}}'));
   A._Universe_addErasedTypes(init.typeUniverse, JSON.parse('{"_SetBase":1}'));
   var type$ = (function rtii() {
     var findType = A.findType;
@@ -4955,7 +4955,7 @@
       JavaScriptIndexingBehavior_dynamic: findType("JavaScriptIndexingBehavior<@>"),
       LabelElement: findType("LabelElement"),
       List_ChessPiece: findType("List<ChessPiece>"),
-      List_List_ChessPiece: findType("List<List<ChessPiece>>"),
+      List_List_GamePiece: findType("List<List<GamePiece>>"),
       List_bool: findType("List<bool>"),
       MovementStrategy: findType("MovementStrategy"),
       Node: findType("Node"),

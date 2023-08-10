@@ -1,5 +1,11 @@
 import 'dart:html';
 
+abstract class GameView {
+  void displayBoard(List<List<GamePiece>> boardstate);
+  Element buildTile(GamePiece piece);
+  void rotateBoard();
+}
+
 abstract class GamePiece {
   late String src;
 
