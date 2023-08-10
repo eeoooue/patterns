@@ -1,17 +1,11 @@
 import 'dart:html';
-import 'game.dart';
-import 'pieces.dart';
 import 'dart:collection';
+import 'game.dart';
+import 'chess_pieces.dart';
 
-abstract class ChessView {
-  void displayBoard(List<List<ChessPiece>> boardstate);
-  Element buildTile(ChessPiece piece);
-  void rotateBoard();
-}
-
-class ChessBoardView implements ChessView {
+class ChessBoardView implements GameView {
   Element container;
-  ChessGame game;
+  Game game;
 
   ChessBoardView(this.game, this.container) {}
 
@@ -44,11 +38,11 @@ class ChessBoardView implements ChessView {
     }
   }
 
-  void displayBoard(List<List<ChessPiece>> boardstate) {
+  void displayBoard(List<List<GamePiece>> boardstate) {
     container.children.clear();
-    for (List<ChessPiece> rowOfPieces in boardstate) {
+    for (List<GamePiece> rowOfPieces in boardstate) {
       Element row = createRowContainer();
-      for (ChessPiece piece in rowOfPieces) {
+      for (GamePiece piece in rowOfPieces) {
         Element tile = buildTile(piece);
         row.children.add(tile);
       }
@@ -62,7 +56,7 @@ class ChessBoardView implements ChessView {
     return row;
   }
 
-  Element buildTile(ChessPiece piece) {
+  Element buildTile(GamePiece piece) {
     Element tile = createTile(piece);
 
     if (!(piece is EmptyPiece)) {
@@ -70,25 +64,29 @@ class ChessBoardView implements ChessView {
       tile.children.add(img);
     }
 
-    if (piece.threatened) {
-      Element marker = createMarker(piece);
-      tile.children.add(marker);
+    if (piece is ChessPiece) {
+      if (piece.threatened) {
+        Element marker = createMarker(piece);
+        tile.children.add(marker);
+      }
     }
 
     return tile;
   }
 
-  Element createTile(ChessPiece piece) {
+  Element createTile(GamePiece piece) {
     Element tile = document.createElement("div");
     tile.classes.add("chess-tile");
 
-    if ((piece.i + piece.j) % 2 != 0) {
-      tile.classes.add("dark");
-    }
+    if (piece is ChessPiece) {
+      if ((piece.i + piece.j) % 2 != 0) {
+        tile.classes.add("dark");
+      }
 
-    tile.addEventListener("click", (event) {
-      game.submitMove(piece.i, piece.j);
-    });
+      tile.addEventListener("click", (event) {
+        game.submitMove(piece.i, piece.j);
+      });
+    }
 
     return tile;
   }

@@ -1,9 +1,48 @@
-import 'strategy.dart';
-import 'gameboard.dart';
-import 'pieces.dart';
+import 'game.dart';
+import 'chess_pieces.dart';
 
-abstract class BoardWithPieces implements ChessBoard {
-  ChessBoard base;
+class ChequeredBoard implements GameBoard {
+  List<List<GamePiece>> pieces = List.empty(growable: true);
+
+  ChequeredBoard() {}
+
+  void setupPieces() {
+    for (int i = 0; i < 8; i++) {
+      List<ChessPiece> row = List.empty(growable: true);
+      for (int j = 0; j < 8; j++) {
+        row.add(EmptyPiece(i, j));
+      }
+      pieces.add(row);
+    }
+  }
+
+  List<List<GamePiece>> getBoardState() {
+    return pieces;
+  }
+
+  void placePiece(GamePiece piece, int i, int j) {
+    pieces[i][j] = piece;
+    if (piece is ChessPiece) {
+      piece.i = i;
+      piece.j = j;
+    }
+  }
+
+  void removePiece(int i, int j) {
+    pieces[i][j] = EmptyPiece(i, j);
+  }
+
+  GamePiece getPiece(int i, int j) {
+    return pieces[i][j];
+  }
+
+  bool validCoordinates(int i, int j) {
+    return (0 <= i && i < 8) && (0 <= j && j < 8);
+  }
+}
+
+abstract class BoardWithPieces implements GameBoard {
+  GameBoard base;
 
   BoardWithPieces(this.base) {}
 
@@ -13,21 +52,21 @@ abstract class BoardWithPieces implements ChessBoard {
     base.removePiece(i, j);
   }
 
-  void placePiece(ChessPiece piece, int i, int j) {
+  void placePiece(GamePiece piece, int i, int j) {
     base.placePiece(piece, i, j);
   }
 
-  ChessPiece getPiece(int i, int j) {
+  GamePiece getPiece(int i, int j) {
     return base.getPiece(i, j);
   }
 
-  List<List<ChessPiece>> getBoardState() {
+  List<List<GamePiece>> getBoardState() {
     return base.getBoardState();
   }
 }
 
 class BoardWithPawns extends BoardWithPieces {
-  BoardWithPawns(ChessBoard base) : super(base) {}
+  BoardWithPawns(GameBoard base) : super(base) {}
 
   void setupPieces() {
     base.setupPieces();
@@ -44,7 +83,7 @@ class BoardWithPawns extends BoardWithPieces {
 }
 
 class BoardWithBishops extends BoardWithPieces {
-  BoardWithBishops(ChessBoard base) : super(base) {}
+  BoardWithBishops(GameBoard base) : super(base) {}
 
   void setupPieces() {
     base.setupPieces();
@@ -61,7 +100,7 @@ class BoardWithBishops extends BoardWithPieces {
 }
 
 class BoardWithKnights extends BoardWithPieces {
-  BoardWithKnights(ChessBoard base) : super(base) {}
+  BoardWithKnights(GameBoard base) : super(base) {}
 
   void setupPieces() {
     base.setupPieces();
@@ -78,7 +117,7 @@ class BoardWithKnights extends BoardWithPieces {
 }
 
 class BoardWithRooks extends BoardWithPieces {
-  BoardWithRooks(ChessBoard base) : super(base) {}
+  BoardWithRooks(GameBoard base) : super(base) {}
 
   void setupPieces() {
     base.setupPieces();
@@ -95,7 +134,7 @@ class BoardWithRooks extends BoardWithPieces {
 }
 
 class BoardWithKings extends BoardWithPieces {
-  BoardWithKings(ChessBoard base) : super(base) {}
+  BoardWithKings(GameBoard base) : super(base) {}
 
   void setupPieces() {
     base.setupPieces();
@@ -110,7 +149,7 @@ class BoardWithKings extends BoardWithPieces {
 }
 
 class BoardWithQueens extends BoardWithPieces {
-  BoardWithQueens(ChessBoard base) : super(base) {}
+  BoardWithQueens(GameBoard base) : super(base) {}
 
   void setupPieces() {
     base.setupPieces();
