@@ -1,5 +1,13 @@
 import 'dart:html';
 
+abstract class GameBoard {
+  void removePiece(int i, int j);
+  void setupPieces();
+  GamePiece getPiece(int i, int j);
+  void placePiece(GamePiece piece, int i, int j);
+  List<List<GamePiece>> getBoardState();
+}
+
 abstract class GameView {
   void displayBoard(List<List<GamePiece>> boardstate);
   Element buildTile(GamePiece piece);

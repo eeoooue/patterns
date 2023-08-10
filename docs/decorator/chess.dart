@@ -20,23 +20,26 @@ class ChessPiece extends GamePiece {
     j = jInput;
   }
 
-  void move(ChessBoard board) {
+  void move(GameBoard board) {
     moveStrategy.move(board, this);
   }
 
-  bool canCapture(ChessBoard board, int i, int j) {
+  bool canCapture(GameBoard board, int i, int j) {
     if (validCoords(i, j)) {
-      ChessPiece target = board.getPiece(i, j);
-      if (!(target is EmptyPiece) && target.colour != colour) {
-        target.threatened = true;
-        return true;
+      GamePiece target = board.getPiece(i, j);
+
+      if (target is ChessPiece) {
+        if (!(target is EmptyPiece) && target.colour != colour) {
+          target.threatened = true;
+          return true;
+        }
       }
     }
 
     return false;
   }
 
-  bool canMove(ChessBoard board, int i, int j) {
+  bool canMove(GameBoard board, int i, int j) {
     if (validCoords(i, j)) {
       GamePiece target = board.getPiece(i, j);
       if (target is EmptyPiece) {
@@ -63,7 +66,7 @@ class EmptyPiece extends ChessPiece {
 
 class ChessGame {
   int turnCount = 0;
-  late ChessBoard board = ChequeredBoard();
+  late GameBoard board = ChequeredBoard();
   ChessPiece activePiece = EmptyPiece(0, 0);
   late GameView view;
   Element container;
@@ -99,10 +102,13 @@ class ChessGame {
     clearMoveOptions();
     activePiece = EmptyPiece(0, 0);
 
-    ChessPiece piece = board.getPiece(i, j);
-    if (piece.colour == getTurnPlayer()) {
-      piece.move(board);
-      activePiece = piece;
+    GamePiece piece = board.getPiece(i, j);
+
+    if (piece is ChessPiece) {
+      if (piece.colour == getTurnPlayer()) {
+        piece.move(board);
+        activePiece = piece;
+      }
     }
 
     refreshView();
@@ -118,8 +124,10 @@ class ChessGame {
   void clearMoveOptions() {
     for (int i = 0; i < 8; i++) {
       for (int j = 0; j < 8; j++) {
-        ChessPiece piece = board.getPiece(i, j);
-        piece.threatened = false;
+        GamePiece piece = board.getPiece(i, j);
+        if (piece is ChessPiece) {
+          piece.threatened = false;
+        }
       }
     }
   }
@@ -132,8 +140,11 @@ class ChessGame {
   }
 
   bool validMove(ChessPiece piece, int i, int j) {
-    ChessPiece target = board.getPiece(i, j);
-    return target.threatened;
+    GamePiece target = board.getPiece(i, j);
+    if (target is ChessPiece) {
+      return target.threatened;
+    }
+    return false;
   }
 
   void movePiece(ChessPiece piece, int i, int j) {
@@ -266,16 +277,8 @@ class ChessBoardView implements GameView {
   }
 }
 
-abstract class ChessBoard {
-  void removePiece(int i, int j);
-  void setupPieces();
-  ChessPiece getPiece(int i, int j);
-  void placePiece(ChessPiece piece, int i, int j);
-  List<List<ChessPiece>> getBoardState();
-}
-
-class ChequeredBoard implements ChessBoard {
-  List<List<ChessPiece>> pieces = List.empty(growable: true);
+class ChequeredBoard implements GameBoard {
+  List<List<GamePiece>> pieces = List.empty(growable: true);
 
   ChequeredBoard() {}
 
@@ -289,21 +292,23 @@ class ChequeredBoard implements ChessBoard {
     }
   }
 
-  List<List<ChessPiece>> getBoardState() {
+  List<List<GamePiece>> getBoardState() {
     return pieces;
   }
 
-  void placePiece(ChessPiece piece, int i, int j) {
+  void placePiece(GamePiece piece, int i, int j) {
     pieces[i][j] = piece;
-    piece.i = i;
-    piece.j = j;
+    if (piece is ChessPiece) {
+      piece.i = i;
+      piece.j = j;
+    }
   }
 
   void removePiece(int i, int j) {
     pieces[i][j] = EmptyPiece(i, j);
   }
 
-  ChessPiece getPiece(int i, int j) {
+  GamePiece getPiece(int i, int j) {
     return pieces[i][j];
   }
 
@@ -312,8 +317,8 @@ class ChequeredBoard implements ChessBoard {
   }
 }
 
-abstract class BoardWithPieces implements ChessBoard {
-  ChessBoard base;
+abstract class BoardWithPieces implements GameBoard {
+  GameBoard base;
 
   BoardWithPieces(this.base) {}
 
@@ -323,21 +328,21 @@ abstract class BoardWithPieces implements ChessBoard {
     base.removePiece(i, j);
   }
 
-  void placePiece(ChessPiece piece, int i, int j) {
+  void placePiece(GamePiece piece, int i, int j) {
     base.placePiece(piece, i, j);
   }
 
-  ChessPiece getPiece(int i, int j) {
+  GamePiece getPiece(int i, int j) {
     return base.getPiece(i, j);
   }
 
-  List<List<ChessPiece>> getBoardState() {
+  List<List<GamePiece>> getBoardState() {
     return base.getBoardState();
   }
 }
 
 class BoardWithPawns extends BoardWithPieces {
-  BoardWithPawns(ChessBoard base) : super(base) {}
+  BoardWithPawns(GameBoard base) : super(base) {}
 
   void setupPieces() {
     base.setupPieces();
@@ -354,7 +359,7 @@ class BoardWithPawns extends BoardWithPieces {
 }
 
 class BoardWithBishops extends BoardWithPieces {
-  BoardWithBishops(ChessBoard base) : super(base) {}
+  BoardWithBishops(GameBoard base) : super(base) {}
 
   void setupPieces() {
     base.setupPieces();
@@ -371,7 +376,7 @@ class BoardWithBishops extends BoardWithPieces {
 }
 
 class BoardWithKnights extends BoardWithPieces {
-  BoardWithKnights(ChessBoard base) : super(base) {}
+  BoardWithKnights(GameBoard base) : super(base) {}
 
   void setupPieces() {
     base.setupPieces();
@@ -388,7 +393,7 @@ class BoardWithKnights extends BoardWithPieces {
 }
 
 class BoardWithRooks extends BoardWithPieces {
-  BoardWithRooks(ChessBoard base) : super(base) {}
+  BoardWithRooks(GameBoard base) : super(base) {}
 
   void setupPieces() {
     base.setupPieces();
@@ -405,7 +410,7 @@ class BoardWithRooks extends BoardWithPieces {
 }
 
 class BoardWithKings extends BoardWithPieces {
-  BoardWithKings(ChessBoard base) : super(base) {}
+  BoardWithKings(GameBoard base) : super(base) {}
 
   void setupPieces() {
     base.setupPieces();
@@ -420,7 +425,7 @@ class BoardWithKings extends BoardWithPieces {
 }
 
 class BoardWithQueens extends BoardWithPieces {
-  BoardWithQueens(ChessBoard base) : super(base) {}
+  BoardWithQueens(GameBoard base) : super(base) {}
 
   void setupPieces() {
     base.setupPieces();
@@ -435,15 +440,15 @@ class BoardWithQueens extends BoardWithPieces {
 }
 
 abstract class MovementStrategy {
-  void move(ChessBoard board, ChessPiece piece);
+  void move(GameBoard board, ChessPiece piece);
 }
 
 class NoMovement implements MovementStrategy {
-  void move(ChessBoard board, ChessPiece piece) {}
+  void move(GameBoard board, ChessPiece piece) {}
 }
 
 class PawnMovement implements MovementStrategy {
-  void move(ChessBoard board, ChessPiece piece) {
+  void move(GameBoard board, ChessPiece piece) {
     if (piece.colour == "w") {
       return moveNorth(board, piece);
     } else {
@@ -451,7 +456,7 @@ class PawnMovement implements MovementStrategy {
     }
   }
 
-  void moveSouth(ChessBoard board, ChessPiece piece) {
+  void moveSouth(GameBoard board, ChessPiece piece) {
     if (piece.canMove(board, piece.i + 1, piece.j)) {
       if (!piece.hasMoved) {
         piece.canMove(board, piece.i + 2, piece.j);
@@ -462,7 +467,7 @@ class PawnMovement implements MovementStrategy {
     piece.canCapture(board, piece.i + 1, piece.j - 1);
   }
 
-  void moveNorth(ChessBoard board, ChessPiece piece) {
+  void moveNorth(GameBoard board, ChessPiece piece) {
     if (piece.canMove(board, piece.i - 1, piece.j)) {
       if (piece.hasMoved == false) {
         piece.canMove(board, piece.i - 2, piece.j);
@@ -475,7 +480,7 @@ class PawnMovement implements MovementStrategy {
 }
 
 class KnightMovement implements MovementStrategy {
-  void move(ChessBoard board, ChessPiece piece) {
+  void move(GameBoard board, ChessPiece piece) {
     void options = List.empty(growable: true);
 
     List<int> components = List.from({1, 2, -2, -1});
@@ -494,7 +499,7 @@ class KnightMovement implements MovementStrategy {
 }
 
 class BishopMovement implements MovementStrategy {
-  void move(ChessBoard board, ChessPiece piece) {
+  void move(GameBoard board, ChessPiece piece) {
     List<int> components = List.from({1, -1});
 
     for (int a in components) {
@@ -504,7 +509,7 @@ class BishopMovement implements MovementStrategy {
     }
   }
 
-  void exploreImpulse(ChessPiece piece, ChessBoard board, int di, int dj) {
+  void exploreImpulse(ChessPiece piece, GameBoard board, int di, int dj) {
     int i = piece.i;
     int j = piece.j;
     while (true) {
@@ -518,14 +523,14 @@ class BishopMovement implements MovementStrategy {
 }
 
 class RookMovement implements MovementStrategy {
-  void move(ChessBoard board, ChessPiece piece) {
+  void move(GameBoard board, ChessPiece piece) {
     exploreImpulse(piece, board, 0, 1);
     exploreImpulse(piece, board, 0, -1);
     exploreImpulse(piece, board, 1, 0);
     exploreImpulse(piece, board, -1, 0);
   }
 
-  void exploreImpulse(ChessPiece piece, ChessBoard board, int di, int dj) {
+  void exploreImpulse(ChessPiece piece, GameBoard board, int di, int dj) {
     int i = piece.i;
     int j = piece.j;
     while (true) {
@@ -539,7 +544,7 @@ class RookMovement implements MovementStrategy {
 }
 
 class QueenMovement implements MovementStrategy {
-  void move(ChessBoard board, ChessPiece piece) {
+  void move(GameBoard board, ChessPiece piece) {
     var pair = List.from({RookMovement(), BishopMovement()});
     for (MovementStrategy strategy in pair) {
       strategy.move(board, piece);
@@ -548,7 +553,7 @@ class QueenMovement implements MovementStrategy {
 }
 
 class KingMovement implements MovementStrategy {
-  void move(ChessBoard board, ChessPiece piece) {
+  void move(GameBoard board, ChessPiece piece) {
     List<int> components = List.from({-1, 0, 1});
 
     for (int a in components) {
