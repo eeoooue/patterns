@@ -2834,27 +2834,32 @@
     CheckersBoard: function CheckersBoard(t0) {
       this.pieces = t0;
     },
-    CheckersGame: function CheckersGame(t0) {
-      this.__CheckersGame_view_A = $;
-      this.board = t0;
+    CheckersGame: function CheckersGame(t0, t1) {
+      var _ = this;
+      _.__CheckersGame_view_A = $;
+      _.board = t0;
+      _.turnCount = 0;
+      _.activePiece = t1;
     },
     EmptyCheckersPiece$(iInput, jInput) {
-      var t1 = new A.EmptyCheckersPiece();
+      var t1 = new A.EmptyCheckersPiece("none");
       t1.__GamePiece_src_A = "./assets/checkers/checkers_none.png";
       t1.empty = true;
       t1.i = iInput;
       t1.j = jInput;
       return t1;
     },
-    CheckersPiece: function CheckersPiece() {
+    CheckersPiece: function CheckersPiece(t0) {
       var _ = this;
       _.empty = false;
+      _.colour = t0;
       _.__GamePiece_src_A = $;
       _.j = _.i = 0;
     },
-    EmptyCheckersPiece: function EmptyCheckersPiece() {
+    EmptyCheckersPiece: function EmptyCheckersPiece(t0) {
       var _ = this;
       _.empty = false;
+      _.colour = t0;
       _.__GamePiece_src_A = $;
       _.j = _.i = 0;
     },
@@ -3006,7 +3011,7 @@
       if (type$.ButtonElement._is(optionBtn)) {
         t1 = type$.Element;
         if (t1._is(choicesContainer) && t1._is(gameContainer))
-          new A.GameSelector(optionBtn, choicesContainer, gameContainer, A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal(["Checkers", "Chess", "Connect 4", "Tic-Tac-Toe"], type$.dynamic), true, type$.String)).armButton$0();
+          new A.GameSelector(optionBtn, choicesContainer, gameContainer, A.List_List$from(A.LinkedHashSet_LinkedHashSet$_literal(["Checkers", "Chess", "Connect 4"], type$.dynamic), true, type$.String)).armButton$0();
       }
     },
     GameSelector: function GameSelector(t0, t1, t2, t3) {
@@ -4497,7 +4502,7 @@
       for (t1 = this.pieces, t2 = type$.JSArray_GamePiece, i = 0; i < 8; ++i) {
         row = A._setArrayType(new Array(0), t2);
         for (j = 0; j < 8; ++j) {
-          t3 = new A.EmptyCheckersPiece();
+          t3 = new A.EmptyCheckersPiece("none");
           t3.__GamePiece_src_A = "./assets/checkers/checkers_none.png";
           t3.empty = true;
           t3.i = i;
@@ -4514,7 +4519,7 @@
       for (t1 = this.pieces, i = 0; i < 3; ++i)
         for (j = 0; j < 8; ++j)
           if (B.JSInt_methods.$mod(i + j, 2) !== 0) {
-            piece = new A.CheckersPiece();
+            piece = new A.CheckersPiece("cream");
             piece.__GamePiece_src_A = "./assets/checkers/checkers_cream.png";
             if (!(i < t1.length))
               return A.ioore(t1, i);
@@ -4528,7 +4533,7 @@
       for (t1 = this.pieces, i = 5; i < 8; ++i)
         for (j = 0; j < 8; ++j)
           if (B.JSInt_methods.$mod(i + j, 2) !== 0) {
-            piece = new A.CheckersPiece();
+            piece = new A.CheckersPiece("red");
             piece.__GamePiece_src_A = "./assets/checkers/checkers_red.png";
             if (!(i < t1.length))
               return A.ioore(t1, i);
@@ -4616,7 +4621,48 @@
   };
   A.CheckersView_createTile_closure.prototype = {
     call$1($event) {
+      var t1, t2, t3, t4, t5, t6, t7, t8, t9, t10;
       type$.Event._as($event);
+      t1 = this.$this.game;
+      t2 = this.piece;
+      t3 = t2.i;
+      t2 = t2.j;
+      t4 = t1.board;
+      t5 = t4.pieces;
+      t6 = t5.length;
+      if (!(t3 >= 0 && t3 < t6))
+        return A.ioore(t5, t3);
+      t7 = t5[t3];
+      if (!(t2 < t7.length))
+        return A.ioore(t7, t2);
+      t7 = t7[t2];
+      t8 = t1.activePiece;
+      if (!(t8 instanceof A.EmptyCheckersPiece))
+        if (t7 instanceof A.EmptyCheckersPiece) {
+          t9 = t8.i;
+          t10 = t8.j;
+          if (!(t9 >= 0 && t9 < t6))
+            return A.ioore(t5, t9);
+          B.JSArray_methods.$indexSet(t5[t9], t10, A.EmptyCheckersPiece$(t9, t10));
+          if (!(t3 < t5.length))
+            return A.ioore(t5, t3);
+          B.JSArray_methods.$indexSet(t5[t3], t2, A.EmptyCheckersPiece$(t3, t2));
+          t4.placePiece$3(t8, t3, t2);
+          ++t1.turnCount;
+          t2 = t1.__CheckersGame_view_A;
+          t2 === $ && A.throwLateFieldNI("view");
+          t2.displayBoard$1(t5);
+        }
+      t1.activePiece = A.EmptyCheckersPiece$(0, 0);
+      if (!(t7 instanceof A.EmptyCheckersPiece)) {
+        if (t7 instanceof A.CheckersPiece) {
+          t2 = t7.colour;
+          t2 = t2 === (B.JSInt_methods.$mod(t1.turnCount, 2) === 0 ? "red" : "cream");
+        } else
+          t2 = false;
+        if (t2)
+          t1.activePiece = t7;
+      }
     },
     $signature: 0
   };
@@ -5211,7 +5257,7 @@
       switch (title) {
         case "Checkers":
           t2 = J.JSArray_JSArray$growable(0, type$.List_GamePiece);
-          t2 = new A.CheckersGame(new A.CheckersBoard(t2));
+          t2 = new A.CheckersGame(new A.CheckersBoard(t2), A.EmptyCheckersPiece$(0, 0));
           t2.__CheckersGame_view_A = new A.CheckersView(t1, t2);
           return t2;
         case "Chess":
@@ -5221,8 +5267,6 @@
           t2 = new A.ConnectGame(new A.ConnectBoard(t2));
           t2.__ConnectGame_view_A = new A.ConnectView(t1, t2);
           return t2;
-        case "Tic-Tac-Toe":
-          return A.ChessGame$(t1);
         default:
           return A.ChessGame$(t1);
       }

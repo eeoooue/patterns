@@ -2,8 +2,9 @@ import 'game.dart';
 
 class CheckersPiece extends GamePiece {
   bool empty = false;
-  CheckersPiece(String team) {
-    setSource("./assets/checkers/checkers_${team}.png");
+  String colour;
+  CheckersPiece(this.colour) {
+    setSource("./assets/checkers/checkers_${colour}.png");
   }
 }
 

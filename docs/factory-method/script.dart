@@ -9,8 +9,7 @@ class GameSelector {
   Element choicesContainer;
   Element gameContainer;
 
-  List<String> gameChoices =
-      List.from({"Checkers", "Chess", "Connect 4", "Tic-Tac-Toe"});
+  List<String> gameChoices = List.from({"Checkers", "Chess", "Connect 4"});
 
   GameSelector(this.button, this.choicesContainer, this.gameContainer) {
     armButton();
@@ -51,8 +50,6 @@ class GameSelector {
         return ChessGame(gameContainer);
       case "Connect 4":
         return ConnectGame(gameContainer);
-      case "Tic-Tac-Toe":
-        return ChessGame(gameContainer);
       default:
         return ChessGame(gameContainer);
     }
