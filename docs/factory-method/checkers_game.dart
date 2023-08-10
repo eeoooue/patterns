@@ -9,9 +9,14 @@ class CheckersGame implements Game {
   GameBoard board = CheckersBoard();
   int turnCount = 0;
   GamePiece activePiece = EmptyCheckersPiece(0, 0);
+  bool gameOver = false;
 
   CheckersGame(Element container) {
     view = CheckersView(container, this);
+  }
+
+  bool gameIsOver() {
+    return gameOver;
   }
 
   void startGame() {

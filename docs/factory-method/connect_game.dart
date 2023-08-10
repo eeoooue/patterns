@@ -8,9 +8,14 @@ class ConnectGame implements Game {
   late GameView view;
   GameBoard board = ConnectBoard();
   int turnCount = 0;
+  bool gameOver = false;
 
   ConnectGame(Element container) {
     view = ConnectView(this, container);
+  }
+
+  bool gameIsOver() {
+    return gameOver;
   }
 
   void startGame() {

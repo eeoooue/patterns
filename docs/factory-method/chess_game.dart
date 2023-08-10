@@ -10,9 +10,14 @@ class ChessGame implements Game {
   int turnCount = 0;
   GameBoard board = ChequeredBoard();
   late GameView view;
+  bool gameOver = false;
 
   ChessGame(Element container) {
     view = ChessBoardView(this, container);
+  }
+
+  bool gameIsOver() {
+    return gameOver;
   }
 
   void startGame() {
