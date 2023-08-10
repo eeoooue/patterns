@@ -5,14 +5,13 @@ import 'chess_view.dart';
 import 'chess_board.dart';
 
 class ChessGame implements Game {
-  int turnCount = 0;
-  late GameBoard board = ChequeredBoard();
   ChessPiece activePiece = EmptyPiece(0, 0);
-  late GameView view;
-  Element container;
   bool rotated = false;
+  int turnCount = 0;
+  GameBoard board = ChequeredBoard();
+  late GameView view;
 
-  ChessGame(this.container) {
+  ChessGame(Element container) {
     view = ChessBoardView(this, container);
   }
 

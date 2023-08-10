@@ -2858,11 +2858,10 @@
     },
     ChessGame: function ChessGame(t0, t1) {
       var _ = this;
-      _.turnCount = 0;
-      _.__ChessGame_board_AI = $;
       _.activePiece = t0;
+      _.turnCount = 0;
+      _.board = t1;
       _.__ChessGame_view_A = $;
-      _.container = t1;
     },
     ChessPiece$(colour, $name, moveStrategy) {
       var t1 = new A.ChessPiece(moveStrategy, colour, $name);
@@ -2919,13 +2918,15 @@
     GamePiece: function GamePiece() {
     },
     main() {
-      var game, initState,
+      var t2, game, initState,
         t1 = document,
         gameContainer = t1.getElementById("game-container"),
         sideTray = t1.getElementById("side-tray");
       t1 = type$.Element;
       if (t1._is(gameContainer) && t1._is(sideTray)) {
-        game = new A.ChessGame(A.EmptyPiece$(0, 0), gameContainer);
+        t1 = A.EmptyPiece$(0, 0);
+        t2 = J.JSArray_JSArray$growable(0, type$.List_GamePiece);
+        game = new A.ChessGame(t1, new A.ChequeredBoard(t2));
         game.__ChessGame_view_A = new A.ChessBoardView(gameContainer, game);
         initState = J.JSArray_JSArray$growable(0, type$.bool);
         B.JSArray_methods.add$1(initState, true);
@@ -4529,22 +4530,13 @@
     }
   };
   A.ChessGame.prototype = {
-    get$board() {
-      var t1,
-        value = this.__ChessGame_board_AI;
-      if (value === $) {
-        t1 = J.JSArray_JSArray$growable(0, type$.List_GamePiece);
-        value = this.__ChessGame_board_AI = new A.ChequeredBoard(t1);
-      }
-      return value;
-    },
     submitMove$2(i, j) {
       var t1, piece, _this = this;
       if (_this.validMove$3(_this.activePiece, i, j)) {
         t1 = _this.activePiece;
-        _this.get$board().removePiece$2(t1.i, t1.j);
-        _this.get$board().removePiece$2(i, j);
-        _this.get$board().placePiece$3(t1, i, j);
+        _this.board.removePiece$2(t1.i, t1.j);
+        _this.board.removePiece$2(i, j);
+        _this.board.placePiece$3(t1, i, j);
         t1.hasMoved = true;
         ++_this.turnCount;
         _this.activePiece = A.EmptyPiece$(0, 0);
@@ -4554,10 +4546,10 @@
       }
       _this.clearMoveOptions$0();
       _this.activePiece = A.EmptyPiece$(0, 0);
-      piece = _this.get$board().getPiece$2(i, j);
+      piece = _this.board.getPiece$2(i, j);
       t1 = B.JSInt_methods.$mod(_this.turnCount, 2) === 0 ? "w" : "b";
       if (piece.colour === t1) {
-        piece.moveStrategy.move$2(_this.get$board(), piece);
+        piece.moveStrategy.move$2(_this.board, piece);
         _this.activePiece = piece;
       }
       _this.refreshView$0();
@@ -4565,54 +4557,57 @@
     refreshView$0() {
       var t1 = this.__ChessGame_view_A;
       t1 === $ && A.throwLateFieldNI("view");
-      t1.displayBoard$1(this.get$board().getBoardState$0());
+      t1.displayBoard$1(this.board.getBoardState$0());
     },
     clearMoveOptions$0() {
-      var t1, i, j, value, t2;
-      for (t1 = type$.JSArray_List_GamePiece, i = 0; i < 8; ++i)
-        for (j = 0; j < 8; ++j) {
-          value = this.__ChessGame_board_AI;
-          if (value === $) {
-            t2 = A._setArrayType(new Array(0), t1);
-            value = this.__ChessGame_board_AI = new A.ChequeredBoard(t2);
-          }
-          value.getPiece$2(i, j).threatened = false;
-        }
+      var i, j;
+      for (i = 0; i < 8; ++i)
+        for (j = 0; j < 8; ++j)
+          this.board.getPiece$2(i, j).threatened = false;
     },
     validMove$3(piece, i, j) {
-      var t1 = this.get$board().getPiece$2(i, j).threatened;
+      var t1 = this.board.getPiece$2(i, j).threatened;
       return t1;
     },
     setupPieces$1(state) {
-      var t1, _this = this;
+      var t1, t2, _this = this;
       type$.List_bool._as(state);
       t1 = J.JSArray_JSArray$growable(0, type$.List_GamePiece);
-      _this.__ChessGame_board_AI = new A.ChequeredBoard(t1);
-      if (0 >= state.length)
+      t1 = _this.board = new A.ChequeredBoard(t1);
+      t2 = state.length;
+      if (0 >= t2)
         return A.ioore(state, 0);
-      if (state[0])
-        _this.__ChessGame_board_AI = new A.BoardWithPawns(_this.get$board());
-      if (1 >= state.length)
+      if (state[0]) {
+        t1 = new A.BoardWithPawns(t1);
+        _this.board = t1;
+      }
+      if (1 >= t2)
         return A.ioore(state, 1);
-      if (state[1])
-        _this.__ChessGame_board_AI = new A.BoardWithBishops(_this.get$board());
-      if (2 >= state.length)
+      if (state[1]) {
+        t1 = new A.BoardWithBishops(t1);
+        _this.board = t1;
+      }
+      if (2 >= t2)
         return A.ioore(state, 2);
-      if (state[2])
-        _this.__ChessGame_board_AI = new A.BoardWithKnights(_this.get$board());
-      if (3 >= state.length)
+      if (state[2]) {
+        t1 = new A.BoardWithKnights(t1);
+        _this.board = t1;
+      }
+      if (3 >= t2)
         return A.ioore(state, 3);
-      if (state[3])
-        _this.__ChessGame_board_AI = new A.BoardWithRooks(_this.get$board());
-      if (4 >= state.length)
+      if (state[3]) {
+        t1 = new A.BoardWithRooks(t1);
+        _this.board = t1;
+      }
+      if (4 >= t2)
         return A.ioore(state, 4);
-      if (state[4])
-        _this.__ChessGame_board_AI = new A.BoardWithQueens(_this.get$board());
-      if (5 >= state.length)
+      if (state[4]) {
+        t1 = new A.BoardWithQueens(t1);
+        _this.board = t1;
+      }
+      if (5 >= t2)
         return A.ioore(state, 5);
-      if (state[5])
-        _this.__ChessGame_board_AI = new A.BoardWithKings(_this.get$board());
-      _this.get$board().setupPieces$0();
+      (state[5] ? _this.board = new A.BoardWithKings(t1) : t1).setupPieces$0();
       _this.refreshView$0();
     },
     $isGame: 1
@@ -4952,7 +4947,6 @@
       InputElement: findType("InputElement"),
       Iterable_dynamic: findType("Iterable<@>"),
       JSArray_ChessPiece: findType("JSArray<ChessPiece>"),
-      JSArray_List_GamePiece: findType("JSArray<List<GamePiece>>"),
       JSArray_String: findType("JSArray<String>"),
       JSArray_dynamic: findType("JSArray<@>"),
       JSNull: findType("JSNull"),
