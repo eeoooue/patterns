@@ -3,7 +3,7 @@ import 'chess.dart';
 
 abstract class Demo {
   void insertCheckboxes();
-  void alert();
+  void rebuildGame();
 }
 
 class DecoratorDemo implements Demo {
@@ -32,16 +32,10 @@ class DecoratorDemo implements Demo {
 
   void rebuildGame() {
     List<bool> state = List.empty(growable: true);
-
     for (int i = 0; i < checkboxes.length; i++) {
       state.add(checkboxes[i].checked);
     }
-
     game.setupPieces(state);
-  }
-
-  void alert() {
-    rebuildGame();
   }
 }
 
@@ -66,7 +60,7 @@ class DecoratorCheckbox {
   void armCheckbox(InputElement cbox) {
     cbox.addEventListener("input", (event) {
       checked = !checked;
-      demo.alert();
+      demo.rebuildGame();
     });
   }
 
