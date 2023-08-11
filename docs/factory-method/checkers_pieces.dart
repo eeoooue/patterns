@@ -9,6 +9,10 @@ class CheckersPiece extends GamePiece {
     setSource("./assets/checkers/checkers_${colour}.png");
   }
 
+  void move(GameBoard board) {
+    moveStrategy.move(board, this);
+  }
+
   bool canCapture(GameBoard board, int i, int j) {
     if (validCoords(i, j)) {
       GamePiece target = board.getPiece(i, j);
@@ -59,8 +63,8 @@ class NoCheckerMovement implements CheckersMovementStrategy {
 
 class RedCheckerMovement implements CheckersMovementStrategy {
   void move(GameBoard board, CheckersPiece piece) {
-    piece.canMove(board, piece.i + 1, piece.j - 1);
-    piece.canMove(board, piece.i + 1, piece.j + 1);
+    piece.canMove(board, piece.i - 1, piece.j - 1);
+    piece.canMove(board, piece.i - 1, piece.j + 1);
   }
 
   void tryCaptureChain(GameBoard board, CheckersPiece piece) {}
@@ -68,8 +72,8 @@ class RedCheckerMovement implements CheckersMovementStrategy {
 
 class CreamCheckerMovement implements CheckersMovementStrategy {
   void move(GameBoard board, CheckersPiece piece) {
-    piece.canMove(board, piece.i - 1, piece.j - 1);
-    piece.canMove(board, piece.i - 1, piece.j + 1);
+    piece.canMove(board, piece.i + 1, piece.j - 1);
+    piece.canMove(board, piece.i + 1, piece.j + 1);
   }
 
   void tryCaptureChain(GameBoard board, CheckersPiece piece) {}

@@ -35,7 +35,7 @@ class CheckersGame implements Game {
     GamePiece target = board.getPiece(i, j);
 
     if (!(activePiece is EmptyCheckersPiece)) {
-      if (target is EmptyCheckersPiece) {
+      if (target is CheckersPiece && target.threatened) {
         movePiece(activePiece, i, j);
         endTurn();
       }
@@ -46,6 +46,7 @@ class CheckersGame implements Game {
     if (!(target is EmptyCheckersPiece)) {
       if (target is CheckersPiece && target.colour == getTurnPlayer()) {
         activePiece = target;
+        target.move(board);
       }
     }
   }
