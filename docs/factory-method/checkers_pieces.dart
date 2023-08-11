@@ -50,21 +50,38 @@ class EmptyCheckersPiece extends CheckersPiece {
 }
 
 abstract class CheckersMovementStrategy {
-  void move(GameBoard board, GamePiece piece);
+  void move(GameBoard board, CheckersPiece piece);
 }
 
 class NoCheckerMovement implements CheckersMovementStrategy {
-  void move(GameBoard board, GamePiece piece) {}
+  void move(GameBoard board, CheckersPiece piece) {}
 }
 
 class RedCheckerMovement implements CheckersMovementStrategy {
-  void move(GameBoard board, GamePiece piece) {}
+  void move(GameBoard board, CheckersPiece piece) {
+    piece.canMove(board, piece.i + 1, piece.j - 1);
+    piece.canMove(board, piece.i + 1, piece.j + 1);
+  }
+
+  void tryCaptureChain(GameBoard board, CheckersPiece piece) {}
 }
 
 class CreamCheckerMovement implements CheckersMovementStrategy {
-  void move(GameBoard board, GamePiece piece) {}
+  void move(GameBoard board, CheckersPiece piece) {
+    piece.canMove(board, piece.i - 1, piece.j - 1);
+    piece.canMove(board, piece.i - 1, piece.j + 1);
+  }
+
+  void tryCaptureChain(GameBoard board, CheckersPiece piece) {}
 }
 
 class KingCheckerMovement implements CheckersMovementStrategy {
-  void move(GameBoard board, GamePiece piece) {}
+  void move(GameBoard board, CheckersPiece piece) {
+    piece.canMove(board, piece.i + 1, piece.j - 1);
+    piece.canMove(board, piece.i + 1, piece.j + 1);
+    piece.canMove(board, piece.i - 1, piece.j - 1);
+    piece.canMove(board, piece.i - 1, piece.j + 1);
+  }
+
+  void tryCaptureChain(GameBoard board, CheckersPiece piece) {}
 }
