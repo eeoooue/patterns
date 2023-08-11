@@ -8,6 +8,37 @@ class CheckersPiece extends GamePiece {
   CheckersPiece(this.colour, this.moveStrategy) {
     setSource("./assets/checkers/checkers_${colour}.png");
   }
+
+  bool canCapture(GameBoard board, int i, int j) {
+    if (validCoords(i, j)) {
+      GamePiece target = board.getPiece(i, j);
+
+      if (target is CheckersPiece) {
+        if (!(target is EmptyCheckersPiece) && target.colour != colour) {
+          target.threatened = true;
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  bool canMove(GameBoard board, int i, int j) {
+    if (validCoords(i, j)) {
+      GamePiece target = board.getPiece(i, j);
+      if (target is EmptyCheckersPiece) {
+        target.threatened = true;
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  bool validCoords(int i, int j) {
+    return (0 <= i && i < 8) & (0 <= j && j < 8);
+  }
 }
 
 class EmptyCheckersPiece extends CheckersPiece {
