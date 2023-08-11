@@ -25,7 +25,7 @@ class CheckersBoard implements GameBoard {
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 8; j++) {
         if ((i + j) % 2 != 0) {
-          CheckersPiece piece = CheckersPiece("cream");
+          CheckersPiece piece = CheckersPiece("cream", CreamCheckerMovement());
           placePiece(piece, i, j);
         }
       }
@@ -36,7 +36,7 @@ class CheckersBoard implements GameBoard {
     for (int i = 5; i < 8; i++) {
       for (int j = 0; j < 8; j++) {
         if ((i + j) % 2 != 0) {
-          CheckersPiece piece = CheckersPiece("red");
+          CheckersPiece piece = CheckersPiece("red", RedCheckerMovement());
           placePiece(piece, i, j);
         }
       }
