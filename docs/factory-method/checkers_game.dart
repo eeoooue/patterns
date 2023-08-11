@@ -39,6 +39,31 @@ class CheckersGame implements Game {
     }
   }
 
+  bool mustCapture() {
+    String player = getTurnPlayer();
+    var boardstate = board.getBoardState();
+
+    for (List<GamePiece> row in boardstate) {
+      for (GamePiece piece in row) {
+        if (piece is CheckersPiece && piece.colour == player) {
+          piece.move(board);
+        }
+      }
+    }
+
+    for (List<GamePiece> row in boardstate) {
+      for (GamePiece piece in row) {
+        if (piece is CheckersPiece && piece.threatened) {
+          clearMoveOptions();
+          return true;
+        }
+      }
+    }
+
+    clearMoveOptions();
+    return false;
+  }
+
   void clearMoveOptions() {
     for (int i = 0; i < 6; i++) {
       for (int j = 0; j < 7; j++) {
@@ -54,7 +79,7 @@ class CheckersGame implements Game {
     GamePiece target = board.getPiece(i, j);
 
     if (!(activePiece is EmptyCheckersPiece)) {
-      if (target is CheckersPiece && target.threatened) {
+      if (target is EmptyCheckersPiece && target.threatened) {
         movePiece(activePiece, i, j);
         endTurn();
         return true;

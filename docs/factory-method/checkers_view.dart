@@ -34,7 +34,7 @@ class CheckersView implements GameView {
       tile.children.add(img);
     }
 
-    if (piece is CheckersPiece) {
+    if (piece is EmptyCheckersPiece) {
       if (piece.threatened) {
         Element marker = createMarker(piece);
         tile.children.add(marker);

@@ -3530,6 +3530,20 @@
         return result;
       return result + other;
     },
+    _tdivFast$1(receiver, other) {
+      return (receiver | 0) === receiver ? receiver / other | 0 : this._tdivSlow$1(receiver, other);
+    },
+    _tdivSlow$1(receiver, other) {
+      var quotient = receiver / other;
+      if (quotient >= -2147483648 && quotient <= 2147483647)
+        return quotient | 0;
+      if (quotient > 0) {
+        if (quotient !== 1 / 0)
+          return Math.floor(quotient);
+      } else if (quotient > -1 / 0)
+        return Math.ceil(quotient);
+      throw A.wrapException(A.UnsupportedError$("Result of truncating division is " + A.S(quotient) + ": " + A.S(receiver) + " ~/ " + other));
+    },
     get$runtimeType(receiver) {
       return A.createRuntimeType(type$.num);
     },
@@ -4616,7 +4630,7 @@
       t4 = t4[j];
       t5 = _this.activePiece;
       if (!(t5 instanceof A.EmptyCheckersPiece))
-        if (t4 instanceof A.CheckersPiece && t4.threatened) {
+        if (t4 instanceof A.EmptyCheckersPiece && t4.threatened) {
           t4 = t5.i;
           t6 = t5.j;
           if (!(t4 >= 0 && t4 < t3))
@@ -4664,9 +4678,28 @@
     $isGame: 1
   };
   A.CheckersPiece.prototype = {
+    canCapture$5(board, iStart, jStart, iEnd, jEnd) {
+      var a, b, t1, _this = this;
+      if (!_this.validCoords$2(iStart, jStart) || !_this.validCoords$2(iEnd, jEnd))
+        return false;
+      a = B.JSInt_methods._tdivFast$1(iEnd - iStart, 2) + iStart;
+      b = B.JSInt_methods._tdivFast$1(jEnd - jStart, 2) + jStart;
+      t1 = board.pieces;
+      if (!(a >= 0 && a < t1.length))
+        return A.ioore(t1, a);
+      t1 = t1[a];
+      if (!(b >= 0 && b < t1.length))
+        return A.ioore(t1, b);
+      t1 = t1[b];
+      if (t1 instanceof A.CheckersPiece)
+        if (!(t1 instanceof A.EmptyCheckersPiece) && t1.colour !== _this.colour)
+          if (_this.canMove$3(board, iEnd, jEnd))
+            return t1.threatened = true;
+      return false;
+    },
     canMove$3(board, i, j) {
-      var t1 = 0 <= i && i < 8;
-      if (B.JSBool_methods.$and(t1, 0 <= j && j < 8)) {
+      var t1;
+      if (this.validCoords$2(i, j)) {
         t1 = board.pieces;
         if (!(i >= 0 && i < t1.length))
           return A.ioore(t1, i);
@@ -4678,6 +4711,10 @@
           return t1.threatened = true;
       }
       return false;
+    },
+    validCoords$2(i, j) {
+      var t1 = 0 <= i && i < 8;
+      return B.JSBool_methods.$and(t1, 0 <= j && j < 8);
     }
   };
   A.EmptyCheckersPiece.prototype = {};
@@ -4690,6 +4727,16 @@
     move$2(board, piece) {
       piece.canMove$3(board, piece.i - 1, piece.j - 1);
       piece.canMove$3(board, piece.i - 1, piece.j + 1);
+      this.explore$4(board, piece, piece.i, piece.j);
+    },
+    explore$4(board, piece, i, j) {
+      var t1 = i - 2,
+        t2 = j - 2;
+      if (piece.canCapture$5(board, i, j, t1, t2))
+        this.explore$4(board, piece, t1, t2);
+      t2 = j + 2;
+      if (piece.canCapture$5(board, i, j, t1, t2))
+        this.explore$4(board, piece, t1, t2);
     },
     $isCheckersMovementStrategy: 1
   };
@@ -4697,12 +4744,22 @@
     move$2(board, piece) {
       piece.canMove$3(board, piece.i + 1, piece.j - 1);
       piece.canMove$3(board, piece.i + 1, piece.j + 1);
+      this.explore$4(board, piece, piece.i, piece.j);
+    },
+    explore$4(board, piece, i, j) {
+      var t1 = i + 2,
+        t2 = j - 2;
+      if (piece.canCapture$5(board, i, j, t1, t2))
+        this.explore$4(board, piece, t1, t2);
+      t2 = j + 2;
+      if (piece.canCapture$5(board, i, j, t1, t2))
+        this.explore$4(board, piece, t1, t2);
     },
     $isCheckersMovementStrategy: 1
   };
   A.CheckersView.prototype = {
     displayBoard$1(boardstate) {
-      var t1, t2, t3, t4, _i, rowOfPieces, t5, row, t6, t7, t8, tile, t9, img, t10, element, subtype;
+      var t1, t2, t3, t4, _i, rowOfPieces, t5, row, t6, t7, t8, tile, img, t9, element;
       type$.List_List_GamePiece._as(boardstate);
       t1 = this.container;
       t2 = J.getInterceptor$x(t1);
@@ -4716,24 +4773,22 @@
         for (t7 = B.JSArray_methods.get$iterator(rowOfPieces); t7.moveNext$0();) {
           t8 = t7.get$current();
           tile = this.createTile$1(t8);
-          t9 = t8 instanceof A.CheckersPiece;
-          if (t9 && !t8.empty) {
+          if (t8 instanceof A.CheckersPiece && !t8.empty) {
             img = t5.createElement("img");
             J.get$classes$x(img).add$1(0, "piece-img");
             if (t4._is(img)) {
-              t10 = t8.__GamePiece_src_A;
-              t10 === $ && A.throwLateFieldNI("src");
-              B.ImageElement_methods.set$src(img, t10);
+              t9 = t8.__GamePiece_src_A;
+              t9 === $ && A.throwLateFieldNI("src");
+              B.ImageElement_methods.set$src(img, t9);
             }
             J.get$children$x(tile).add$1(0, img);
           }
-          if (t9)
+          if (t8 instanceof A.EmptyCheckersPiece)
             if (t8.threatened) {
               element = t5.createElement("div");
-              t9 = J.getInterceptor$x(element);
-              t9.get$classes(element).add$1(0, "marker");
-              subtype = t8 instanceof A.EmptyCheckersPiece ? "dot" : "circle";
-              t9.get$classes(element).add$1(0, subtype);
+              t8 = J.getInterceptor$x(element);
+              t8.get$classes(element).add$1(0, "marker");
+              t8.get$classes(element).add$1(0, "dot");
               J.get$children$x(tile).add$1(0, element);
             }
           t6.get$children(row).add$1(0, tile);
