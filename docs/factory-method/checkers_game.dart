@@ -33,7 +33,20 @@ class CheckersGame implements Game {
       return;
     }
     if (!processMoveEnd(i, j)) {
+      clearMoveOptions();
       processMoveStart(i, j);
+      refreshView();
+    }
+  }
+
+  void clearMoveOptions() {
+    for (int i = 0; i < 6; i++) {
+      for (int j = 0; j < 7; j++) {
+        GamePiece piece = board.getPiece(i, j);
+        if (piece is CheckersPiece) {
+          piece.threatened = false;
+        }
+      }
     }
   }
 
@@ -68,6 +81,8 @@ class CheckersGame implements Game {
 
   void endTurn() {
     turnCount += 1;
+    activePiece = EmptyCheckersPiece(0, 0);
+    clearMoveOptions();
     refreshView();
   }
 

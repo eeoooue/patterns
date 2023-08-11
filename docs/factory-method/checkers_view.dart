@@ -34,6 +34,13 @@ class CheckersView implements GameView {
       tile.children.add(img);
     }
 
+    if (piece is CheckersPiece) {
+      if (piece.threatened) {
+        Element marker = createMarker(piece);
+        tile.children.add(marker);
+      }
+    }
+
     return tile;
   }
 
@@ -50,6 +57,14 @@ class CheckersView implements GameView {
     });
 
     return tile;
+  }
+
+  Element createMarker(CheckersPiece piece) {
+    Element element = document.createElement("div");
+    element.classes.add("marker");
+    String subtype = (piece is EmptyCheckersPiece) ? "dot" : "circle";
+    element.classes.add(subtype);
+    return element;
   }
 
   void rotateBoard() {}

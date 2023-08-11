@@ -4580,7 +4580,31 @@
       t2.displayBoard$1(t1.pieces);
     },
     submitMove$2(i, j) {
-      var t4, t5, t6, t7, _this = this,
+      var t1, _this = this;
+      if (!_this.processMoveEnd$2(i, j)) {
+        _this.clearMoveOptions$0();
+        _this.processMoveStart$2(i, j);
+        t1 = _this.__CheckersGame_view_A;
+        t1 === $ && A.throwLateFieldNI("view");
+        t1.displayBoard$1(_this.board.pieces);
+      }
+    },
+    clearMoveOptions$0() {
+      var t1, i, j, t2;
+      for (t1 = this.board.pieces, i = 0; i < 6; ++i)
+        for (j = 0; j < 7; ++j) {
+          if (!(i < t1.length))
+            return A.ioore(t1, i);
+          t2 = t1[i];
+          if (!(j < t2.length))
+            return A.ioore(t2, j);
+          t2 = t2[j];
+          if (t2 instanceof A.CheckersPiece)
+            t2.threatened = false;
+        }
+    },
+    processMoveEnd$2(i, j) {
+      var t4, t5, t6, _this = this,
         t1 = _this.board,
         t2 = t1.pieces,
         t3 = t2.length;
@@ -4593,32 +4617,49 @@
       t5 = _this.activePiece;
       if (!(t5 instanceof A.EmptyCheckersPiece))
         if (t4 instanceof A.CheckersPiece && t4.threatened) {
-          t6 = t5.i;
-          t7 = t5.j;
-          if (!(t6 >= 0 && t6 < t3))
-            return A.ioore(t2, t6);
-          B.JSArray_methods.$indexSet(t2[t6], t7, A.EmptyCheckersPiece$(t6, t7));
+          t4 = t5.i;
+          t6 = t5.j;
+          if (!(t4 >= 0 && t4 < t3))
+            return A.ioore(t2, t4);
+          B.JSArray_methods.$indexSet(t2[t4], t6, A.EmptyCheckersPiece$(t4, t6));
           if (!(i < t2.length))
             return A.ioore(t2, i);
           B.JSArray_methods.$indexSet(t2[i], j, A.EmptyCheckersPiece$(i, j));
           t1.placePiece$3(t5, i, j);
           ++_this.turnCount;
+          _this.activePiece = A.EmptyCheckersPiece$(0, 0);
+          _this.clearMoveOptions$0();
           t5 = _this.__CheckersGame_view_A;
           t5 === $ && A.throwLateFieldNI("view");
           t5.displayBoard$1(t2);
+          return true;
         }
+      return false;
+    },
+    processMoveStart$2(i, j) {
+      var t3, _this = this,
+        t1 = _this.board,
+        t2 = t1.pieces;
+      if (!(i >= 0 && i < t2.length))
+        return A.ioore(t2, i);
+      t2 = t2[i];
+      if (!(j < t2.length))
+        return A.ioore(t2, j);
+      t2 = t2[j];
       _this.activePiece = A.EmptyCheckersPiece$(0, 0);
-      if (!(t4 instanceof A.EmptyCheckersPiece)) {
-        if (t4 instanceof A.CheckersPiece) {
-          t2 = t4.colour;
-          t2 = t2 === (B.JSInt_methods.$mod(_this.turnCount, 2) === 0 ? "red" : "cream");
+      if (!(t2 instanceof A.EmptyCheckersPiece)) {
+        if (t2 instanceof A.CheckersPiece) {
+          t3 = t2.colour;
+          t3 = t3 === (B.JSInt_methods.$mod(_this.turnCount, 2) === 0 ? "red" : "cream");
         } else
-          t2 = false;
-        if (t2) {
-          _this.activePiece = t4;
-          t4.moveStrategy.move$2(t1, t4);
+          t3 = false;
+        if (t3) {
+          _this.activePiece = t2;
+          t2.moveStrategy.move$2(t1, t2);
+          return true;
         }
       }
+      return false;
     },
     $isGame: 1
   };
@@ -4661,7 +4702,7 @@
   };
   A.CheckersView.prototype = {
     displayBoard$1(boardstate) {
-      var t1, t2, t3, t4, _i, rowOfPieces, t5, row, t6, t7, t8, tile, img;
+      var t1, t2, t3, t4, _i, rowOfPieces, t5, row, t6, t7, t8, tile, t9, img, t10, element, subtype;
       type$.List_List_GamePiece._as(boardstate);
       t1 = this.container;
       t2 = J.getInterceptor$x(t1);
@@ -4675,16 +4716,26 @@
         for (t7 = B.JSArray_methods.get$iterator(rowOfPieces); t7.moveNext$0();) {
           t8 = t7.get$current();
           tile = this.createTile$1(t8);
-          if (t8 instanceof A.CheckersPiece && !t8.empty) {
+          t9 = t8 instanceof A.CheckersPiece;
+          if (t9 && !t8.empty) {
             img = t5.createElement("img");
             J.get$classes$x(img).add$1(0, "piece-img");
             if (t4._is(img)) {
-              t8 = t8.__GamePiece_src_A;
-              t8 === $ && A.throwLateFieldNI("src");
-              B.ImageElement_methods.set$src(img, t8);
+              t10 = t8.__GamePiece_src_A;
+              t10 === $ && A.throwLateFieldNI("src");
+              B.ImageElement_methods.set$src(img, t10);
             }
             J.get$children$x(tile).add$1(0, img);
           }
+          if (t9)
+            if (t8.threatened) {
+              element = t5.createElement("div");
+              t9 = J.getInterceptor$x(element);
+              t9.get$classes(element).add$1(0, "marker");
+              subtype = t8 instanceof A.EmptyCheckersPiece ? "dot" : "circle";
+              t9.get$classes(element).add$1(0, subtype);
+              J.get$children$x(tile).add$1(0, element);
+            }
           t6.get$children(row).add$1(0, tile);
         }
         t2.get$children(t1).add$1(0, row);
