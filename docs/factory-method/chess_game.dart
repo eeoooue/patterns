@@ -11,6 +11,8 @@ class ChessGame implements Game {
   GameBoard board = ChequeredBoard();
   late GameView view;
   bool gameOver = false;
+  ChessKing? blackKing = null;
+  ChessKing? whiteKing = null;
 
   ChessGame(Element container) {
     view = ChessBoardView(this, container);
@@ -30,7 +32,42 @@ class ChessGame implements Game {
     initState.add(true);
 
     setupPieces(initState);
+    pairKings();
     refreshView();
+  }
+
+  void findKings() {
+    for (var row in board.getBoardState()) {
+      for (GamePiece piece in row) {
+        if (piece is ChessKing) {
+          if (piece.colour == "b") {
+            print("black king found ! ${piece.i} ${piece.j}");
+            blackKing = piece;
+          } else {
+            print("white king found ! ${piece.i} ${piece.j}");
+            whiteKing = piece;
+          }
+        }
+      }
+    }
+  }
+
+  void pairKings() {
+    findKings();
+    if (blackKing is ChessKing && whiteKing is ChessKing) {
+      for (var row in board.getBoardState()) {
+        for (GamePiece piece in row) {
+          if (piece is ChessPiece) {
+            if (piece.colour == "b") {
+              piece.myKing = blackKing;
+            }
+            if (piece.colour == "w") {
+              piece.myKing = whiteKing;
+            }
+          }
+        }
+      }
+    }
   }
 
   String getTurnPlayer() {
@@ -84,7 +121,21 @@ class ChessGame implements Game {
     turnCount += 1;
     activePiece = EmptyPiece(0, 0);
     clearMoveOptions();
+    updateKings();
     refreshView();
+  }
+
+  void updateKings() {
+    var bKing = blackKing;
+    var wKing = whiteKing;
+
+    if (bKing is ChessKing) {
+      bKing.threatened = bKing.isTheatened(board);
+    }
+
+    if (wKing is ChessKing) {
+      wKing.threatened = wKing.isTheatened(board);
+    }
   }
 
   bool validMove(ChessPiece piece, int i, int j) {
