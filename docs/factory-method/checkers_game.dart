@@ -32,14 +32,26 @@ class CheckersGame implements Game {
     if (gameIsOver()) {
       return;
     }
+    if (!processMoveEnd(i, j)) {
+      processMoveStart(i, j);
+    }
+  }
+
+  bool processMoveEnd(int i, int j) {
     GamePiece target = board.getPiece(i, j);
 
     if (!(activePiece is EmptyCheckersPiece)) {
       if (target is CheckersPiece && target.threatened) {
         movePiece(activePiece, i, j);
         endTurn();
+        return true;
       }
     }
+    return false;
+  }
+
+  bool processMoveStart(int i, int j) {
+    GamePiece target = board.getPiece(i, j);
 
     activePiece = EmptyCheckersPiece(0, 0);
 
@@ -47,8 +59,11 @@ class CheckersGame implements Game {
       if (target is CheckersPiece && target.colour == getTurnPlayer()) {
         activePiece = target;
         target.move(board);
+        return true;
       }
     }
+
+    return false;
   }
 
   void endTurn() {
