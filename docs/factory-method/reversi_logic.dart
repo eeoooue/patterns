@@ -12,13 +12,50 @@ class ReversiLogic {
 
   void attemptMove(int i, int j) {
     print("attempted move at ${i} ${j} (turncount = ${game.turnCount})");
-    GamePiece target = board.getPiece(i, j);
     ReversiPiece piece = newPiece();
 
-    if (target is EmptyReversiPiece) {
+    if (canMoveHere(i, j)) {
       board.placePiece(piece, i, j);
       game.endTurn();
     }
+  }
+
+  bool canMoveHere(int i, int j) {
+    GamePiece target = board.getPiece(i, j);
+
+    if (target is EmptyReversiPiece) {
+      List<ReversiPiece> enemies = findAdjacentEnemies(i, j);
+
+      for (ReversiPiece enemy in enemies) {
+        int a = enemy.i - i;
+        int b = enemy.j - j;
+        if (allyAlongImpulse(enemy.i, enemy.j, a, b)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  bool allyAlongImpulse(int i, int j, int di, int dj) {
+    return true;
+  }
+
+  List<ReversiPiece> findAdjacentEnemies(int i, int j) {
+    String enemy = (game.turnCount % 2 == 0) ? "black" : "white";
+    List<ReversiPiece> enemyPieces = List.empty(growable: true);
+
+    for (int a = -1; a <= 1; a++) {
+      for (int b = -1; b <= 1; b++) {
+        GamePiece piece = board.getPiece(i + a, j + b);
+        if (piece is ReversiPiece && piece.colour == enemy) {
+          enemyPieces.add(piece);
+        }
+      }
+    }
+
+    return enemyPieces;
   }
 
   ReversiPiece newPiece() {
