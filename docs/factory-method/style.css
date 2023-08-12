@@ -216,3 +216,23 @@ body {
 .reversi-piece.black {
     background-color: #011;
 }
+
+.reversi-piece.ghost {
+    background-color: rgba(0, 0, 0, 0.15);
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 12px;
+    display: flex;
+    color: transparent;
+}
+
+.ghost-text {
+    margin: auto;
+    font-size: 2.2rem;
+}
+
+.reversi-piece.ghost.black:hover {
+    color: black;
+}
+
+.reversi-piece.ghost.white:hover {
+    color: white;
+}

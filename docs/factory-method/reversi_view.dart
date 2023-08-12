@@ -27,6 +27,10 @@ class ReversiView implements GameView {
     Element tile = document.createElement("div");
     tile.classes.add("reversi-tile");
 
+    tile.addEventListener("click", (event) {
+      game.submitMove(piece.i, piece.j);
+    });
+
     Element shade = getFeltShade();
     tile.children.add(shade);
 
@@ -35,7 +39,23 @@ class ReversiView implements GameView {
       shade.children.add(disc);
     }
 
+    if (piece is EmptyReversiPiece && piece.possibleMove) {
+      String player = game.getTurnPlayer();
+      Element disc = createPiece(player);
+      disc.classes.add("ghost");
+      Element text = createMoveOptionText(player);
+      disc.children.add(text);
+      shade.children.add(disc);
+    }
+
     return tile;
+  }
+
+  Element createMoveOptionText(String player) {
+    Element div = document.createElement("div");
+    div.classes.add("ghost-text");
+    div.innerText = (player == "white") ? "白" : "黒";
+    return div;
   }
 
   Element createPiece(String colour) {
