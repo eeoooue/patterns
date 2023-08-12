@@ -68,6 +68,12 @@ class ChessBoardView implements GameView {
       if (piece.threatened) {
         Element marker = createMarker(piece);
         tile.children.add(marker);
+
+        if (piece is ChessKing) {
+          tile.children.clear();
+          Element img = piece.getCheckImage();
+          tile.children.add(img);
+        }
       }
     }
 

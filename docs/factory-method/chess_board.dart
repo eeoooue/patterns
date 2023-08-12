@@ -141,7 +141,7 @@ class BoardWithKings extends BoardWithPieces {
   }
 
   void placeKing(String colour, int i, int j) {
-    ChessPiece king = ChessPiece(colour, "king", KingMovement());
+    ChessPiece king = ChessKing(colour);
     base.placePiece(king, i, j);
   }
 }
