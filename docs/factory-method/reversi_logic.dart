@@ -3,10 +3,17 @@ import 'reversi_board.dart';
 import 'game.dart';
 import 'reversi_pieces.dart';
 
+class ReversiMove {
+  int i;
+  int j;
+  ReversiMove(this.i, this.j) {}
+}
+
 class ReversiLogic {
   ReversiGame game;
   ReversiBoard board;
   bool gameOver = false;
+  final List<ReversiMove> moveOptions = List.empty(growable: true);
 
   ReversiLogic(this.game, this.board) {}
 
@@ -24,11 +31,33 @@ class ReversiLogic {
     }
   }
 
+  bool canMoveHere(int i, int j) {
+    for (ReversiMove move in moveOptions) {
+      if (move.i == i && move.j == j) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  void refreshMoveOptions() {
+    moveOptions.clear();
+
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 8; j++) {
+        if (isLegalMove(i, j)) {
+          moveOptions.add(ReversiMove(i, j));
+        }
+      }
+    }
+  }
+
   bool noPossibleMoves() {
     return false;
   }
 
-  bool canMoveHere(int i, int j) {
+  bool isLegalMove(int i, int j) {
     GamePiece target = board.getPiece(i, j);
 
     if (target is EmptyReversiPiece) {

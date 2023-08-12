@@ -21,6 +21,7 @@ class ReversiGame implements Game {
 
   void startGame() {
     board.setupPieces();
+    logic.refreshMoveOptions();
     refreshView();
   }
 
@@ -34,12 +35,12 @@ class ReversiGame implements Game {
 
   void endTurn() {
     turnCount += 1;
+    logic.refreshMoveOptions();
     refreshView();
   }
 
   void submitMove(int i, int j) {
     if (!gameIsOver()) {
-      // DO STUFF
       logic.attemptMove(i, j);
     }
   }

@@ -3084,9 +3084,14 @@
       _.turnCount = 0;
       _.__ReversiGame_view_A = _.__ReversiGame_logic_A = $;
     },
-    ReversiLogic: function ReversiLogic(t0, t1) {
+    ReversiMove: function ReversiMove(t0, t1) {
+      this.i = t0;
+      this.j = t1;
+    },
+    ReversiLogic: function ReversiLogic(t0, t1, t2) {
       this.game = t0;
       this.board = t1;
+      this.moveOptions = t2;
     },
     ReversiPiece: function ReversiPiece(t0) {
       var _ = this;
@@ -3530,6 +3535,11 @@
       if (!!receiver.fixed$length)
         A.throwExpression(A.UnsupportedError$("add"));
       receiver.push(value);
+    },
+    clear$0(receiver) {
+      if (!!receiver.fixed$length)
+        A.throwExpression(A.UnsupportedError$("clear"));
+      receiver.length = 0;
     },
     elementAt$1(receiver, index) {
       if (!(index >= 0 && index < receiver.length))
@@ -5924,20 +5934,52 @@
       var t2,
         t1 = this.board;
       t1.setupPieces$0();
+      t2 = this.__ReversiGame_logic_A;
+      t2 === $ && A.throwLateFieldNI("logic");
+      t2.refreshMoveOptions$0();
       t2 = this.__ReversiGame_view_A;
       t2 === $ && A.throwLateFieldNI("view");
       t2.displayBoard$1(t1.pieces);
     },
+    endTurn$0() {
+      var t1, _this = this;
+      ++_this.turnCount;
+      t1 = _this.__ReversiGame_logic_A;
+      t1 === $ && A.throwLateFieldNI("logic");
+      t1.refreshMoveOptions$0();
+      t1 = _this.__ReversiGame_view_A;
+      t1 === $ && A.throwLateFieldNI("view");
+      t1.displayBoard$1(_this.board.pieces);
+    },
     $isGame: 1
   };
+  A.ReversiMove.prototype = {};
   A.ReversiLogic.prototype = {
     canMoveHere$2(i, j) {
+      var t1, t2, _i, move;
+      for (t1 = this.moveOptions, t2 = t1.length, _i = 0; _i < t2; ++_i) {
+        move = t1[_i];
+        if (move.i === i && move.j === j)
+          return true;
+      }
+      return false;
+    },
+    refreshMoveOptions$0() {
+      var i, j,
+        t1 = this.moveOptions;
+      B.JSArray_methods.clear$0(t1);
+      for (i = 0; i < 8; ++i)
+        for (j = 0; j < 8; ++j)
+          if (this.isLegalMove$2(i, j))
+            B.JSArray_methods.add$1(t1, new A.ReversiMove(i, j));
+    },
+    isLegalMove$2(i, j) {
       var enemies, _i, enemy, t2, t3,
         t1 = this.board.pieces;
-      if (!(i >= 0 && i < t1.length))
+      if (!(i < t1.length))
         return A.ioore(t1, i);
       t1 = t1[i];
-      if (!(j >= 0 && j < t1.length))
+      if (!(j < t1.length))
         return A.ioore(t1, j);
       if (t1[j] instanceof A.EmptyReversiPiece) {
         enemies = this.findAdjacentEnemies$2(i, j);
@@ -6053,10 +6095,7 @@
       t5 = B.JSInt_methods.$mod(t4.turnCount, 2) === 0 ? "white" : "black";
       if (t3.canMoveHere$2(t2, t1)) {
         t3.board.placePiece$3(new A.ReversiPiece(t5), t2, t1);
-        ++t4.turnCount;
-        t1 = t4.__ReversiGame_view_A;
-        t1 === $ && A.throwLateFieldNI("view");
-        t1.displayBoard$1(t4.board.pieces);
+        t4.endTurn$0();
       }
     },
     $signature: 0
@@ -6120,7 +6159,8 @@
           t2 = new A.ReversiBoard(t2);
           t3 = new A.ReversiGame(t2);
           t3.__ReversiGame_view_A = new A.ReversiView(t1, t3);
-          t3.__ReversiGame_logic_A = new A.ReversiLogic(t3, t2);
+          t1 = J.JSArray_JSArray$growable(0, type$.ReversiMove);
+          t3.__ReversiGame_logic_A = new A.ReversiLogic(t3, t2, t1);
           return t3;
         default:
           return A.ChessGame$(t1);
@@ -6162,7 +6202,7 @@
       _inherit = hunkHelpers.inherit,
       _inheritMany = hunkHelpers.inheritMany;
     _inherit(A.Object, null);
-    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._HashSetIterator, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.CheckersBoard, A.CheckersGame, A.GamePiece, A.NoCheckerMovement, A.RedCheckerMovement, A.CreamCheckerMovement, A.CheckersView, A.ChequeredBoard, A.BoardWithPieces, A.ChessGame, A.ChessLogic, A.NoMovement, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement, A.ChessBoardView, A.ConnectBoard, A.ConnectGame, A.ConnectLogic, A.ConnectView, A.ReversiBoard, A.ReversiGame, A.ReversiLogic, A.ReversiView, A.GameSelector, A.GameChoice]);
+    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._HashSetIterator, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.CheckersBoard, A.CheckersGame, A.GamePiece, A.NoCheckerMovement, A.RedCheckerMovement, A.CreamCheckerMovement, A.CheckersView, A.ChequeredBoard, A.BoardWithPieces, A.ChessGame, A.ChessLogic, A.NoMovement, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement, A.ChessBoardView, A.ConnectBoard, A.ConnectGame, A.ConnectLogic, A.ConnectView, A.ReversiBoard, A.ReversiGame, A.ReversiMove, A.ReversiLogic, A.ReversiView, A.GameSelector, A.GameChoice]);
     _inheritMany(J.Interceptor, [J.JSBool, J.JSNull, J.JavaScriptObject, J.JSNumber, J.JSString]);
     _inheritMany(J.JavaScriptObject, [J.LegacyJavaScriptObject, J.JSArray, A.EventTarget, A.DomException, A.DomTokenList, A.Event, A._HtmlCollection_JavaScriptObject_ListMixin, A._NodeList_JavaScriptObject_ListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin]);
     _inheritMany(J.LegacyJavaScriptObject, [J.PlainJavaScriptObject, J.UnknownJavaScriptObject, J.JavaScriptFunction]);
@@ -6238,6 +6278,7 @@
       Null: findType("Null"),
       Object: findType("Object"),
       Record: findType("Record"),
+      ReversiMove: findType("ReversiMove"),
       ReversiPiece: findType("ReversiPiece"),
       Set_String: findType("Set<String>"),
       String: findType("String"),
