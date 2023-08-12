@@ -5,9 +5,53 @@
     box-sizing: border-box;
 }
 
+#site-header {
+    background-color: #333;
+    height: 5.6vh;
+    width: 100vw;
+    justify-content: space-between;
+}
+
+.myicon {
+    background-color: rgba(0, 0, 0, 0.3);
+    height: 5vh;
+    width: 5vh;
+    margin: 10px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.myicon img {
+    width: 100%;
+}
+
+.mytitle{
+    padding: 0px 6px;
+}
+
+
+.myheaderbadge {
+    padding: 0px 36px;
+    color: white;
+    align-items: center;
+    font-size: 1.4rem;
+    justify-content: space-between;
+}
+
+.site-nav {
+    color: white;
+    padding: 0px 36px;
+}
+
+.category-tag {
+    padding: 0px 10px;
+    cursor: pointer;
+    margin: 0px 10px;
+}
+
+
 body {
     font-family: 'Roboto', sans-serif;
-    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -22,8 +66,32 @@ body {
 }  
 
 #choices-container {
-    display: flex;
-    flex-direction: row;
+    background-color: #ccc;
+    padding: 10px 10px;
+    margin: 10px 0;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.game-choice {
+    background-color: #666;
+    color: white;
+    padding: 10px 20px;
+    margin: 0px 10px;
+    border: none;
+    border-radius: 1000px;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+.game-choice:hover {
+    background-color: #333;
+}
+
+.game-choice.active {
+    background-color: white;
+    color: #333;
+    box-shadow: none;
 }
 
 #game-container {
@@ -37,7 +105,10 @@ body {
     flex-direction: row;
 }
 
-
+.container {
+    display: flex;
+    align-items: center;
+}
 
 .bookshelf {
     display: flex;
@@ -94,7 +165,7 @@ body {
 }
 
 .chess-tile {
-    background-color: #e0c46e;
+    background-color: #F5F1D9;
     margin: 0px;
     width: min(10vh, 12.5vw);
     height: min(10vh, 12.5vw);
@@ -102,11 +173,46 @@ body {
     align-items: center;
 }
 
+.chess-tile.dark {
+    background-color: #4B8559;
+}
+
 .chess-tile:hover {
     cursor: pointer;
 }
 
-.chess-tile.dark {
-    background-color: #735e47;
+/* Reversi */
+
+.reversi-tile {
+    background-color: #4B8559;
+    margin: 0px;
+    width: min(10vh, 12.5vw);
+    height: min(10vh, 12.5vw);
+    display: flex;
+    align-items: center;
+    cursor: pointer;
 }
 
+.reversi-shade {
+    background-color: rgba(0, 0, 0, 0.3);
+    margin: auto;
+    border-radius: 2px;
+    height: 90%;
+    width: 90%;
+}
+
+.reversi-piece {
+    border-radius: 50%;
+    margin: auto;
+    height: 100%;
+    width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+.reversi-piece.white {
+    background-color: #fee;
+}
+
+.reversi-piece.black {
+    background-color: #011;
+}

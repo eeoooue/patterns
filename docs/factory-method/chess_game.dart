@@ -3,19 +3,21 @@ import 'game.dart';
 import 'chess_pieces.dart';
 import 'chess_view.dart';
 import 'chess_board.dart';
+import 'chess_logic.dart';
 
 class ChessGame implements Game {
-  ChessPiece activePiece = EmptyPiece(0, 0);
   bool rotated = false;
   int turnCount = 0;
   GameBoard board = ChequeredBoard();
-  late GameView view;
   bool gameOver = false;
   ChessKing? blackKing = null;
   ChessKing? whiteKing = null;
+  late GameView view;
+  late ChessLogic logic;
 
   ChessGame(Element container) {
     view = ChessBoardView(this, container);
+    logic = ChessLogic(this);
   }
 
   bool gameIsOver() {
@@ -32,42 +34,8 @@ class ChessGame implements Game {
     initState.add(true);
 
     setupPieces(initState);
-    pairKings();
+    logic.pairKings();
     refreshView();
-  }
-
-  void findKings() {
-    for (var row in board.getBoardState()) {
-      for (GamePiece piece in row) {
-        if (piece is ChessKing) {
-          if (piece.colour == "b") {
-            print("black king found ! ${piece.i} ${piece.j}");
-            blackKing = piece;
-          } else {
-            print("white king found ! ${piece.i} ${piece.j}");
-            whiteKing = piece;
-          }
-        }
-      }
-    }
-  }
-
-  void pairKings() {
-    findKings();
-    if (blackKing is ChessKing && whiteKing is ChessKing) {
-      for (var row in board.getBoardState()) {
-        for (GamePiece piece in row) {
-          if (piece is ChessPiece) {
-            if (piece.colour == "b") {
-              piece.myKing = blackKing;
-            }
-            if (piece.colour == "w") {
-              piece.myKing = whiteKing;
-            }
-          }
-        }
-      }
-    }
   }
 
   String getTurnPlayer() {
@@ -75,27 +43,7 @@ class ChessGame implements Game {
   }
 
   void submitMove(int i, int j) {
-    if (gameIsOver()) {
-      return;
-    }
-
-    if (validMove(activePiece, i, j)) {
-      movePiece(activePiece, i, j);
-      endTurn();
-      return;
-    }
-    clearMoveOptions();
-    activePiece = EmptyPiece(0, 0);
-
-    GamePiece piece = board.getPiece(i, j);
-
-    if (piece is ChessPiece) {
-      if (piece.colour == getTurnPlayer()) {
-        piece.move(board);
-        activePiece = piece;
-      }
-    }
-
+    logic.submitMove(i, j);
     refreshView();
   }
 
@@ -106,21 +54,10 @@ class ChessGame implements Game {
     }
   }
 
-  void clearMoveOptions() {
-    for (int i = 0; i < 8; i++) {
-      for (int j = 0; j < 8; j++) {
-        GamePiece piece = board.getPiece(i, j);
-        if (piece is ChessPiece) {
-          piece.threatened = false;
-        }
-      }
-    }
-  }
-
   void endTurn() {
     turnCount += 1;
-    activePiece = EmptyPiece(0, 0);
-    clearMoveOptions();
+    logic.activePiece = EmptyPiece(0, 0);
+    logic.clearMoveOptions();
     updateKings();
     refreshView();
   }

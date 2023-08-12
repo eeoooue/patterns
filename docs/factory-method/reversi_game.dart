@@ -1,18 +1,18 @@
-import 'connect_board.dart';
-import 'connect_logic.dart';
 import 'game.dart';
 import 'dart:html';
-import 'connect_view.dart';
+import 'reversi_board.dart';
+import 'reversi_logic.dart';
+import 'reversi_view.dart';
 
-class ConnectGame implements Game {
-  ConnectBoard board = ConnectBoard();
+class ReversiGame implements Game {
+  ReversiBoard board = ReversiBoard();
   int turnCount = 0;
-  late ConnectLogic logic;
+  late ReversiLogic logic;
   late GameView view;
 
-  ConnectGame(Element container) {
-    view = ConnectView(this, container);
-    logic = ConnectLogic(this, board);
+  ReversiGame(Element container) {
+    view = ReversiView(this, container);
+    logic = ReversiLogic(this, board);
   }
 
   bool gameIsOver() {
@@ -25,7 +25,7 @@ class ConnectGame implements Game {
   }
 
   String getTurnPlayer() {
-    return (turnCount % 2 == 0) ? "red" : "yellow";
+    return (turnCount % 2 == 0) ? "white" : "black";
   }
 
   void refreshView() {
@@ -39,9 +39,9 @@ class ConnectGame implements Game {
 
   void submitMove(int i, int j) {
     if (!gameIsOver()) {
-      if (logic.attemptMove(j)) {
-        endTurn();
-      }
+      // DO STUFF
+
+      endTurn();
     }
   }
 }
