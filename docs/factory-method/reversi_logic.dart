@@ -14,10 +14,18 @@ class ReversiLogic {
     print("attempted move at ${i} ${j} (turncount = ${game.turnCount})");
     ReversiPiece piece = newPiece();
 
+    if (noPossibleMoves()) {
+      game.endTurn();
+    }
+
     if (canMoveHere(i, j)) {
       board.placePiece(piece, i, j);
       game.endTurn();
     }
+  }
+
+  bool noPossibleMoves() {
+    return false;
   }
 
   bool canMoveHere(int i, int j) {
@@ -39,7 +47,24 @@ class ReversiLogic {
   }
 
   bool allyAlongImpulse(int i, int j, int di, int dj) {
-    return true;
+    if (validCoords(i, j)) {
+      GamePiece target = board.getPiece(i, j);
+      if (target is EmptyReversiPiece) {
+        return false;
+      }
+      if (target is ReversiPiece) {
+        if (target.colour == game.getTurnPlayer()) {
+          return true;
+        }
+        return allyAlongImpulse(i + di, j + dj, di, dj);
+      }
+    }
+
+    return false;
+  }
+
+  bool validCoords(int i, int j) {
+    return (0 <= i && i < 8) && (0 <= j && j < 8);
   }
 
   List<ReversiPiece> findAdjacentEnemies(int i, int j) {
@@ -48,9 +73,11 @@ class ReversiLogic {
 
     for (int a = -1; a <= 1; a++) {
       for (int b = -1; b <= 1; b++) {
-        GamePiece piece = board.getPiece(i + a, j + b);
-        if (piece is ReversiPiece && piece.colour == enemy) {
-          enemyPieces.add(piece);
+        if (validCoords(i + a, j + b)) {
+          GamePiece piece = board.getPiece(i + a, j + b);
+          if (piece is ReversiPiece && piece.colour == enemy) {
+            enemyPieces.add(piece);
+          }
         }
       }
     }

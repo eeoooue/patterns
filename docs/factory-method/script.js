@@ -5932,32 +5932,66 @@
   };
   A.ReversiLogic.prototype = {
     canMoveHere$2(i, j) {
-      var t1 = this.board.pieces;
+      var enemies, _i, enemy, t2, t3,
+        t1 = this.board.pieces;
       if (!(i >= 0 && i < t1.length))
         return A.ioore(t1, i);
       t1 = t1[i];
       if (!(j >= 0 && j < t1.length))
         return A.ioore(t1, j);
-      if (t1[j] instanceof A.EmptyReversiPiece)
-        for (t1 = 0 < this.findAdjacentEnemies$2(i, j).length; t1;)
-          return true;
+      if (t1[j] instanceof A.EmptyReversiPiece) {
+        enemies = this.findAdjacentEnemies$2(i, j);
+        for (t1 = enemies.length, _i = 0; _i < enemies.length; enemies.length === t1 || (0, A.throwConcurrentModificationError)(enemies), ++_i) {
+          enemy = enemies[_i];
+          t2 = enemy.i;
+          t3 = enemy.j;
+          if (this.allyAlongImpulse$4(t2, t3, t2 - i, t3 - j))
+            return true;
+        }
+      }
       return false;
     },
+    allyAlongImpulse$4(i, j, di, dj) {
+      var t1, _this = this;
+      if (_this.validCoords$2(i, j)) {
+        t1 = _this.board.pieces;
+        if (!(i >= 0 && i < t1.length))
+          return A.ioore(t1, i);
+        t1 = t1[i];
+        if (!(j >= 0 && j < t1.length))
+          return A.ioore(t1, j);
+        t1 = t1[j];
+        if (t1 instanceof A.EmptyReversiPiece)
+          return false;
+        if (t1 instanceof A.ReversiPiece) {
+          t1 = t1.colour;
+          if (t1 === (B.JSInt_methods.$mod(_this.game.turnCount, 2) === 0 ? "white" : "black"))
+            return true;
+          return _this.allyAlongImpulse$4(i + di, j + dj, di, dj);
+        }
+      }
+      return false;
+    },
+    validCoords$2(i, j) {
+      return 0 <= i && i < 8 && 0 <= j && j < 8;
+    },
     findAdjacentEnemies$2(i, j) {
-      var t1, a, t2, b, t3, t4,
+      var t1, a, t2, t3, b, t4, t5,
         enemy = B.JSInt_methods.$mod(this.game.turnCount, 2) === 0 ? "black" : "white",
         enemyPieces = J.JSArray_JSArray$growable(0, type$.ReversiPiece);
       for (t1 = this.board.pieces, a = -1; a <= 1; ++a)
-        for (t2 = i + a, b = -1; b <= 1; ++b) {
-          t3 = j + b;
-          if (!(t2 >= 0 && t2 < t1.length))
-            return A.ioore(t1, t2);
-          t4 = t1[t2];
-          if (!(t3 >= 0 && t3 < t4.length))
-            return A.ioore(t4, t3);
-          t3 = t4[t3];
-          if (t3 instanceof A.ReversiPiece && t3.colour === enemy)
-            B.JSArray_methods.add$1(enemyPieces, t3);
+        for (t2 = i + a, t3 = t2 < 8, b = -1; b <= 1; ++b) {
+          t4 = j + b;
+          if (0 <= t2 && t3 && 0 <= t4 && t4 < 8) {
+            if (!(t2 >= 0 && t2 < t1.length))
+              return A.ioore(t1, t2);
+            t5 = t1[t2];
+            if (!(t4 >= 0 && t4 < t5.length))
+              return A.ioore(t5, t4);
+            t4 = t5[t4];
+            if (t4 instanceof A.ReversiPiece && t4.colour === enemy)
+              B.JSArray_methods.add$1(enemyPieces, t4);
+          }
         }
       return enemyPieces;
     }
