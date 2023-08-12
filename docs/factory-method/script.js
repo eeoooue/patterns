@@ -3084,10 +3084,12 @@
       _.turnCount = 0;
       _.__ReversiGame_view_A = _.__ReversiGame_logic_A = $;
     },
-    ReversiLogic: function ReversiLogic(t0, t1) {
-      this.game = t0;
-      this.board = t1;
-      this.possibleMoves = 0;
+    ReversiLogic: function ReversiLogic(t0, t1, t2) {
+      var _ = this;
+      _.game = t0;
+      _.board = t1;
+      _.possibleMoves = 0;
+      _.flipping = t2;
     },
     ReversiPiece: function ReversiPiece(t0) {
       var _ = this;
@@ -3532,6 +3534,11 @@
       if (!!receiver.fixed$length)
         A.throwExpression(A.UnsupportedError$("add"));
       receiver.push(value);
+    },
+    clear$0(receiver) {
+      if (!!receiver.fixed$length)
+        A.throwExpression(A.UnsupportedError$("clear"));
+      receiver.length = 0;
     },
     elementAt$1(receiver, index) {
       if (!(index >= 0 && index < receiver.length))
@@ -5946,6 +5953,28 @@
     $isGame: 1
   };
   A.ReversiLogic.prototype = {
+    flipPieces$2(i, j) {
+      var t1, t2, t3, t4, _i, enemy, t5, t6, _i0, piece, t7, t8, t9, _this = this,
+        enemies = _this.findAdjacentEnemies$2(i, j);
+      for (t1 = enemies.length, t2 = _this.flipping, t3 = _this.board, t4 = _this.game, _i = 0; _i < enemies.length; enemies.length === t1 || (0, A.throwConcurrentModificationError)(enemies), ++_i) {
+        enemy = enemies[_i];
+        t5 = enemy.i;
+        t6 = enemy.j;
+        _this.allyAlongImpulse$4(t5, t6, t5 - i, t6 - j);
+        for (t5 = t2.length, _i0 = 0; _i0 < t2.length; t2.length === t5 || (0, A.throwConcurrentModificationError)(t2), ++_i0) {
+          piece = t2[_i0];
+          t6 = new A.ReversiPiece(B.JSInt_methods.$mod(t4.turnCount, 2) === 0 ? "white" : "black");
+          t7 = piece.i;
+          t8 = piece.j;
+          t9 = t3.pieces;
+          if (!(t7 >= 0 && t7 < t9.length))
+            return A.ioore(t9, t7);
+          B.JSArray_methods.$indexSet(t9[t7], t8, t6);
+          t6.i = t7;
+          t6.j = t8;
+        }
+      }
+    },
     refreshMoveOptions$0() {
       var t1, i, j, t2, _this = this;
       _this.possibleMoves = 0;
@@ -5980,7 +6009,15 @@
       return false;
     },
     allyAlongImpulse$4(i, j, di, dj) {
-      var t1, _this = this;
+      var t1 = this.flipping;
+      B.JSArray_methods.clear$0(t1);
+      if (this.exploreImpulse$4(i, j, di, dj))
+        return true;
+      B.JSArray_methods.clear$0(t1);
+      return false;
+    },
+    exploreImpulse$4(i, j, di, dj) {
+      var t1, t2, _this = this;
       if (_this.validCoords$2(i, j)) {
         t1 = _this.board.pieces;
         if (!(i >= 0 && i < t1.length))
@@ -5992,10 +6029,11 @@
         if (t1 instanceof A.EmptyReversiPiece)
           return false;
         if (t1 instanceof A.ReversiPiece) {
-          t1 = t1.colour;
-          if (t1 === (B.JSInt_methods.$mod(_this.game.turnCount, 2) === 0 ? "white" : "black"))
+          t2 = t1.colour;
+          if (t2 === (B.JSInt_methods.$mod(_this.game.turnCount, 2) === 0 ? "white" : "black"))
             return true;
-          return _this.allyAlongImpulse$4(i + di, j + dj, di, dj);
+          B.JSArray_methods.add$1(_this.flipping, t1);
+          return _this.exploreImpulse$4(i + di, j + dj, di, dj);
         }
       }
       return false;
@@ -6084,7 +6122,7 @@
   };
   A.ReversiView_buildTile_closure.prototype = {
     call$1($event) {
-      var t1, t2, t3, t4, t5, t6;
+      var t1, t2, t3, t4, t5, t6, t7;
       type$.Event._as($event);
       t1 = this.piece;
       t2 = t1.i;
@@ -6096,16 +6134,17 @@
       t5 = B.JSInt_methods.$mod(t4.turnCount, 2) === 0 ? "white" : "black";
       if (t3.possibleMoves === 0)
         t4.endTurn$0();
-      t3 = t3.board;
-      t6 = t3.pieces;
-      if (!(t2 >= 0 && t2 < t6.length))
-        return A.ioore(t6, t2);
-      t6 = t6[t2];
-      if (!(t1 >= 0 && t1 < t6.length))
-        return A.ioore(t6, t1);
-      t6 = t6[t1];
-      if (t6 instanceof A.EmptyReversiPiece && t6.possibleMove) {
-        t3.placePiece$3(new A.ReversiPiece(t5), t2, t1);
+      t6 = t3.board;
+      t7 = t6.pieces;
+      if (!(t2 >= 0 && t2 < t7.length))
+        return A.ioore(t7, t2);
+      t7 = t7[t2];
+      if (!(t1 >= 0 && t1 < t7.length))
+        return A.ioore(t7, t1);
+      t7 = t7[t1];
+      if (t7 instanceof A.EmptyReversiPiece && t7.possibleMove) {
+        t6.placePiece$3(new A.ReversiPiece(t5), t2, t1);
+        t3.flipPieces$2(t2, t1);
         t4.endTurn$0();
       }
     },
@@ -6170,7 +6209,8 @@
           t2 = new A.ReversiBoard(t2);
           t3 = new A.ReversiGame(t2);
           t3.__ReversiGame_view_A = new A.ReversiView(t1, t3);
-          t3.__ReversiGame_logic_A = new A.ReversiLogic(t3, t2);
+          t1 = J.JSArray_JSArray$growable(0, type$.ReversiPiece);
+          t3.__ReversiGame_logic_A = new A.ReversiLogic(t3, t2, t1);
           return t3;
         default:
           return A.ChessGame$(t1);

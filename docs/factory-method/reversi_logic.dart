@@ -14,6 +14,7 @@ class ReversiLogic {
   ReversiBoard board;
   bool gameOver = false;
   int possibleMoves = 0;
+  List<ReversiPiece> flipping = List.empty(growable: true);
 
   ReversiLogic(this.game, this.board) {}
 
@@ -29,8 +30,28 @@ class ReversiLogic {
 
     if (target is EmptyReversiPiece && target.possibleMove) {
       board.placePiece(piece, i, j);
+
+      flipPieces(i, j);
+
       game.endTurn();
     }
+  }
+
+  void flipPieces(int i, int j) {
+    List<ReversiPiece> enemies = findAdjacentEnemies(i, j);
+
+    for (ReversiPiece enemy in enemies) {
+      int a = enemy.i - i;
+      int b = enemy.j - j;
+      allyAlongImpulse(enemy.i, enemy.j, a, b);
+      for (ReversiPiece piece in flipping) {
+        flipPiece(piece);
+      }
+    }
+  }
+
+  void flipPiece(ReversiPiece piece) {
+    board.placePiece(newPiece(), piece.i, piece.j);
   }
 
   void refreshMoveOptions() {
@@ -69,6 +90,17 @@ class ReversiLogic {
   }
 
   bool allyAlongImpulse(int i, int j, int di, int dj) {
+    flipping.clear();
+
+    if (exploreImpulse(i, j, di, dj)) {
+      return true;
+    }
+
+    flipping.clear();
+    return false;
+  }
+
+  bool exploreImpulse(int i, int j, int di, int dj) {
     if (validCoords(i, j)) {
       GamePiece target = board.getPiece(i, j);
       if (target is EmptyReversiPiece) {
@@ -78,7 +110,8 @@ class ReversiLogic {
         if (target.colour == game.getTurnPlayer()) {
           return true;
         }
-        return allyAlongImpulse(i + di, j + dj, di, dj);
+        flipping.add(target);
+        return exploreImpulse(i + di, j + dj, di, dj);
       }
     }
 
