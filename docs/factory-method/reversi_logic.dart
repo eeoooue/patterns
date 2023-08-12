@@ -13,7 +13,7 @@ class ReversiLogic {
   ReversiGame game;
   ReversiBoard board;
   bool gameOver = false;
-  final List<ReversiMove> moveOptions = List.empty(growable: true);
+  int possibleMoves = 0;
 
   ReversiLogic(this.game, this.board) {}
 
@@ -21,33 +21,30 @@ class ReversiLogic {
     print("attempted move at ${i} ${j} (turncount = ${game.turnCount})");
     ReversiPiece piece = newPiece();
 
-    if (noPossibleMoves()) {
+    if (possibleMoves == 0) {
       game.endTurn();
     }
 
-    if (canMoveHere(i, j)) {
+    GamePiece target = board.getPiece(i, j);
+
+    if (target is EmptyReversiPiece && target.possibleMove) {
       board.placePiece(piece, i, j);
       game.endTurn();
     }
   }
 
-  bool canMoveHere(int i, int j) {
-    for (ReversiMove move in moveOptions) {
-      if (move.i == i && move.j == j) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
   void refreshMoveOptions() {
-    moveOptions.clear();
+    possibleMoves = 0;
 
     for (int i = 0; i < 8; i++) {
       for (int j = 0; j < 8; j++) {
-        if (isLegalMove(i, j)) {
-          moveOptions.add(ReversiMove(i, j));
+        GamePiece piece = board.getPiece(i, j);
+        if (piece is EmptyReversiPiece) {
+          piece.possibleMove = false;
+          if (isLegalMove(piece)) {
+            possibleMoves += 1;
+            piece.possibleMove = true;
+          }
         }
       }
     }
@@ -57,18 +54,14 @@ class ReversiLogic {
     return false;
   }
 
-  bool isLegalMove(int i, int j) {
-    GamePiece target = board.getPiece(i, j);
+  bool isLegalMove(EmptyReversiPiece space) {
+    List<ReversiPiece> enemies = findAdjacentEnemies(space.i, space.j);
 
-    if (target is EmptyReversiPiece) {
-      List<ReversiPiece> enemies = findAdjacentEnemies(i, j);
-
-      for (ReversiPiece enemy in enemies) {
-        int a = enemy.i - i;
-        int b = enemy.j - j;
-        if (allyAlongImpulse(enemy.i, enemy.j, a, b)) {
-          return true;
-        }
+    for (ReversiPiece enemy in enemies) {
+      int a = enemy.i - space.i;
+      int b = enemy.j - space.j;
+      if (allyAlongImpulse(enemy.i, enemy.j, a, b)) {
+        return true;
       }
     }
 

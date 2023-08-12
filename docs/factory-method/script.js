@@ -3084,14 +3084,10 @@
       _.turnCount = 0;
       _.__ReversiGame_view_A = _.__ReversiGame_logic_A = $;
     },
-    ReversiMove: function ReversiMove(t0, t1) {
-      this.i = t0;
-      this.j = t1;
-    },
-    ReversiLogic: function ReversiLogic(t0, t1, t2) {
+    ReversiLogic: function ReversiLogic(t0, t1) {
       this.game = t0;
       this.board = t1;
-      this.moveOptions = t2;
+      this.possibleMoves = 0;
     },
     ReversiPiece: function ReversiPiece(t0) {
       var _ = this;
@@ -3101,6 +3097,7 @@
     },
     EmptyReversiPiece: function EmptyReversiPiece(t0) {
       var _ = this;
+      _.possibleMove = false;
       _.colour = t0;
       _.__GamePiece_src_A = $;
       _.j = _.i = 0;
@@ -3535,11 +3532,6 @@
       if (!!receiver.fixed$length)
         A.throwExpression(A.UnsupportedError$("add"));
       receiver.push(value);
-    },
-    clear$0(receiver) {
-      if (!!receiver.fixed$length)
-        A.throwExpression(A.UnsupportedError$("clear"));
-      receiver.length = 0;
     },
     elementAt$1(receiver, index) {
       if (!(index >= 0 && index < receiver.length))
@@ -5953,43 +5945,37 @@
     },
     $isGame: 1
   };
-  A.ReversiMove.prototype = {};
   A.ReversiLogic.prototype = {
-    canMoveHere$2(i, j) {
-      var t1, t2, _i, move;
-      for (t1 = this.moveOptions, t2 = t1.length, _i = 0; _i < t2; ++_i) {
-        move = t1[_i];
-        if (move.i === i && move.j === j)
-          return true;
-      }
-      return false;
-    },
     refreshMoveOptions$0() {
-      var i, j,
-        t1 = this.moveOptions;
-      B.JSArray_methods.clear$0(t1);
-      for (i = 0; i < 8; ++i)
-        for (j = 0; j < 8; ++j)
-          if (this.isLegalMove$2(i, j))
-            B.JSArray_methods.add$1(t1, new A.ReversiMove(i, j));
-    },
-    isLegalMove$2(i, j) {
-      var enemies, _i, enemy, t2, t3,
-        t1 = this.board.pieces;
-      if (!(i < t1.length))
-        return A.ioore(t1, i);
-      t1 = t1[i];
-      if (!(j < t1.length))
-        return A.ioore(t1, j);
-      if (t1[j] instanceof A.EmptyReversiPiece) {
-        enemies = this.findAdjacentEnemies$2(i, j);
-        for (t1 = enemies.length, _i = 0; _i < enemies.length; enemies.length === t1 || (0, A.throwConcurrentModificationError)(enemies), ++_i) {
-          enemy = enemies[_i];
-          t2 = enemy.i;
-          t3 = enemy.j;
-          if (this.allyAlongImpulse$4(t2, t3, t2 - i, t3 - j))
-            return true;
+      var t1, i, j, t2, _this = this;
+      _this.possibleMoves = 0;
+      for (t1 = _this.board.pieces, i = 0; i < 8; ++i)
+        for (j = 0; j < 8; ++j) {
+          if (!(i < t1.length))
+            return A.ioore(t1, i);
+          t2 = t1[i];
+          if (!(j < t2.length))
+            return A.ioore(t2, j);
+          t2 = t2[j];
+          if (t2 instanceof A.EmptyReversiPiece) {
+            t2.possibleMove = false;
+            if (_this.isLegalMove$1(t2)) {
+              ++_this.possibleMoves;
+              t2.possibleMove = true;
+            }
+          }
         }
+    },
+    isLegalMove$1(space) {
+      var t1, _i, enemy, t2, t3, t4,
+        enemies = this.findAdjacentEnemies$2(space.i, space.j);
+      for (t1 = enemies.length, _i = 0; _i < enemies.length; enemies.length === t1 || (0, A.throwConcurrentModificationError)(enemies), ++_i) {
+        enemy = enemies[_i];
+        t2 = enemy.i;
+        t3 = space.i;
+        t4 = enemy.j;
+        if (this.allyAlongImpulse$4(t2, t4, t2 - t3, t4 - space.j))
+          return true;
       }
       return false;
     },
@@ -6060,30 +6046,45 @@
       }
     },
     buildTile$1(piece) {
-      var shade, t3, piece0,
+      var shade, t3, disc, player, div, _this = this,
         t1 = document,
         tile = t1.createElement("div"),
         t2 = J.getInterceptor$x(tile);
       t2.get$classes(tile).add$1(0, "reversi-tile");
-      t2.addEventListener$2(tile, "click", new A.ReversiView_buildTile_closure(this, piece));
+      t2.addEventListener$2(tile, "click", new A.ReversiView_buildTile_closure(_this, piece));
       shade = t1.createElement("div");
       t3 = J.getInterceptor$x(shade);
       t3.get$classes(shade).add$1(0, "reversi-shade");
       t2.get$children(tile).add$1(0, shade);
       if (piece instanceof A.ReversiPiece && !(piece instanceof A.EmptyReversiPiece)) {
-        piece0 = t1.createElement("div");
-        t1 = J.getInterceptor$x(piece0);
-        t1.get$classes(piece0).add$1(0, "reversi-piece");
-        t1.get$classes(piece0).add$1(0, piece.colour);
-        t3.get$children(shade).add$1(0, piece0);
+        disc = _this.createPiece$1(piece.colour);
+        t3.get$children(shade).add$1(0, disc);
+      }
+      if (piece instanceof A.EmptyReversiPiece && piece.possibleMove) {
+        player = B.JSInt_methods.$mod(_this.game.turnCount, 2) === 0 ? "white" : "black";
+        disc = _this.createPiece$1(player);
+        t2 = J.getInterceptor$x(disc);
+        t2.get$classes(disc).add$1(0, "ghost");
+        div = t1.createElement("div");
+        J.get$classes$x(div).add$1(0, "ghost-text");
+        div.innerText = player === "white" ? "\u767d" : "\u9ed2";
+        t2.get$children(disc).add$1(0, div);
+        t3.get$children(shade).add$1(0, disc);
       }
       return tile;
+    },
+    createPiece$1(colour) {
+      var piece = document.createElement("div"),
+        t1 = J.getInterceptor$x(piece);
+      t1.get$classes(piece).add$1(0, "reversi-piece");
+      t1.get$classes(piece).add$1(0, colour);
+      return piece;
     },
     $isGameView: 1
   };
   A.ReversiView_buildTile_closure.prototype = {
     call$1($event) {
-      var t1, t2, t3, t4, t5;
+      var t1, t2, t3, t4, t5, t6;
       type$.Event._as($event);
       t1 = this.piece;
       t2 = t1.i;
@@ -6093,8 +6094,18 @@
       t4 = t3.game;
       A.print("attempted move at " + t2 + " " + t1 + " (turncount = " + t4.turnCount + ")");
       t5 = B.JSInt_methods.$mod(t4.turnCount, 2) === 0 ? "white" : "black";
-      if (t3.canMoveHere$2(t2, t1)) {
-        t3.board.placePiece$3(new A.ReversiPiece(t5), t2, t1);
+      if (t3.possibleMoves === 0)
+        t4.endTurn$0();
+      t3 = t3.board;
+      t6 = t3.pieces;
+      if (!(t2 >= 0 && t2 < t6.length))
+        return A.ioore(t6, t2);
+      t6 = t6[t2];
+      if (!(t1 >= 0 && t1 < t6.length))
+        return A.ioore(t6, t1);
+      t6 = t6[t1];
+      if (t6 instanceof A.EmptyReversiPiece && t6.possibleMove) {
+        t3.placePiece$3(new A.ReversiPiece(t5), t2, t1);
         t4.endTurn$0();
       }
     },
@@ -6159,8 +6170,7 @@
           t2 = new A.ReversiBoard(t2);
           t3 = new A.ReversiGame(t2);
           t3.__ReversiGame_view_A = new A.ReversiView(t1, t3);
-          t1 = J.JSArray_JSArray$growable(0, type$.ReversiMove);
-          t3.__ReversiGame_logic_A = new A.ReversiLogic(t3, t2, t1);
+          t3.__ReversiGame_logic_A = new A.ReversiLogic(t3, t2);
           return t3;
         default:
           return A.ChessGame$(t1);
@@ -6202,7 +6212,7 @@
       _inherit = hunkHelpers.inherit,
       _inheritMany = hunkHelpers.inheritMany;
     _inherit(A.Object, null);
-    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._HashSetIterator, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.CheckersBoard, A.CheckersGame, A.GamePiece, A.NoCheckerMovement, A.RedCheckerMovement, A.CreamCheckerMovement, A.CheckersView, A.ChequeredBoard, A.BoardWithPieces, A.ChessGame, A.ChessLogic, A.NoMovement, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement, A.ChessBoardView, A.ConnectBoard, A.ConnectGame, A.ConnectLogic, A.ConnectView, A.ReversiBoard, A.ReversiGame, A.ReversiMove, A.ReversiLogic, A.ReversiView, A.GameSelector, A.GameChoice]);
+    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._HashSetIterator, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.CheckersBoard, A.CheckersGame, A.GamePiece, A.NoCheckerMovement, A.RedCheckerMovement, A.CreamCheckerMovement, A.CheckersView, A.ChequeredBoard, A.BoardWithPieces, A.ChessGame, A.ChessLogic, A.NoMovement, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement, A.ChessBoardView, A.ConnectBoard, A.ConnectGame, A.ConnectLogic, A.ConnectView, A.ReversiBoard, A.ReversiGame, A.ReversiLogic, A.ReversiView, A.GameSelector, A.GameChoice]);
     _inheritMany(J.Interceptor, [J.JSBool, J.JSNull, J.JavaScriptObject, J.JSNumber, J.JSString]);
     _inheritMany(J.JavaScriptObject, [J.LegacyJavaScriptObject, J.JSArray, A.EventTarget, A.DomException, A.DomTokenList, A.Event, A._HtmlCollection_JavaScriptObject_ListMixin, A._NodeList_JavaScriptObject_ListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin]);
     _inheritMany(J.LegacyJavaScriptObject, [J.PlainJavaScriptObject, J.UnknownJavaScriptObject, J.JavaScriptFunction]);
@@ -6278,7 +6288,6 @@
       Null: findType("Null"),
       Object: findType("Object"),
       Record: findType("Record"),
-      ReversiMove: findType("ReversiMove"),
       ReversiPiece: findType("ReversiPiece"),
       Set_String: findType("Set<String>"),
       String: findType("String"),
