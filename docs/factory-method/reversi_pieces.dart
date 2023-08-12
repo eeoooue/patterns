@@ -6,5 +6,8 @@ class ReversiPiece extends GamePiece {
 }
 
 class EmptyReversiPiece extends ReversiPiece {
-  EmptyReversiPiece() : super("none");
+  EmptyReversiPiece(int iPosition, int jPosition) : super("none") {
+    i = iPosition;
+    j = jPosition;
+  }
 }

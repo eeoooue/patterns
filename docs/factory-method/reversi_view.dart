@@ -27,6 +27,10 @@ class ReversiView implements GameView {
     Element tile = document.createElement("div");
     tile.classes.add("reversi-tile");
 
+    tile.addEventListener("click", (event) {
+      game.submitMove(piece.i, piece.j);
+    });
+
     Element shade = getFeltShade();
     tile.children.add(shade);
 

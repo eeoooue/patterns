@@ -21,7 +21,7 @@ class GameSelector {
       GameChoice choice = GameChoice(this, title);
       choicesContainer.children.add(choice.element);
 
-      if (title == "Chess") {
+      if (title == "Reversi") {
         choice.activate();
       }
     }

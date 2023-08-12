@@ -5,14 +5,14 @@ class ReversiBoard {
   List<List<GamePiece>> pieces = List.empty(growable: true);
 
   void removePiece(int i, int j) {
-    pieces[i][j] = EmptyReversiPiece();
+    pieces[i][j] = EmptyReversiPiece(i, j);
   }
 
   void setupPieces() {
     for (int i = 0; i < 8; i++) {
       List<GamePiece> row = List.empty(growable: true);
       for (int j = 0; j < 8; j++) {
-        GamePiece piece = EmptyReversiPiece();
+        GamePiece piece = EmptyReversiPiece(i, j);
         row.add(piece);
       }
       pieces.add(row);

@@ -40,8 +40,7 @@ class ReversiGame implements Game {
   void submitMove(int i, int j) {
     if (!gameIsOver()) {
       // DO STUFF
-
-      endTurn();
+      logic.attemptMove(i, j);
     }
   }
 }
