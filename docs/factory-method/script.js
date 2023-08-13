@@ -5112,9 +5112,9 @@
       return piece.moveOptions;
     },
     checkMoveOptions$0() {
-      var t1, t2, t3, t4, _i, t5, t6, i, j, t7, t8, t9, t10, t11, moves, _i0, _null = null,
-        player = B.JSInt_methods.$mod(this.game.turnCount, 2) === 0 ? "red" : "cream";
-      for (t1 = this.board.pieces, t2 = t1.length, t3 = this.options, t4 = type$.CheckersPiece, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+      var t1, t2, t3, t4, _i, t5, t6, i, j, t7, t8, moves, _i0, _this = this,
+        player = B.JSInt_methods.$mod(_this.game.turnCount, 2) === 0 ? "red" : "cream";
+      for (t1 = _this.board.pieces, t2 = t1.length, t3 = _this.options, t4 = type$.CheckersPiece, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         for (t5 = B.JSArray_methods.get$iterator(t1[_i]); t5.moveNext$0();) {
           t6 = t5.get$current();
           if (t6 instanceof A.CheckersPiece && t6.colour === player) {
@@ -5124,57 +5124,35 @@
             t7 = t6.colour;
             if (t7 === "cream") {
               t8 = i + 1;
-              t9 = j - 1;
-              t10 = 0 <= t8;
-              if (t10 && t8 < 8 && 0 <= t9 && t9 < 8) {
-                if (!(t8 >= 0 && t8 < t1.length))
-                  return A.ioore(t1, t8);
-                t11 = t1[t8];
-                if (!(t9 >= 0 && t9 < t11.length))
-                  return A.ioore(t11, t9);
-                if (t11[t9] instanceof A.EmptyCheckersPiece)
-                  B.JSArray_methods.add$1(t6.moveOptions, new A.CheckersMove(new A.BoardPosition(t8, t9), _null));
-              }
-              t9 = j + 1;
-              if (t10 && t8 < 8 && 0 <= t9 && t9 < 8) {
-                if (!(t8 >= 0 && t8 < t1.length))
-                  return A.ioore(t1, t8);
-                t10 = t1[t8];
-                if (!(t9 >= 0 && t9 < t10.length))
-                  return A.ioore(t10, t9);
-                if (t10[t9] instanceof A.EmptyCheckersPiece)
-                  B.JSArray_methods.add$1(t6.moveOptions, new A.CheckersMove(new A.BoardPosition(t8, t9), _null));
-              }
+              _this.tryMove$3(t6, t8, j - 1);
+              _this.tryMove$3(t6, t8, j + 1);
             }
             if (t7 === "red") {
               t7 = i - 1;
-              t8 = j - 1;
-              t9 = 0 <= t7;
-              if (t9 && t7 < 8 && 0 <= t8 && t8 < 8) {
-                if (!(t7 >= 0 && t7 < t1.length))
-                  return A.ioore(t1, t7);
-                t10 = t1[t7];
-                if (!(t8 >= 0 && t8 < t10.length))
-                  return A.ioore(t10, t8);
-                if (t10[t8] instanceof A.EmptyCheckersPiece)
-                  B.JSArray_methods.add$1(t6.moveOptions, new A.CheckersMove(new A.BoardPosition(t7, t8), _null));
-              }
-              t8 = j + 1;
-              if (t9 && t7 < 8 && 0 <= t8 && t8 < 8) {
-                if (!(t7 >= 0 && t7 < t1.length))
-                  return A.ioore(t1, t7);
-                t9 = t1[t7];
-                if (!(t8 >= 0 && t8 < t9.length))
-                  return A.ioore(t9, t8);
-                if (t9[t8] instanceof A.EmptyCheckersPiece)
-                  B.JSArray_methods.add$1(t6.moveOptions, new A.CheckersMove(new A.BoardPosition(t7, t8), _null));
-              }
+              _this.tryMove$3(t6, t7, j - 1);
+              _this.tryMove$3(t6, t7, j + 1);
             }
             moves = t6.moveOptions;
             for (t6 = moves.length, _i0 = 0; _i0 < moves.length; moves.length === t6 || (0, A.throwConcurrentModificationError)(moves), ++_i0)
               B.JSArray_methods.add$1(t3, moves[_i0]);
           }
         }
+    },
+    tryMove$3(piece, endI, endJ) {
+      var t1;
+      if (!this.validCoords$2(endI, endJ))
+        return false;
+      t1 = this.board.pieces;
+      if (!(endI >= 0 && endI < t1.length))
+        return A.ioore(t1, endI);
+      t1 = t1[endI];
+      if (!(endJ >= 0 && endJ < t1.length))
+        return A.ioore(t1, endJ);
+      if (t1[endJ] instanceof A.EmptyCheckersPiece) {
+        B.JSArray_methods.add$1(piece.moveOptions, new A.CheckersMove(new A.BoardPosition(endI, endJ), null));
+        return true;
+      }
+      return false;
     },
     validCoords$2(i, j) {
       return 0 <= i && i < 8 && 0 <= j && j < 8;

@@ -136,52 +136,37 @@ class CheckersLogic {
     }
   }
 
+  bool tryMove(CheckersPiece piece, int endI, int endJ) {
+    if (!validCoords(endI, endJ)) {
+      return false;
+    }
+
+    BoardPosition start = BoardPosition(piece.i, piece.j);
+    BoardPosition end = BoardPosition(endI, endJ);
+
+    GamePiece destination = board.getPiece(end.i, end.j);
+
+    if (destination is EmptyCheckersPiece) {
+      CheckersMove move = CheckersMove(start, end);
+      piece.moveOptions.add(move);
+      return true;
+    }
+
+    return false;
+  }
+
   List<CheckersMove> getMoves(CheckersPiece piece) {
     int i = piece.i;
     int j = piece.j;
 
     if (piece.colour == "cream") {
-      if (validCoords(i + 1, j - 1)) {
-        GamePiece destination = board.getPiece(i + 1, j - 1);
-        if (destination is EmptyCheckersPiece) {
-          BoardPosition start = BoardPosition(i, j);
-          BoardPosition end = BoardPosition(i + 1, j - 1);
-          CheckersMove move = CheckersMove(start, end);
-          piece.moveOptions.add(move);
-        }
-      }
-
-      if (validCoords(i + 1, j + 1)) {
-        GamePiece destination = board.getPiece(i + 1, j + 1);
-        if (destination is EmptyCheckersPiece) {
-          BoardPosition start = BoardPosition(i, j);
-          BoardPosition end = BoardPosition(i + 1, j + 1);
-          CheckersMove move = CheckersMove(start, end);
-          piece.moveOptions.add(move);
-        }
-      }
+      tryMove(piece, i + 1, j - 1);
+      tryMove(piece, i + 1, j + 1);
     }
 
     if (piece.colour == "red") {
-      if (validCoords(i - 1, j - 1)) {
-        GamePiece destination = board.getPiece(i - 1, j - 1);
-        if (destination is EmptyCheckersPiece) {
-          BoardPosition start = BoardPosition(i, j);
-          BoardPosition end = BoardPosition(i - 1, j - 1);
-          CheckersMove move = CheckersMove(start, end);
-          piece.moveOptions.add(move);
-        }
-      }
-
-      if (validCoords(i - 1, j + 1)) {
-        GamePiece destination = board.getPiece(i - 1, j + 1);
-        if (destination is EmptyCheckersPiece) {
-          BoardPosition start = BoardPosition(i, j);
-          BoardPosition end = BoardPosition(i - 1, j + 1);
-          CheckersMove move = CheckersMove(start, end);
-          piece.moveOptions.add(move);
-        }
-      }
+      tryMove(piece, i - 1, j - 1);
+      tryMove(piece, i - 1, j + 1);
     }
 
     return piece.moveOptions;
