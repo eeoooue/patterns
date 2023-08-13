@@ -2902,6 +2902,7 @@
       var _ = this;
       _.empty = _.threatened = false;
       _.colour = t0;
+      _.king = false;
       _.moveOptions = t1;
       _.__GamePiece_src_A = $;
       _.j = _.i = 0;
@@ -2910,6 +2911,7 @@
       var _ = this;
       _.empty = _.threatened = false;
       _.colour = t0;
+      _.king = false;
       _.moveOptions = t1;
       _.__GamePiece_src_A = $;
       _.j = _.i = 0;
@@ -4963,6 +4965,7 @@
           t1.i = i;
           t1.j = j;
           if (i === 0 || i === 7) {
+            t1.king = true;
             t1.__GamePiece_src_A = "./assets/checkers/checkers_" + t1.colour + "_king.png";
             _this.capturedThisTurn = false;
           }
@@ -5061,12 +5064,12 @@
         i = piece.i,
         j = piece.j,
         t1 = piece.colour;
-      if (t1 === "cream") {
+      if (t1 === "cream" || piece.king) {
         t2 = i + 2;
         _this.tryCapture$3(piece, t2, j - 2);
         _this.tryCapture$3(piece, t2, j + 2);
       }
-      if (t1 === "red") {
+      if (t1 === "red" || piece.king) {
         t1 = i - 2;
         _this.tryCapture$3(piece, t1, j - 2);
         _this.tryCapture$3(piece, t1, j + 2);
@@ -5120,12 +5123,12 @@
             i = t5.i;
             j = t5.j;
             t6 = t5.colour;
-            if (t6 === "cream") {
+            if (t6 === "cream" || t5.king) {
               t7 = i + 1;
               _this.tryMove$3(t5, t7, j - 1);
               _this.tryMove$3(t5, t7, j + 1);
             }
-            if (t6 === "red") {
+            if (t6 === "red" || t5.king) {
               t6 = i - 1;
               _this.tryMove$3(t5, t6, j - 1);
               _this.tryMove$3(t5, t6, j + 1);
