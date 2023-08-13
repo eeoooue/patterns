@@ -2884,10 +2884,10 @@
       this.end = t0;
       this.capture = t1;
     },
-    CheckersLogic: function CheckersLogic(t0, t1, t2) {
+    CheckersLogic: function CheckersLogic(t0, t1) {
       this.game = t0;
       this.board = t1;
-      this.options = t2;
+      this.captureAvailable = false;
     },
     EmptyCheckersPiece$(a, b) {
       var t1 = J.JSArray_JSArray$growable(0, type$.CheckersMove);
@@ -3630,6 +3630,20 @@
       if (result > 0)
         return result;
       return result + other;
+    },
+    _tdivFast$1(receiver, other) {
+      return (receiver | 0) === receiver ? receiver / other | 0 : this._tdivSlow$1(receiver, other);
+    },
+    _tdivSlow$1(receiver, other) {
+      var quotient = receiver / other;
+      if (quotient >= -2147483648 && quotient <= 2147483647)
+        return quotient | 0;
+      if (quotient > 0) {
+        if (quotient !== 1 / 0)
+          return Math.floor(quotient);
+      } else if (quotient > -1 / 0)
+        return Math.ceil(quotient);
+      throw A.wrapException(A.UnsupportedError$("Result of truncating division is " + A.S(quotient) + ": " + A.S(receiver) + " ~/ " + other));
     },
     get$runtimeType(receiver) {
       return A.createRuntimeType(type$.num);
@@ -4903,7 +4917,7 @@
         t2 === $ && A.throwLateFieldNI("logic");
         t2.clearOptions$0();
         if (_this.capturedThisTurn)
-          _this.__CheckersGame_logic_A.getCapturesForPiece$1(_this.activePiece);
+          _this.__CheckersGame_logic_A.findCapturesForPiece$1(_this.activePiece);
         if (_this.activePiece.moveOptions.length === 0) {
           _this.activePiece = A.EmptyCheckersPiece$(0, 0);
           ++_this.turnCount;
@@ -5002,6 +5016,7 @@
     clearOptions$0() {
       var t1, t2, t3, _i, t4, t5, t6;
       this.clearHighlights$0();
+      this.captureAvailable = false;
       for (t1 = this.board.pieces, t2 = t1.length, t3 = type$.JSArray_CheckersMove, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         for (t4 = B.JSArray_methods.get$iterator(t1[_i]); t4.moveNext$0();) {
           t5 = t4.get$current();
@@ -5021,198 +5036,111 @@
         }
     },
     findPossibleMoves$0() {
-      var t1, _this = this;
+      var _this = this;
       _this.clearOptions$0();
-      t1 = _this.options;
-      B.JSArray_methods.clear$0(t1);
       _this.checkCaptures$0();
-      if (t1.length === 0)
+      if (!_this.captureAvailable)
         _this.checkMoveOptions$0();
-      return t1;
     },
     checkCaptures$0() {
-      var t1, t2, t3, _i, t4, t5, moves, _i0, _this = this,
-        player = B.JSInt_methods.$mod(_this.game.turnCount, 2) === 0 ? "red" : "cream";
-      for (t1 = _this.board.pieces, t2 = t1.length, t3 = _this.options, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
-        for (t4 = B.JSArray_methods.get$iterator(t1[_i]); t4.moveNext$0();) {
-          t5 = t4.get$current();
-          if (t5 instanceof A.CheckersPiece && t5.colour === player) {
-            moves = _this.getCapturesForPiece$1(t5);
-            for (t5 = moves.length, _i0 = 0; _i0 < moves.length; moves.length === t5 || (0, A.throwConcurrentModificationError)(moves), ++_i0)
-              B.JSArray_methods.add$1(t3, moves[_i0]);
-          }
+      var t1, t2, _i, t3, t4,
+        player = B.JSInt_methods.$mod(this.game.turnCount, 2) === 0 ? "red" : "cream";
+      for (t1 = this.board.pieces, t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+        for (t3 = B.JSArray_methods.get$iterator(t1[_i]); t3.moveNext$0();) {
+          t4 = t3.get$current();
+          if (t4 instanceof A.CheckersPiece && t4.colour === player)
+            this.findCapturesForPiece$1(t4);
         }
     },
-    getCapturesForPiece$1(piece) {
-      var t2, t3, t4, t5, t6, t7, t8, _this = this,
-        moves = J.JSArray_JSArray$growable(0, type$.CheckersMove),
+    findCapturesForPiece$1(piece) {
+      var t2, _this = this,
         i = piece.i,
         j = piece.j,
         t1 = piece.colour;
       if (t1 === "cream") {
         t2 = i + 2;
-        t3 = j - 2;
-        if (_this.validCoords$2(t2, t3)) {
-          t4 = i + 1;
-          t5 = j - 1;
-          t6 = _this.board.pieces;
-          t7 = t6.length;
-          if (!(t4 >= 0 && t4 < t7))
-            return A.ioore(t6, t4);
-          t8 = t6[t4];
-          if (!(t5 >= 0 && t5 < t8.length))
-            return A.ioore(t8, t5);
-          t8 = t8[t5];
-          if (!(t2 >= 0 && t2 < t7))
-            return A.ioore(t6, t2);
-          t6 = t6[t2];
-          if (!(t3 >= 0 && t3 < t6.length))
-            return A.ioore(t6, t3);
-          t6 = t6[t3];
-          if (t8 instanceof A.CheckersPiece && t8.colour === "red")
-            if (t6 instanceof A.EmptyCheckersPiece)
-              B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t2, t3), new A.BoardPosition(t4, t5)));
-        }
-        t3 = j + 2;
-        if (_this.validCoords$2(t2, t3)) {
-          t4 = i + 1;
-          t5 = j + 1;
-          t6 = _this.board.pieces;
-          t7 = t6.length;
-          if (!(t4 >= 0 && t4 < t7))
-            return A.ioore(t6, t4);
-          t8 = t6[t4];
-          if (!(t5 >= 0 && t5 < t8.length))
-            return A.ioore(t8, t5);
-          t8 = t8[t5];
-          if (!(t2 >= 0 && t2 < t7))
-            return A.ioore(t6, t2);
-          t6 = t6[t2];
-          if (!(t3 >= 0 && t3 < t6.length))
-            return A.ioore(t6, t3);
-          t6 = t6[t3];
-          if (t8 instanceof A.CheckersPiece && t8.colour === "red")
-            if (t6 instanceof A.EmptyCheckersPiece)
-              B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t2, t3), new A.BoardPosition(t4, t5)));
-        }
+        _this.tryCapture$3(piece, t2, j - 2);
+        _this.tryCapture$3(piece, t2, j + 2);
       }
       if (t1 === "red") {
         t1 = i - 2;
-        t2 = j - 2;
-        if (_this.validCoords$2(t1, t2)) {
-          t3 = i - 1;
-          t4 = j - 1;
-          t5 = _this.board.pieces;
-          t6 = t5.length;
-          if (!(t3 >= 0 && t3 < t6))
-            return A.ioore(t5, t3);
-          t7 = t5[t3];
-          if (!(t4 >= 0 && t4 < t7.length))
-            return A.ioore(t7, t4);
-          t7 = t7[t4];
-          if (!(t1 >= 0 && t1 < t6))
-            return A.ioore(t5, t1);
-          t5 = t5[t1];
-          if (!(t2 >= 0 && t2 < t5.length))
-            return A.ioore(t5, t2);
-          t5 = t5[t2];
-          if (t7 instanceof A.CheckersPiece && t7.colour === "cream")
-            if (t5 instanceof A.EmptyCheckersPiece)
-              B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t1, t2), new A.BoardPosition(t3, t4)));
-        }
-        t2 = j + 2;
-        if (_this.validCoords$2(t1, t2)) {
-          t3 = i - 1;
-          t4 = j + 1;
-          t5 = _this.board.pieces;
-          t6 = t5.length;
-          if (!(t3 >= 0 && t3 < t6))
-            return A.ioore(t5, t3);
-          t7 = t5[t3];
-          if (!(t4 >= 0 && t4 < t7.length))
-            return A.ioore(t7, t4);
-          t7 = t7[t4];
-          if (!(t1 >= 0 && t1 < t6))
-            return A.ioore(t5, t1);
-          t5 = t5[t1];
-          if (!(t2 >= 0 && t2 < t5.length))
-            return A.ioore(t5, t2);
-          t5 = t5[t2];
-          if (t7 instanceof A.CheckersPiece && t7.colour === "cream")
-            if (t5 instanceof A.EmptyCheckersPiece)
-              B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t1, t2), new A.BoardPosition(t3, t4)));
-        }
+        _this.tryCapture$3(piece, t1, j - 2);
+        _this.tryCapture$3(piece, t1, j + 2);
       }
-      piece.set$moveOptions(moves);
-      A.print("the pieces have " + piece.moveOptions.length + " options");
-      return moves;
+    },
+    tryCapture$3(piece, endI, endJ) {
+      var t1, di, t2, t3, t4, t5, _this = this;
+      if (!_this.validCoords$2(endI, endJ))
+        return;
+      t1 = piece.i;
+      di = B.JSInt_methods._tdivFast$1(endI - t1, 2);
+      t2 = piece.j;
+      t1 += di;
+      t2 += B.JSInt_methods._tdivFast$1(endJ - t2, 2);
+      t3 = _this.board.pieces;
+      t4 = t3.length;
+      if (!(t1 >= 0 && t1 < t4))
+        return A.ioore(t3, t1);
+      t5 = t3[t1];
+      if (!(t2 >= 0 && t2 < t5.length))
+        return A.ioore(t5, t2);
+      t5 = t5[t2];
+      if (!(endI >= 0 && endI < t4))
+        return A.ioore(t3, endI);
+      t3 = t3[endI];
+      if (!(endJ >= 0 && endJ < t3.length))
+        return A.ioore(t3, endJ);
+      t3 = t3[endJ];
+      if (_this.capturableTarget$2(piece, t5))
+        if (t3 instanceof A.EmptyCheckersPiece) {
+          B.JSArray_methods.add$1(piece.moveOptions, new A.CheckersMove(new A.BoardPosition(endI, endJ), new A.BoardPosition(t1, t2)));
+          _this.captureAvailable = true;
+        }
+    },
+    capturableTarget$2(piece, target) {
+      if (target instanceof A.CheckersPiece && target.colour !== piece.colour) {
+        if (target instanceof A.EmptyCheckersPiece)
+          return false;
+        return true;
+      }
+      return false;
     },
     checkMoveOptions$0() {
-      var t1, t2, t3, t4, t5, _i, t6, t7, moves, i, j, t8, t9, t10, t11, t12, _i0, _null = null,
-        player = B.JSInt_methods.$mod(this.game.turnCount, 2) === 0 ? "red" : "cream";
-      for (t1 = this.board.pieces, t2 = t1.length, t3 = this.options, t4 = type$.CheckersPiece, t5 = type$.JSArray_CheckersMove, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
-        for (t6 = B.JSArray_methods.get$iterator(t1[_i]); t6.moveNext$0();) {
-          t7 = t6.get$current();
-          if (t7 instanceof A.CheckersPiece && t7.colour === player) {
-            t4._as(t7);
-            moves = A._setArrayType(new Array(0), t5);
-            i = t7.i;
-            j = t7.j;
-            t8 = t7.colour;
-            if (t8 === "cream") {
-              t9 = i + 1;
-              t10 = j - 1;
-              t11 = 0 <= t9;
-              if (t11 && t9 < 8 && 0 <= t10 && t10 < 8) {
-                if (!(t9 >= 0 && t9 < t1.length))
-                  return A.ioore(t1, t9);
-                t12 = t1[t9];
-                if (!(t10 >= 0 && t10 < t12.length))
-                  return A.ioore(t12, t10);
-                if (t12[t10] instanceof A.EmptyCheckersPiece)
-                  B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t9, t10), _null));
-              }
-              t10 = j + 1;
-              if (t11 && t9 < 8 && 0 <= t10 && t10 < 8) {
-                if (!(t9 >= 0 && t9 < t1.length))
-                  return A.ioore(t1, t9);
-                t11 = t1[t9];
-                if (!(t10 >= 0 && t10 < t11.length))
-                  return A.ioore(t11, t10);
-                if (t11[t10] instanceof A.EmptyCheckersPiece)
-                  B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t9, t10), _null));
-              }
+      var t1, t2, t3, _i, t4, t5, i, j, t6, t7, _this = this,
+        player = B.JSInt_methods.$mod(_this.game.turnCount, 2) === 0 ? "red" : "cream";
+      for (t1 = _this.board.pieces, t2 = t1.length, t3 = type$.CheckersPiece, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+        for (t4 = B.JSArray_methods.get$iterator(t1[_i]); t4.moveNext$0();) {
+          t5 = t4.get$current();
+          if (t5 instanceof A.CheckersPiece && t5.colour === player) {
+            t3._as(t5);
+            i = t5.i;
+            j = t5.j;
+            t6 = t5.colour;
+            if (t6 === "cream") {
+              t7 = i + 1;
+              _this.tryMove$3(t5, t7, j - 1);
+              _this.tryMove$3(t5, t7, j + 1);
             }
-            if (t8 === "red") {
-              t8 = i - 1;
-              t9 = j - 1;
-              t10 = 0 <= t8;
-              if (t10 && t8 < 8 && 0 <= t9 && t9 < 8) {
-                if (!(t8 >= 0 && t8 < t1.length))
-                  return A.ioore(t1, t8);
-                t11 = t1[t8];
-                if (!(t9 >= 0 && t9 < t11.length))
-                  return A.ioore(t11, t9);
-                if (t11[t9] instanceof A.EmptyCheckersPiece)
-                  B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t8, t9), _null));
-              }
-              t9 = j + 1;
-              if (t10 && t8 < 8 && 0 <= t9 && t9 < 8) {
-                if (!(t8 >= 0 && t8 < t1.length))
-                  return A.ioore(t1, t8);
-                t10 = t1[t8];
-                if (!(t9 >= 0 && t9 < t10.length))
-                  return A.ioore(t10, t9);
-                if (t10[t9] instanceof A.EmptyCheckersPiece)
-                  B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t8, t9), _null));
-              }
+            if (t6 === "red") {
+              t6 = i - 1;
+              _this.tryMove$3(t5, t6, j - 1);
+              _this.tryMove$3(t5, t6, j + 1);
             }
-            t7.set$moveOptions(moves);
-            A.printString("the pieces have " + t7.moveOptions.length + " options");
-            for (t7 = moves.length, _i0 = 0; _i0 < moves.length; moves.length === t7 || (0, A.throwConcurrentModificationError)(moves), ++_i0)
-              B.JSArray_methods.add$1(t3, moves[_i0]);
           }
         }
+    },
+    tryMove$3(piece, endI, endJ) {
+      var t1;
+      if (!this.validCoords$2(endI, endJ))
+        return;
+      t1 = this.board.pieces;
+      if (!(endI >= 0 && endI < t1.length))
+        return A.ioore(t1, endI);
+      t1 = t1[endI];
+      if (!(endJ >= 0 && endJ < t1.length))
+        return A.ioore(t1, endJ);
+      if (t1[endJ] instanceof A.EmptyCheckersPiece)
+        B.JSArray_methods.add$1(piece.moveOptions, new A.CheckersMove(new A.BoardPosition(endI, endJ), null));
     },
     validCoords$2(i, j) {
       return 0 <= i && i < 8 && 0 <= j && j < 8;
@@ -6369,8 +6297,7 @@
           t2 = new A.CheckersBoard(t2);
           t3 = new A.CheckersGame(t2, A.EmptyCheckersPiece$(0, 0));
           t3.__CheckersGame_view_A = new A.CheckersView(t1, t3);
-          t1 = J.JSArray_JSArray$growable(0, type$.CheckersMove);
-          t3.__CheckersGame_logic_A = new A.CheckersLogic(t3, t2, t1);
+          t3.__CheckersGame_logic_A = new A.CheckersLogic(t3, t2);
           return t3;
         case "Reversi":
           t2 = J.JSArray_JSArray$growable(0, type$.List_GamePiece);

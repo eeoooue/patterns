@@ -20,12 +20,13 @@ class CheckersMove {
 class CheckersLogic {
   CheckersGame game;
   CheckersBoard board;
-  List<CheckersMove> options = List.empty(growable: true);
+  bool captureAvailable = false;
 
   CheckersLogic(this.board, this.game) {}
 
   void clearOptions() {
     clearHighlights();
+    captureAvailable = false;
     for (List<GamePiece> row in board.getBoardState()) {
       for (GamePiece piece in row) {
         if (piece is CheckersPiece) {
@@ -45,16 +46,12 @@ class CheckersLogic {
     }
   }
 
-  List<CheckersMove> findPossibleMoves() {
+  void findPossibleMoves() {
     clearOptions();
-    options.clear();
     checkCaptures();
-
-    if (options.length == 0) {
+    if (!captureAvailable) {
       checkMoveOptions();
     }
-
-    return options;
   }
 
   void checkCaptures() {
@@ -62,90 +59,59 @@ class CheckersLogic {
     for (List<GamePiece> row in board.getBoardState()) {
       for (GamePiece piece in row) {
         if (piece is CheckersPiece && piece.colour == player) {
-          var moves = getCapturesForPiece(piece);
-          for (CheckersMove move in moves) {
-            options.add(move);
-          }
+          findCapturesForPiece(piece);
         }
       }
     }
   }
 
-  List<CheckersMove> getCapturesForPiece(CheckersPiece piece) {
-    List<CheckersMove> moves = List.empty(growable: true);
-
+  void findCapturesForPiece(CheckersPiece piece) {
     int i = piece.i;
     int j = piece.j;
 
     if (piece.colour == "cream") {
-      if (validCoords(i + 2, j - 2)) {
-        GamePiece target = board.getPiece(i + 1, j - 1);
-        GamePiece destination = board.getPiece(i + 2, j - 2);
-
-        if (target is CheckersPiece && target.colour == "red") {
-          if (destination is EmptyCheckersPiece) {
-            BoardPosition start = BoardPosition(i, j);
-            BoardPosition cap = BoardPosition(i + 1, j - 1);
-            BoardPosition end = BoardPosition(i + 2, j - 2);
-            CheckersMove move = CheckersMove(start, end, capture: cap);
-            moves.add(move);
-          }
-        }
-      }
-
-      if (validCoords(i + 2, j + 2)) {
-        GamePiece target = board.getPiece(i + 1, j + 1);
-        GamePiece destination = board.getPiece(i + 2, j + 2);
-
-        if (target is CheckersPiece && target.colour == "red") {
-          if (destination is EmptyCheckersPiece) {
-            BoardPosition start = BoardPosition(i, j);
-            BoardPosition cap = BoardPosition(i + 1, j + 1);
-            BoardPosition end = BoardPosition(i + 2, j + 2);
-            CheckersMove move = CheckersMove(start, end, capture: cap);
-            moves.add(move);
-          }
-        }
-      }
+      tryCapture(piece, i + 2, j - 2);
+      tryCapture(piece, i + 2, j + 2);
     }
 
     if (piece.colour == "red") {
-      if (validCoords(i - 2, j - 2)) {
-        GamePiece target = board.getPiece(i - 1, j - 1);
-        GamePiece destination = board.getPiece(i - 2, j - 2);
+      tryCapture(piece, i - 2, j - 2);
+      tryCapture(piece, i - 2, j + 2);
+    }
+  }
 
-        if (target is CheckersPiece && target.colour == "cream") {
-          if (destination is EmptyCheckersPiece) {
-            BoardPosition start = BoardPosition(i, j);
-            BoardPosition cap = BoardPosition(i - 1, j - 1);
-            BoardPosition end = BoardPosition(i - 2, j - 2);
-            CheckersMove move = CheckersMove(start, end, capture: cap);
-            moves.add(move);
-          }
-        }
-      }
-
-      if (validCoords(i - 2, j + 2)) {
-        GamePiece target = board.getPiece(i - 1, j + 1);
-        GamePiece destination = board.getPiece(i - 2, j + 2);
-
-        if (target is CheckersPiece && target.colour == "cream") {
-          if (destination is EmptyCheckersPiece) {
-            BoardPosition start = BoardPosition(i, j);
-            BoardPosition cap = BoardPosition(i - 1, j + 1);
-            BoardPosition end = BoardPosition(i - 2, j + 2);
-            CheckersMove move = CheckersMove(start, end, capture: cap);
-            moves.add(move);
-          }
-        }
-      }
+  void tryCapture(CheckersPiece piece, int endI, int endJ) {
+    if (!validCoords(endI, endJ)) {
+      return;
     }
 
-    piece.moveOptions = moves;
+    int di = (endI - piece.i) ~/ 2;
+    int dj = (endJ - piece.j) ~/ 2;
 
-    print("the pieces have ${piece.moveOptions.length} options");
+    BoardPosition start = BoardPosition(piece.i, piece.j);
+    BoardPosition cap = BoardPosition(piece.i + di, piece.j + dj);
+    BoardPosition end = BoardPosition(endI, endJ);
 
-    return moves;
+    GamePiece target = board.getPiece(cap.i, cap.j);
+    GamePiece destination = board.getPiece(end.i, end.j);
+
+    if (capturableTarget(piece, target)) {
+      if (destination is EmptyCheckersPiece) {
+        CheckersMove move = CheckersMove(start, end, capture: cap);
+        piece.moveOptions.add(move);
+        captureAvailable = true;
+      }
+    }
+  }
+
+  bool capturableTarget(CheckersPiece piece, GamePiece target) {
+    if (target is CheckersPiece && target.colour != piece.colour) {
+      if (target is EmptyCheckersPiece) {
+        return false;
+      }
+      return true;
+    }
+    return false;
   }
 
   void checkMoveOptions() {
@@ -153,70 +119,41 @@ class CheckersLogic {
     for (List<GamePiece> row in board.getBoardState()) {
       for (GamePiece piece in row) {
         if (piece is CheckersPiece && piece.colour == player) {
-          var moves = getMoves(piece);
-          for (CheckersMove move in moves) {
-            options.add(move);
-          }
+          findMoves(piece);
         }
       }
     }
   }
 
-  List<CheckersMove> getMoves(CheckersPiece piece) {
-    List<CheckersMove> moves = List.empty(growable: true);
-
+  void findMoves(CheckersPiece piece) {
     int i = piece.i;
     int j = piece.j;
 
     if (piece.colour == "cream") {
-      if (validCoords(i + 1, j - 1)) {
-        GamePiece destination = board.getPiece(i + 1, j - 1);
-        if (destination is EmptyCheckersPiece) {
-          BoardPosition start = BoardPosition(i, j);
-          BoardPosition end = BoardPosition(i + 1, j - 1);
-          CheckersMove move = CheckersMove(start, end);
-          moves.add(move);
-        }
-      }
-
-      if (validCoords(i + 1, j + 1)) {
-        GamePiece destination = board.getPiece(i + 1, j + 1);
-        if (destination is EmptyCheckersPiece) {
-          BoardPosition start = BoardPosition(i, j);
-          BoardPosition end = BoardPosition(i + 1, j + 1);
-          CheckersMove move = CheckersMove(start, end);
-          moves.add(move);
-        }
-      }
+      tryMove(piece, i + 1, j - 1);
+      tryMove(piece, i + 1, j + 1);
     }
 
     if (piece.colour == "red") {
-      if (validCoords(i - 1, j - 1)) {
-        GamePiece destination = board.getPiece(i - 1, j - 1);
-        if (destination is EmptyCheckersPiece) {
-          BoardPosition start = BoardPosition(i, j);
-          BoardPosition end = BoardPosition(i - 1, j - 1);
-          CheckersMove move = CheckersMove(start, end);
-          moves.add(move);
-        }
-      }
+      tryMove(piece, i - 1, j - 1);
+      tryMove(piece, i - 1, j + 1);
+    }
+  }
 
-      if (validCoords(i - 1, j + 1)) {
-        GamePiece destination = board.getPiece(i - 1, j + 1);
-        if (destination is EmptyCheckersPiece) {
-          BoardPosition start = BoardPosition(i, j);
-          BoardPosition end = BoardPosition(i - 1, j + 1);
-          CheckersMove move = CheckersMove(start, end);
-          moves.add(move);
-        }
-      }
+  void tryMove(CheckersPiece piece, int endI, int endJ) {
+    if (!validCoords(endI, endJ)) {
+      return;
     }
 
-    piece.moveOptions = moves;
+    BoardPosition start = BoardPosition(piece.i, piece.j);
+    BoardPosition end = BoardPosition(endI, endJ);
 
-    print("the pieces have ${piece.moveOptions.length} options");
+    GamePiece destination = board.getPiece(end.i, end.j);
 
-    return moves;
+    if (destination is EmptyCheckersPiece) {
+      CheckersMove move = CheckersMove(start, end);
+      piece.moveOptions.add(move);
+    }
   }
 
   bool validCoords(int i, int j) {
