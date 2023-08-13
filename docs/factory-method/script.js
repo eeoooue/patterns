@@ -2884,12 +2884,10 @@
       this.end = t0;
       this.capture = t1;
     },
-    CheckersLogic: function CheckersLogic(t0, t1, t2) {
-      var _ = this;
-      _.game = t0;
-      _.board = t1;
-      _.options = t2;
-      _.captureAvailable = false;
+    CheckersLogic: function CheckersLogic(t0, t1) {
+      this.game = t0;
+      this.board = t1;
+      this.captureAvailable = false;
     },
     EmptyCheckersPiece$(a, b) {
       var t1 = J.JSArray_JSArray$growable(0, type$.CheckersMove);
@@ -4919,7 +4917,7 @@
         t2 === $ && A.throwLateFieldNI("logic");
         t2.clearOptions$0();
         if (_this.capturedThisTurn)
-          _this.__CheckersGame_logic_A.getCapturesForPiece$1(_this.activePiece);
+          _this.__CheckersGame_logic_A.findCapturesForPiece$1(_this.activePiece);
         if (_this.activePiece.moveOptions.length === 0) {
           _this.activePiece = A.EmptyCheckersPiece$(0, 0);
           ++_this.turnCount;
@@ -5040,7 +5038,6 @@
     findPossibleMoves$0() {
       var _this = this;
       _this.clearOptions$0();
-      B.JSArray_methods.clear$0(_this.options);
       _this.checkCaptures$0();
       if (!_this.captureAvailable)
         _this.checkMoveOptions$0();
@@ -5052,10 +5049,10 @@
         for (t3 = B.JSArray_methods.get$iterator(t1[_i]); t3.moveNext$0();) {
           t4 = t3.get$current();
           if (t4 instanceof A.CheckersPiece && t4.colour === player)
-            this.getCapturesForPiece$1(t4);
+            this.findCapturesForPiece$1(t4);
         }
     },
-    getCapturesForPiece$1(piece) {
+    findCapturesForPiece$1(piece) {
       var t2, _this = this,
         i = piece.i,
         j = piece.j,
@@ -5070,7 +5067,6 @@
         _this.tryCapture$3(piece, t1, j - 2);
         _this.tryCapture$3(piece, t1, j + 2);
       }
-      return piece.moveOptions;
     },
     tryCapture$3(piece, endI, endJ) {
       var t1, di, t2, t3, t4, t5, _this = this;
@@ -6301,8 +6297,7 @@
           t2 = new A.CheckersBoard(t2);
           t3 = new A.CheckersGame(t2, A.EmptyCheckersPiece$(0, 0));
           t3.__CheckersGame_view_A = new A.CheckersView(t1, t3);
-          t1 = J.JSArray_JSArray$growable(0, type$.CheckersMove);
-          t3.__CheckersGame_logic_A = new A.CheckersLogic(t3, t2, t1);
+          t3.__CheckersGame_logic_A = new A.CheckersLogic(t3, t2);
           return t3;
         case "Reversi":
           t2 = J.JSArray_JSArray$growable(0, type$.List_GamePiece);

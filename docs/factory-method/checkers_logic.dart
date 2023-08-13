@@ -59,13 +59,13 @@ class CheckersLogic {
     for (List<GamePiece> row in board.getBoardState()) {
       for (GamePiece piece in row) {
         if (piece is CheckersPiece && piece.colour == player) {
-          getCapturesForPiece(piece);
+          findCapturesForPiece(piece);
         }
       }
     }
   }
 
-  List<CheckersMove> getCapturesForPiece(CheckersPiece piece) {
+  void findCapturesForPiece(CheckersPiece piece) {
     int i = piece.i;
     int j = piece.j;
 
@@ -78,8 +78,6 @@ class CheckersLogic {
       tryCapture(piece, i - 2, j - 2);
       tryCapture(piece, i - 2, j + 2);
     }
-
-    return piece.moveOptions;
   }
 
   void tryCapture(CheckersPiece piece, int endI, int endJ) {
@@ -121,13 +119,13 @@ class CheckersLogic {
     for (List<GamePiece> row in board.getBoardState()) {
       for (GamePiece piece in row) {
         if (piece is CheckersPiece && piece.colour == player) {
-          getMoves(piece);
+          findMoves(piece);
         }
       }
     }
   }
 
-  List<CheckersMove> getMoves(CheckersPiece piece) {
+  void findMoves(CheckersPiece piece) {
     int i = piece.i;
     int j = piece.j;
 
@@ -140,8 +138,6 @@ class CheckersLogic {
       tryMove(piece, i - 1, j - 1);
       tryMove(piece, i - 1, j + 1);
     }
-
-    return piece.moveOptions;
   }
 
   void tryMove(CheckersPiece piece, int endI, int endJ) {

@@ -45,7 +45,7 @@ class CheckersGame implements Game {
     if (processMoveEnd(i, j)) {
       logic.clearOptions();
       if (capturedThisTurn) {
-        logic.getCapturesForPiece(activePiece);
+        logic.findCapturesForPiece(activePiece);
       }
       if (activePiece.moveOptions.length == 0) {
         activePiece = EmptyCheckersPiece(0, 0);
