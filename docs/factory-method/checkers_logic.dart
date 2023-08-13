@@ -69,6 +69,23 @@ class CheckersLogic {
     }
   }
 
+  List<CheckersMove> getCapturesForPiece(CheckersPiece piece) {
+    int i = piece.i;
+    int j = piece.j;
+
+    if (piece.colour == "cream") {
+      tryCapture(piece, i + 2, j - 2);
+      tryCapture(piece, i + 2, j + 2);
+    }
+
+    if (piece.colour == "red") {
+      tryCapture(piece, i - 2, j - 2);
+      tryCapture(piece, i - 2, j + 2);
+    }
+
+    return piece.moveOptions;
+  }
+
   bool tryCapture(CheckersPiece piece, int endI, int endJ) {
     if (!validCoords(endI, endJ)) {
       return false;
@@ -105,23 +122,6 @@ class CheckersLogic {
     return false;
   }
 
-  List<CheckersMove> getCapturesForPiece(CheckersPiece piece) {
-    int i = piece.i;
-    int j = piece.j;
-
-    if (piece.colour == "cream") {
-      tryCapture(piece, i + 2, j - 2);
-      tryCapture(piece, i + 2, j + 2);
-    }
-
-    if (piece.colour == "red") {
-      tryCapture(piece, i - 2, j - 2);
-      tryCapture(piece, i - 2, j + 2);
-    }
-
-    return piece.moveOptions;
-  }
-
   void checkMoveOptions() {
     String player = game.getTurnPlayer();
     for (List<GamePiece> row in board.getBoardState()) {
@@ -134,6 +134,23 @@ class CheckersLogic {
         }
       }
     }
+  }
+
+  List<CheckersMove> getMoves(CheckersPiece piece) {
+    int i = piece.i;
+    int j = piece.j;
+
+    if (piece.colour == "cream") {
+      tryMove(piece, i + 1, j - 1);
+      tryMove(piece, i + 1, j + 1);
+    }
+
+    if (piece.colour == "red") {
+      tryMove(piece, i - 1, j - 1);
+      tryMove(piece, i - 1, j + 1);
+    }
+
+    return piece.moveOptions;
   }
 
   bool tryMove(CheckersPiece piece, int endI, int endJ) {
@@ -153,23 +170,6 @@ class CheckersLogic {
     }
 
     return false;
-  }
-
-  List<CheckersMove> getMoves(CheckersPiece piece) {
-    int i = piece.i;
-    int j = piece.j;
-
-    if (piece.colour == "cream") {
-      tryMove(piece, i + 1, j - 1);
-      tryMove(piece, i + 1, j + 1);
-    }
-
-    if (piece.colour == "red") {
-      tryMove(piece, i - 1, j - 1);
-      tryMove(piece, i - 1, j + 1);
-    }
-
-    return piece.moveOptions;
   }
 
   bool validCoords(int i, int j) {
