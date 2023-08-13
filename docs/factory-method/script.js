@@ -3631,6 +3631,20 @@
         return result;
       return result + other;
     },
+    _tdivFast$1(receiver, other) {
+      return (receiver | 0) === receiver ? receiver / other | 0 : this._tdivSlow$1(receiver, other);
+    },
+    _tdivSlow$1(receiver, other) {
+      var quotient = receiver / other;
+      if (quotient >= -2147483648 && quotient <= 2147483647)
+        return quotient | 0;
+      if (quotient > 0) {
+        if (quotient !== 1 / 0)
+          return Math.floor(quotient);
+      } else if (quotient > -1 / 0)
+        return Math.ceil(quotient);
+      throw A.wrapException(A.UnsupportedError$("Result of truncating division is " + A.S(quotient) + ": " + A.S(receiver) + " ~/ " + other));
+    },
     get$runtimeType(receiver) {
       return A.createRuntimeType(type$.num);
     },
@@ -5042,104 +5056,58 @@
           }
         }
     },
+    tryCapture$3(piece, endI, endJ) {
+      var t1, di, t2, t3, t4, t5;
+      if (!this.validCoords$2(endI, endJ))
+        return false;
+      t1 = piece.i;
+      di = B.JSInt_methods._tdivFast$1(endI - t1, 2);
+      t2 = piece.j;
+      t1 += di;
+      t2 += B.JSInt_methods._tdivFast$1(endJ - t2, 2);
+      t3 = this.board.pieces;
+      t4 = t3.length;
+      if (!(t1 >= 0 && t1 < t4))
+        return A.ioore(t3, t1);
+      t5 = t3[t1];
+      if (!(t2 >= 0 && t2 < t5.length))
+        return A.ioore(t5, t2);
+      t5 = t5[t2];
+      if (!(endI >= 0 && endI < t4))
+        return A.ioore(t3, endI);
+      t3 = t3[endI];
+      if (!(endJ >= 0 && endJ < t3.length))
+        return A.ioore(t3, endJ);
+      t3 = t3[endJ];
+      if (this.capturableTarget$2(piece, t5))
+        if (t3 instanceof A.EmptyCheckersPiece) {
+          B.JSArray_methods.add$1(piece.moveOptions, new A.CheckersMove(new A.BoardPosition(endI, endJ), new A.BoardPosition(t1, t2)));
+          return true;
+        }
+      return false;
+    },
+    capturableTarget$2(piece, target) {
+      if (target instanceof A.CheckersPiece && target.colour !== piece.colour) {
+        if (target instanceof A.EmptyCheckersPiece)
+          return false;
+        return true;
+      }
+      return false;
+    },
     getCapturesForPiece$1(piece) {
-      var t2, t3, t4, t5, t6, t7, t8, _this = this,
+      var t2, _this = this,
         i = piece.i,
         j = piece.j,
         t1 = piece.colour;
       if (t1 === "cream") {
         t2 = i + 2;
-        t3 = j - 2;
-        if (_this.validCoords$2(t2, t3)) {
-          t4 = i + 1;
-          t5 = j - 1;
-          t6 = _this.board.pieces;
-          t7 = t6.length;
-          if (!(t4 >= 0 && t4 < t7))
-            return A.ioore(t6, t4);
-          t8 = t6[t4];
-          if (!(t5 >= 0 && t5 < t8.length))
-            return A.ioore(t8, t5);
-          t8 = t8[t5];
-          if (!(t2 >= 0 && t2 < t7))
-            return A.ioore(t6, t2);
-          t6 = t6[t2];
-          if (!(t3 >= 0 && t3 < t6.length))
-            return A.ioore(t6, t3);
-          t6 = t6[t3];
-          if (t8 instanceof A.CheckersPiece && t8.colour === "red")
-            if (t6 instanceof A.EmptyCheckersPiece)
-              B.JSArray_methods.add$1(piece.moveOptions, new A.CheckersMove(new A.BoardPosition(t2, t3), new A.BoardPosition(t4, t5)));
-        }
-        t3 = j + 2;
-        if (_this.validCoords$2(t2, t3)) {
-          t4 = i + 1;
-          t5 = j + 1;
-          t6 = _this.board.pieces;
-          t7 = t6.length;
-          if (!(t4 >= 0 && t4 < t7))
-            return A.ioore(t6, t4);
-          t8 = t6[t4];
-          if (!(t5 >= 0 && t5 < t8.length))
-            return A.ioore(t8, t5);
-          t8 = t8[t5];
-          if (!(t2 >= 0 && t2 < t7))
-            return A.ioore(t6, t2);
-          t6 = t6[t2];
-          if (!(t3 >= 0 && t3 < t6.length))
-            return A.ioore(t6, t3);
-          t6 = t6[t3];
-          if (t8 instanceof A.CheckersPiece && t8.colour === "red")
-            if (t6 instanceof A.EmptyCheckersPiece)
-              B.JSArray_methods.add$1(piece.moveOptions, new A.CheckersMove(new A.BoardPosition(t2, t3), new A.BoardPosition(t4, t5)));
-        }
+        _this.tryCapture$3(piece, t2, j - 2);
+        _this.tryCapture$3(piece, t2, j + 2);
       }
       if (t1 === "red") {
         t1 = i - 2;
-        t2 = j - 2;
-        if (_this.validCoords$2(t1, t2)) {
-          t3 = i - 1;
-          t4 = j - 1;
-          t5 = _this.board.pieces;
-          t6 = t5.length;
-          if (!(t3 >= 0 && t3 < t6))
-            return A.ioore(t5, t3);
-          t7 = t5[t3];
-          if (!(t4 >= 0 && t4 < t7.length))
-            return A.ioore(t7, t4);
-          t7 = t7[t4];
-          if (!(t1 >= 0 && t1 < t6))
-            return A.ioore(t5, t1);
-          t5 = t5[t1];
-          if (!(t2 >= 0 && t2 < t5.length))
-            return A.ioore(t5, t2);
-          t5 = t5[t2];
-          if (t7 instanceof A.CheckersPiece && t7.colour === "cream")
-            if (t5 instanceof A.EmptyCheckersPiece)
-              B.JSArray_methods.add$1(piece.moveOptions, new A.CheckersMove(new A.BoardPosition(t1, t2), new A.BoardPosition(t3, t4)));
-        }
-        t2 = j + 2;
-        if (_this.validCoords$2(t1, t2)) {
-          t3 = i - 1;
-          t4 = j + 1;
-          t5 = _this.board.pieces;
-          t6 = t5.length;
-          if (!(t3 >= 0 && t3 < t6))
-            return A.ioore(t5, t3);
-          t7 = t5[t3];
-          if (!(t4 >= 0 && t4 < t7.length))
-            return A.ioore(t7, t4);
-          t7 = t7[t4];
-          if (!(t1 >= 0 && t1 < t6))
-            return A.ioore(t5, t1);
-          t5 = t5[t1];
-          if (!(t2 >= 0 && t2 < t5.length))
-            return A.ioore(t5, t2);
-          t5 = t5[t2];
-          if (t7 instanceof A.CheckersPiece && t7.colour === "cream")
-            if (t5 instanceof A.EmptyCheckersPiece)
-              B.JSArray_methods.add$1(piece.moveOptions, new A.CheckersMove(new A.BoardPosition(t1, t2), new A.BoardPosition(t3, t4)));
-        }
+        _this.tryCapture$3(piece, t1, j - 2);
+        _this.tryCapture$3(piece, t1, j + 2);
       }
       return piece.moveOptions;
     },

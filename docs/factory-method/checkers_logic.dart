@@ -84,7 +84,7 @@ class CheckersLogic {
     GamePiece target = board.getPiece(cap.i, cap.j);
     GamePiece destination = board.getPiece(end.i, end.j);
 
-    if (target is CheckersPiece && target.colour == "red") {
+    if (capturableTarget(piece, target)) {
       if (destination is EmptyCheckersPiece) {
         CheckersMove move = CheckersMove(start, end, capture: cap);
         piece.moveOptions.add(move);
@@ -95,72 +95,28 @@ class CheckersLogic {
     return false;
   }
 
+  bool capturableTarget(CheckersPiece piece, GamePiece target) {
+    if (target is CheckersPiece && target.colour != piece.colour) {
+      if (target is EmptyCheckersPiece) {
+        return false;
+      }
+      return true;
+    }
+    return false;
+  }
+
   List<CheckersMove> getCapturesForPiece(CheckersPiece piece) {
     int i = piece.i;
     int j = piece.j;
 
     if (piece.colour == "cream") {
-      if (validCoords(i + 2, j - 2)) {
-        GamePiece target = board.getPiece(i + 1, j - 1);
-        GamePiece destination = board.getPiece(i + 2, j - 2);
-
-        if (target is CheckersPiece && target.colour == "red") {
-          if (destination is EmptyCheckersPiece) {
-            BoardPosition start = BoardPosition(i, j);
-            BoardPosition cap = BoardPosition(i + 1, j - 1);
-            BoardPosition end = BoardPosition(i + 2, j - 2);
-            CheckersMove move = CheckersMove(start, end, capture: cap);
-            piece.moveOptions.add(move);
-          }
-        }
-      }
-
-      if (validCoords(i + 2, j + 2)) {
-        GamePiece target = board.getPiece(i + 1, j + 1);
-        GamePiece destination = board.getPiece(i + 2, j + 2);
-
-        if (target is CheckersPiece && target.colour == "red") {
-          if (destination is EmptyCheckersPiece) {
-            BoardPosition start = BoardPosition(i, j);
-            BoardPosition cap = BoardPosition(i + 1, j + 1);
-            BoardPosition end = BoardPosition(i + 2, j + 2);
-            CheckersMove move = CheckersMove(start, end, capture: cap);
-            piece.moveOptions.add(move);
-          }
-        }
-      }
+      tryCapture(piece, i + 2, j - 2);
+      tryCapture(piece, i + 2, j + 2);
     }
 
     if (piece.colour == "red") {
-      if (validCoords(i - 2, j - 2)) {
-        GamePiece target = board.getPiece(i - 1, j - 1);
-        GamePiece destination = board.getPiece(i - 2, j - 2);
-
-        if (target is CheckersPiece && target.colour == "cream") {
-          if (destination is EmptyCheckersPiece) {
-            BoardPosition start = BoardPosition(i, j);
-            BoardPosition cap = BoardPosition(i - 1, j - 1);
-            BoardPosition end = BoardPosition(i - 2, j - 2);
-            CheckersMove move = CheckersMove(start, end, capture: cap);
-            piece.moveOptions.add(move);
-          }
-        }
-      }
-
-      if (validCoords(i - 2, j + 2)) {
-        GamePiece target = board.getPiece(i - 1, j + 1);
-        GamePiece destination = board.getPiece(i - 2, j + 2);
-
-        if (target is CheckersPiece && target.colour == "cream") {
-          if (destination is EmptyCheckersPiece) {
-            BoardPosition start = BoardPosition(i, j);
-            BoardPosition cap = BoardPosition(i - 1, j + 1);
-            BoardPosition end = BoardPosition(i - 2, j + 2);
-            CheckersMove move = CheckersMove(start, end, capture: cap);
-            piece.moveOptions.add(move);
-          }
-        }
-      }
+      tryCapture(piece, i - 2, j - 2);
+      tryCapture(piece, i - 2, j + 2);
     }
 
     return piece.moveOptions;
