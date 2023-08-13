@@ -43,3 +43,8 @@
     cursor: pointer;
     margin: 0px 10px;
 }
+
+.category-tag a {
+    color: white;
+    text-decoration: none;
+}

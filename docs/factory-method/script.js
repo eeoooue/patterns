@@ -6263,7 +6263,7 @@
         choice.__GameChoice_element_A = t5;
         choice.armElement$0();
         t4.get$children(t3).add$1(0, choice.__GameChoice_element_A);
-        if (title === "Draughts") {
+        if (title === "Chess") {
           _this.resetButtons$0();
           A.printString("'" + title + "' was chosen.");
           _this.getGame$1(title).startGame$0();
