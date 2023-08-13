@@ -4943,14 +4943,14 @@
       t1.displayBoard$1(_this.board.pieces);
     },
     processMoveEnd$2(i, j) {
-      var t1, t2, t3, _i, move, endPos, t4, cap;
-      for (t1 = this.activePiece, t2 = t1.moveOptions, t3 = t2.length, _i = 0; _i < t3; ++_i) {
+      var t1, t2, t3, _i, move, endPos, t4, cap, _this = this;
+      for (t1 = _this.activePiece, t2 = t1.moveOptions, t3 = t2.length, _i = 0; _i < t3; ++_i) {
         move = t2[_i];
         endPos = move.end;
         if (endPos.i === i && endPos.j === j) {
           t2 = t1.i;
           t3 = t1.j;
-          t4 = this.board.pieces;
+          t4 = _this.board.pieces;
           if (!(t2 >= 0 && t2 < t4.length))
             return A.ioore(t4, t2);
           B.JSArray_methods.$indexSet(t4[t2], t3, A.EmptyCheckersPiece$(t2, t3));
@@ -4962,6 +4962,10 @@
           B.JSArray_methods.$indexSet(t4[i], j, t1);
           t1.i = i;
           t1.j = j;
+          if (i === 0 || i === 7) {
+            t1.__GamePiece_src_A = "./assets/checkers/checkers_" + t1.colour + "_king.png";
+            _this.capturedThisTurn = false;
+          }
           cap = move.capture;
           if (cap instanceof A.BoardPosition) {
             t1 = cap.i;
@@ -4969,7 +4973,7 @@
             if (!(t1 >= 0 && t1 < t4.length))
               return A.ioore(t4, t1);
             B.JSArray_methods.$indexSet(t4[t1], t2, A.EmptyCheckersPiece$(t1, t2));
-            this.capturedThisTurn = true;
+            _this.capturedThisTurn = true;
           }
           return true;
         }
