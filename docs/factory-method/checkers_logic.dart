@@ -69,12 +69,12 @@ class CheckersLogic {
     int i = piece.i;
     int j = piece.j;
 
-    if (piece.colour == "cream") {
+    if (piece.colour == "cream" || piece.king) {
       tryCapture(piece, i + 2, j - 2);
       tryCapture(piece, i + 2, j + 2);
     }
 
-    if (piece.colour == "red") {
+    if (piece.colour == "red" || piece.king) {
       tryCapture(piece, i - 2, j - 2);
       tryCapture(piece, i - 2, j + 2);
     }
@@ -129,12 +129,12 @@ class CheckersLogic {
     int i = piece.i;
     int j = piece.j;
 
-    if (piece.colour == "cream") {
+    if (piece.colour == "cream" || piece.king) {
       tryMove(piece, i + 1, j - 1);
       tryMove(piece, i + 1, j + 1);
     }
 
-    if (piece.colour == "red") {
+    if (piece.colour == "red" || piece.king) {
       tryMove(piece, i - 1, j - 1);
       tryMove(piece, i - 1, j + 1);
     }

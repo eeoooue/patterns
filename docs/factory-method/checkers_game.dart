@@ -113,6 +113,13 @@ class CheckersGame implements Game {
     board.removePiece(piece.i, piece.j);
     board.removePiece(i, j);
     board.placePiece(piece, i, j);
+
+    if (i == 0 || i == 7) {
+      if (piece is CheckersPiece) {
+        piece.makeKing();
+        capturedThisTurn = false;
+      }
+    }
   }
 
   void refreshView() {
