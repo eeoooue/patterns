@@ -20,7 +20,6 @@ class CheckersMove {
 class CheckersLogic {
   CheckersGame game;
   CheckersBoard board;
-  List<CheckersMove> options = List.empty(growable: true);
   bool captureAvailable = false;
 
   CheckersLogic(this.board, this.game) {}
@@ -49,9 +48,7 @@ class CheckersLogic {
 
   void findPossibleMoves() {
     clearOptions();
-    options.clear();
     checkCaptures();
-
     if (!captureAvailable) {
       checkMoveOptions();
     }
@@ -62,10 +59,7 @@ class CheckersLogic {
     for (List<GamePiece> row in board.getBoardState()) {
       for (GamePiece piece in row) {
         if (piece is CheckersPiece && piece.colour == player) {
-          var moves = getCapturesForPiece(piece);
-          for (CheckersMove move in moves) {
-            options.add(move);
-          }
+          getCapturesForPiece(piece);
         }
       }
     }
@@ -88,9 +82,9 @@ class CheckersLogic {
     return piece.moveOptions;
   }
 
-  bool tryCapture(CheckersPiece piece, int endI, int endJ) {
+  void tryCapture(CheckersPiece piece, int endI, int endJ) {
     if (!validCoords(endI, endJ)) {
-      return false;
+      return;
     }
 
     int di = (endI - piece.i) ~/ 2;
@@ -108,11 +102,8 @@ class CheckersLogic {
         CheckersMove move = CheckersMove(start, end, capture: cap);
         piece.moveOptions.add(move);
         captureAvailable = true;
-        return true;
       }
     }
-
-    return false;
   }
 
   bool capturableTarget(CheckersPiece piece, GamePiece target) {
@@ -130,10 +121,7 @@ class CheckersLogic {
     for (List<GamePiece> row in board.getBoardState()) {
       for (GamePiece piece in row) {
         if (piece is CheckersPiece && piece.colour == player) {
-          var moves = getMoves(piece);
-          for (CheckersMove move in moves) {
-            options.add(move);
-          }
+          getMoves(piece);
         }
       }
     }
@@ -156,9 +144,9 @@ class CheckersLogic {
     return piece.moveOptions;
   }
 
-  bool tryMove(CheckersPiece piece, int endI, int endJ) {
+  void tryMove(CheckersPiece piece, int endI, int endJ) {
     if (!validCoords(endI, endJ)) {
-      return false;
+      return;
     }
 
     BoardPosition start = BoardPosition(piece.i, piece.j);
@@ -169,10 +157,7 @@ class CheckersLogic {
     if (destination is EmptyCheckersPiece) {
       CheckersMove move = CheckersMove(start, end);
       piece.moveOptions.add(move);
-      return true;
     }
-
-    return false;
   }
 
   bool validCoords(int i, int j) {
