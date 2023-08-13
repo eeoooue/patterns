@@ -5028,7 +5028,6 @@
       _this.checkCaptures$0();
       if (t1.length === 0)
         _this.checkMoveOptions$0();
-      return t1;
     },
     checkCaptures$0() {
       var t1, t2, t3, _i, t4, t5, moves, _i0, _this = this,
@@ -5045,7 +5044,6 @@
     },
     getCapturesForPiece$1(piece) {
       var t2, t3, t4, t5, t6, t7, t8, _this = this,
-        moves = J.JSArray_JSArray$growable(0, type$.CheckersMove),
         i = piece.i,
         j = piece.j,
         t1 = piece.colour;
@@ -5071,7 +5069,7 @@
           t6 = t6[t3];
           if (t8 instanceof A.CheckersPiece && t8.colour === "red")
             if (t6 instanceof A.EmptyCheckersPiece)
-              B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t2, t3), new A.BoardPosition(t4, t5)));
+              B.JSArray_methods.add$1(piece.moveOptions, new A.CheckersMove(new A.BoardPosition(t2, t3), new A.BoardPosition(t4, t5)));
         }
         t3 = j + 2;
         if (_this.validCoords$2(t2, t3)) {
@@ -5093,7 +5091,7 @@
           t6 = t6[t3];
           if (t8 instanceof A.CheckersPiece && t8.colour === "red")
             if (t6 instanceof A.EmptyCheckersPiece)
-              B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t2, t3), new A.BoardPosition(t4, t5)));
+              B.JSArray_methods.add$1(piece.moveOptions, new A.CheckersMove(new A.BoardPosition(t2, t3), new A.BoardPosition(t4, t5)));
         }
       }
       if (t1 === "red") {
@@ -5118,7 +5116,7 @@
           t5 = t5[t2];
           if (t7 instanceof A.CheckersPiece && t7.colour === "cream")
             if (t5 instanceof A.EmptyCheckersPiece)
-              B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t1, t2), new A.BoardPosition(t3, t4)));
+              B.JSArray_methods.add$1(piece.moveOptions, new A.CheckersMove(new A.BoardPosition(t1, t2), new A.BoardPosition(t3, t4)));
         }
         t2 = j + 2;
         if (_this.validCoords$2(t1, t2)) {
@@ -5140,51 +5138,24 @@
           t5 = t5[t2];
           if (t7 instanceof A.CheckersPiece && t7.colour === "cream")
             if (t5 instanceof A.EmptyCheckersPiece)
-              B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t1, t2), new A.BoardPosition(t3, t4)));
+              B.JSArray_methods.add$1(piece.moveOptions, new A.CheckersMove(new A.BoardPosition(t1, t2), new A.BoardPosition(t3, t4)));
         }
       }
-      piece.set$moveOptions(moves);
-      A.print("the pieces have " + piece.moveOptions.length + " options");
-      return moves;
+      return piece.moveOptions;
     },
     checkMoveOptions$0() {
-      var t1, t2, t3, t4, t5, _i, t6, t7, moves, i, j, t8, t9, t10, t11, t12, _i0, _null = null,
+      var t1, t2, t3, t4, _i, t5, t6, i, j, t7, t8, t9, t10, t11, moves, _i0, _null = null,
         player = B.JSInt_methods.$mod(this.game.turnCount, 2) === 0 ? "red" : "cream";
-      for (t1 = this.board.pieces, t2 = t1.length, t3 = this.options, t4 = type$.CheckersPiece, t5 = type$.JSArray_CheckersMove, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
-        for (t6 = B.JSArray_methods.get$iterator(t1[_i]); t6.moveNext$0();) {
-          t7 = t6.get$current();
-          if (t7 instanceof A.CheckersPiece && t7.colour === player) {
-            t4._as(t7);
-            moves = A._setArrayType(new Array(0), t5);
-            i = t7.i;
-            j = t7.j;
-            t8 = t7.colour;
-            if (t8 === "cream") {
-              t9 = i + 1;
-              t10 = j - 1;
-              t11 = 0 <= t9;
-              if (t11 && t9 < 8 && 0 <= t10 && t10 < 8) {
-                if (!(t9 >= 0 && t9 < t1.length))
-                  return A.ioore(t1, t9);
-                t12 = t1[t9];
-                if (!(t10 >= 0 && t10 < t12.length))
-                  return A.ioore(t12, t10);
-                if (t12[t10] instanceof A.EmptyCheckersPiece)
-                  B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t9, t10), _null));
-              }
-              t10 = j + 1;
-              if (t11 && t9 < 8 && 0 <= t10 && t10 < 8) {
-                if (!(t9 >= 0 && t9 < t1.length))
-                  return A.ioore(t1, t9);
-                t11 = t1[t9];
-                if (!(t10 >= 0 && t10 < t11.length))
-                  return A.ioore(t11, t10);
-                if (t11[t10] instanceof A.EmptyCheckersPiece)
-                  B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t9, t10), _null));
-              }
-            }
-            if (t8 === "red") {
-              t8 = i - 1;
+      for (t1 = this.board.pieces, t2 = t1.length, t3 = this.options, t4 = type$.CheckersPiece, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+        for (t5 = B.JSArray_methods.get$iterator(t1[_i]); t5.moveNext$0();) {
+          t6 = t5.get$current();
+          if (t6 instanceof A.CheckersPiece && t6.colour === player) {
+            t4._as(t6);
+            i = t6.i;
+            j = t6.j;
+            t7 = t6.colour;
+            if (t7 === "cream") {
+              t8 = i + 1;
               t9 = j - 1;
               t10 = 0 <= t8;
               if (t10 && t8 < 8 && 0 <= t9 && t9 < 8) {
@@ -5194,7 +5165,7 @@
                 if (!(t9 >= 0 && t9 < t11.length))
                   return A.ioore(t11, t9);
                 if (t11[t9] instanceof A.EmptyCheckersPiece)
-                  B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t8, t9), _null));
+                  B.JSArray_methods.add$1(t6.moveOptions, new A.CheckersMove(new A.BoardPosition(t8, t9), _null));
               }
               t9 = j + 1;
               if (t10 && t8 < 8 && 0 <= t9 && t9 < 8) {
@@ -5204,12 +5175,35 @@
                 if (!(t9 >= 0 && t9 < t10.length))
                   return A.ioore(t10, t9);
                 if (t10[t9] instanceof A.EmptyCheckersPiece)
-                  B.JSArray_methods.add$1(moves, new A.CheckersMove(new A.BoardPosition(t8, t9), _null));
+                  B.JSArray_methods.add$1(t6.moveOptions, new A.CheckersMove(new A.BoardPosition(t8, t9), _null));
               }
             }
-            t7.set$moveOptions(moves);
-            A.printString("the pieces have " + t7.moveOptions.length + " options");
-            for (t7 = moves.length, _i0 = 0; _i0 < moves.length; moves.length === t7 || (0, A.throwConcurrentModificationError)(moves), ++_i0)
+            if (t7 === "red") {
+              t7 = i - 1;
+              t8 = j - 1;
+              t9 = 0 <= t7;
+              if (t9 && t7 < 8 && 0 <= t8 && t8 < 8) {
+                if (!(t7 >= 0 && t7 < t1.length))
+                  return A.ioore(t1, t7);
+                t10 = t1[t7];
+                if (!(t8 >= 0 && t8 < t10.length))
+                  return A.ioore(t10, t8);
+                if (t10[t8] instanceof A.EmptyCheckersPiece)
+                  B.JSArray_methods.add$1(t6.moveOptions, new A.CheckersMove(new A.BoardPosition(t7, t8), _null));
+              }
+              t8 = j + 1;
+              if (t9 && t7 < 8 && 0 <= t8 && t8 < 8) {
+                if (!(t7 >= 0 && t7 < t1.length))
+                  return A.ioore(t1, t7);
+                t9 = t1[t7];
+                if (!(t8 >= 0 && t8 < t9.length))
+                  return A.ioore(t9, t8);
+                if (t9[t8] instanceof A.EmptyCheckersPiece)
+                  B.JSArray_methods.add$1(t6.moveOptions, new A.CheckersMove(new A.BoardPosition(t7, t8), _null));
+              }
+            }
+            moves = t6.moveOptions;
+            for (t6 = moves.length, _i0 = 0; _i0 < moves.length; moves.length === t6 || (0, A.throwConcurrentModificationError)(moves), ++_i0)
               B.JSArray_methods.add$1(t3, moves[_i0]);
           }
         }

@@ -45,7 +45,7 @@ class CheckersLogic {
     }
   }
 
-  List<CheckersMove> findPossibleMoves() {
+  void findPossibleMoves() {
     clearOptions();
     options.clear();
     checkCaptures();
@@ -53,8 +53,6 @@ class CheckersLogic {
     if (options.length == 0) {
       checkMoveOptions();
     }
-
-    return options;
   }
 
   void checkCaptures() {
@@ -71,9 +69,33 @@ class CheckersLogic {
     }
   }
 
-  List<CheckersMove> getCapturesForPiece(CheckersPiece piece) {
-    List<CheckersMove> moves = List.empty(growable: true);
+  bool tryCapture(CheckersPiece piece, int endI, int endJ) {
+    if (!validCoords(endI, endJ)) {
+      return false;
+    }
 
+    int di = (endI - piece.i) ~/ 2;
+    int dj = (endJ - piece.j) ~/ 2;
+
+    BoardPosition start = BoardPosition(piece.i, piece.j);
+    BoardPosition cap = BoardPosition(piece.i + di, piece.j + dj);
+    BoardPosition end = BoardPosition(endI, endJ);
+
+    GamePiece target = board.getPiece(cap.i, cap.j);
+    GamePiece destination = board.getPiece(end.i, end.j);
+
+    if (target is CheckersPiece && target.colour == "red") {
+      if (destination is EmptyCheckersPiece) {
+        CheckersMove move = CheckersMove(start, end, capture: cap);
+        piece.moveOptions.add(move);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  List<CheckersMove> getCapturesForPiece(CheckersPiece piece) {
     int i = piece.i;
     int j = piece.j;
 
@@ -88,7 +110,7 @@ class CheckersLogic {
             BoardPosition cap = BoardPosition(i + 1, j - 1);
             BoardPosition end = BoardPosition(i + 2, j - 2);
             CheckersMove move = CheckersMove(start, end, capture: cap);
-            moves.add(move);
+            piece.moveOptions.add(move);
           }
         }
       }
@@ -103,7 +125,7 @@ class CheckersLogic {
             BoardPosition cap = BoardPosition(i + 1, j + 1);
             BoardPosition end = BoardPosition(i + 2, j + 2);
             CheckersMove move = CheckersMove(start, end, capture: cap);
-            moves.add(move);
+            piece.moveOptions.add(move);
           }
         }
       }
@@ -120,7 +142,7 @@ class CheckersLogic {
             BoardPosition cap = BoardPosition(i - 1, j - 1);
             BoardPosition end = BoardPosition(i - 2, j - 2);
             CheckersMove move = CheckersMove(start, end, capture: cap);
-            moves.add(move);
+            piece.moveOptions.add(move);
           }
         }
       }
@@ -135,17 +157,13 @@ class CheckersLogic {
             BoardPosition cap = BoardPosition(i - 1, j + 1);
             BoardPosition end = BoardPosition(i - 2, j + 2);
             CheckersMove move = CheckersMove(start, end, capture: cap);
-            moves.add(move);
+            piece.moveOptions.add(move);
           }
         }
       }
     }
 
-    piece.moveOptions = moves;
-
-    print("the pieces have ${piece.moveOptions.length} options");
-
-    return moves;
+    return piece.moveOptions;
   }
 
   void checkMoveOptions() {
@@ -163,8 +181,6 @@ class CheckersLogic {
   }
 
   List<CheckersMove> getMoves(CheckersPiece piece) {
-    List<CheckersMove> moves = List.empty(growable: true);
-
     int i = piece.i;
     int j = piece.j;
 
@@ -175,7 +191,7 @@ class CheckersLogic {
           BoardPosition start = BoardPosition(i, j);
           BoardPosition end = BoardPosition(i + 1, j - 1);
           CheckersMove move = CheckersMove(start, end);
-          moves.add(move);
+          piece.moveOptions.add(move);
         }
       }
 
@@ -185,7 +201,7 @@ class CheckersLogic {
           BoardPosition start = BoardPosition(i, j);
           BoardPosition end = BoardPosition(i + 1, j + 1);
           CheckersMove move = CheckersMove(start, end);
-          moves.add(move);
+          piece.moveOptions.add(move);
         }
       }
     }
@@ -197,7 +213,7 @@ class CheckersLogic {
           BoardPosition start = BoardPosition(i, j);
           BoardPosition end = BoardPosition(i - 1, j - 1);
           CheckersMove move = CheckersMove(start, end);
-          moves.add(move);
+          piece.moveOptions.add(move);
         }
       }
 
@@ -207,16 +223,12 @@ class CheckersLogic {
           BoardPosition start = BoardPosition(i, j);
           BoardPosition end = BoardPosition(i - 1, j + 1);
           CheckersMove move = CheckersMove(start, end);
-          moves.add(move);
+          piece.moveOptions.add(move);
         }
       }
     }
 
-    piece.moveOptions = moves;
-
-    print("the pieces have ${piece.moveOptions.length} options");
-
-    return moves;
+    return piece.moveOptions;
   }
 
   bool validCoords(int i, int j) {
