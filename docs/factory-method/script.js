@@ -2885,9 +2885,11 @@
       this.capture = t1;
     },
     CheckersLogic: function CheckersLogic(t0, t1, t2) {
-      this.game = t0;
-      this.board = t1;
-      this.options = t2;
+      var _ = this;
+      _.game = t0;
+      _.board = t1;
+      _.options = t2;
+      _.captureAvailable = false;
     },
     EmptyCheckersPiece$(a, b) {
       var t1 = J.JSArray_JSArray$growable(0, type$.CheckersMove);
@@ -5016,6 +5018,7 @@
     clearOptions$0() {
       var t1, t2, t3, _i, t4, t5, t6;
       this.clearHighlights$0();
+      this.captureAvailable = false;
       for (t1 = this.board.pieces, t2 = t1.length, t3 = type$.JSArray_CheckersMove, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         for (t4 = B.JSArray_methods.get$iterator(t1[_i]); t4.moveNext$0();) {
           t5 = t4.get$current();
@@ -5035,12 +5038,11 @@
         }
     },
     findPossibleMoves$0() {
-      var t1, _this = this;
+      var _this = this;
       _this.clearOptions$0();
-      t1 = _this.options;
-      B.JSArray_methods.clear$0(t1);
+      B.JSArray_methods.clear$0(_this.options);
       _this.checkCaptures$0();
-      if (t1.length === 0)
+      if (!_this.captureAvailable)
         _this.checkMoveOptions$0();
     },
     checkCaptures$0() {
@@ -5055,44 +5057,6 @@
               B.JSArray_methods.add$1(t3, moves[_i0]);
           }
         }
-    },
-    tryCapture$3(piece, endI, endJ) {
-      var t1, di, t2, t3, t4, t5;
-      if (!this.validCoords$2(endI, endJ))
-        return false;
-      t1 = piece.i;
-      di = B.JSInt_methods._tdivFast$1(endI - t1, 2);
-      t2 = piece.j;
-      t1 += di;
-      t2 += B.JSInt_methods._tdivFast$1(endJ - t2, 2);
-      t3 = this.board.pieces;
-      t4 = t3.length;
-      if (!(t1 >= 0 && t1 < t4))
-        return A.ioore(t3, t1);
-      t5 = t3[t1];
-      if (!(t2 >= 0 && t2 < t5.length))
-        return A.ioore(t5, t2);
-      t5 = t5[t2];
-      if (!(endI >= 0 && endI < t4))
-        return A.ioore(t3, endI);
-      t3 = t3[endI];
-      if (!(endJ >= 0 && endJ < t3.length))
-        return A.ioore(t3, endJ);
-      t3 = t3[endJ];
-      if (this.capturableTarget$2(piece, t5))
-        if (t3 instanceof A.EmptyCheckersPiece) {
-          B.JSArray_methods.add$1(piece.moveOptions, new A.CheckersMove(new A.BoardPosition(endI, endJ), new A.BoardPosition(t1, t2)));
-          return true;
-        }
-      return false;
-    },
-    capturableTarget$2(piece, target) {
-      if (target instanceof A.CheckersPiece && target.colour !== piece.colour) {
-        if (target instanceof A.EmptyCheckersPiece)
-          return false;
-        return true;
-      }
-      return false;
     },
     getCapturesForPiece$1(piece) {
       var t2, _this = this,
@@ -5110,6 +5074,44 @@
         _this.tryCapture$3(piece, t1, j + 2);
       }
       return piece.moveOptions;
+    },
+    tryCapture$3(piece, endI, endJ) {
+      var t1, di, t2, t3, t4, t5, _this = this;
+      if (!_this.validCoords$2(endI, endJ))
+        return false;
+      t1 = piece.i;
+      di = B.JSInt_methods._tdivFast$1(endI - t1, 2);
+      t2 = piece.j;
+      t1 += di;
+      t2 += B.JSInt_methods._tdivFast$1(endJ - t2, 2);
+      t3 = _this.board.pieces;
+      t4 = t3.length;
+      if (!(t1 >= 0 && t1 < t4))
+        return A.ioore(t3, t1);
+      t5 = t3[t1];
+      if (!(t2 >= 0 && t2 < t5.length))
+        return A.ioore(t5, t2);
+      t5 = t5[t2];
+      if (!(endI >= 0 && endI < t4))
+        return A.ioore(t3, endI);
+      t3 = t3[endI];
+      if (!(endJ >= 0 && endJ < t3.length))
+        return A.ioore(t3, endJ);
+      t3 = t3[endJ];
+      if (_this.capturableTarget$2(piece, t5))
+        if (t3 instanceof A.EmptyCheckersPiece) {
+          B.JSArray_methods.add$1(piece.moveOptions, new A.CheckersMove(new A.BoardPosition(endI, endJ), new A.BoardPosition(t1, t2)));
+          return _this.captureAvailable = true;
+        }
+      return false;
+    },
+    capturableTarget$2(piece, target) {
+      if (target instanceof A.CheckersPiece && target.colour !== piece.colour) {
+        if (target instanceof A.EmptyCheckersPiece)
+          return false;
+        return true;
+      }
+      return false;
     },
     checkMoveOptions$0() {
       var t1, t2, t3, t4, _i, t5, t6, i, j, t7, t8, moves, _i0, _this = this,

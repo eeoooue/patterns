@@ -21,11 +21,13 @@ class CheckersLogic {
   CheckersGame game;
   CheckersBoard board;
   List<CheckersMove> options = List.empty(growable: true);
+  bool captureAvailable = false;
 
   CheckersLogic(this.board, this.game) {}
 
   void clearOptions() {
     clearHighlights();
+    captureAvailable = false;
     for (List<GamePiece> row in board.getBoardState()) {
       for (GamePiece piece in row) {
         if (piece is CheckersPiece) {
@@ -50,7 +52,7 @@ class CheckersLogic {
     options.clear();
     checkCaptures();
 
-    if (options.length == 0) {
+    if (!captureAvailable) {
       checkMoveOptions();
     }
   }
@@ -105,6 +107,7 @@ class CheckersLogic {
       if (destination is EmptyCheckersPiece) {
         CheckersMove move = CheckersMove(start, end, capture: cap);
         piece.moveOptions.add(move);
+        captureAvailable = true;
         return true;
       }
     }
