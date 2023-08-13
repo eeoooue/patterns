@@ -5,50 +5,6 @@
     box-sizing: border-box;
 }
 
-#site-header {
-    background-color: #333;
-    height: 5.6vh;
-    width: 100vw;
-    justify-content: space-between;
-}
-
-.myicon {
-    background-color: rgba(0, 0, 0, 0.3);
-    height: 5vh;
-    width: 5vh;
-    margin: 10px;
-    border-radius: 50%;
-    overflow: hidden;
-}
-
-.myicon img {
-    width: 100%;
-}
-
-.mytitle{
-    padding: 0px 6px;
-}
-
-
-.myheaderbadge {
-    padding: 0px 36px;
-    color: white;
-    align-items: center;
-    font-size: 1.4rem;
-    justify-content: space-between;
-}
-
-.site-nav {
-    color: white;
-    padding: 0px 36px;
-}
-
-.category-tag {
-    padding: 0px 10px;
-    cursor: pointer;
-    margin: 0px 10px;
-}
-
 
 body {
     font-family: 'Roboto', sans-serif;
@@ -59,11 +15,6 @@ body {
     overflow: hidden;
     margin: 0;
 }
-
-
-.hidden {
-    display: none;
-}  
 
 #choices-container {
     background-color: #ccc;
@@ -126,113 +77,3 @@ body {
     width: 100%;
 }
 
-/* Tic-Tac-Toe */
-
-.ttt-tile {
-    background-color: #999;
-    margin: 10px;
-    width: 100px;
-    height: 100px;
-    border-radius: 10%;
-}
-
-/* Connect */
-
-.connect-tile {
-    background-color: #333;
-    margin: 10px;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-}
-
-/* Chess */
-
-.marker.dot {
-    height: 25%;
-    width: 25%;
-    background-color: rgba(0,0,0,0.4);
-    border-radius: 50%;
-    margin: auto;
-}
-
-.marker.circle{
-    height: min(10vh, 12.5vw);
-    width: min(10vh, 12.5vw);
-    background-color: rgba(0,0,0,0.25);
-    border-radius: 50%;
-    position: absolute;
-}
-
-.chess-tile {
-    background-color: #F5F1D9;
-    margin: 0px;
-    width: min(10vh, 12.5vw);
-    height: min(10vh, 12.5vw);
-    display: flex;
-    align-items: center;
-}
-
-.chess-tile.dark {
-    background-color: #4B8559;
-}
-
-.chess-tile:hover {
-    cursor: pointer;
-}
-
-/* Reversi */
-
-.reversi-tile {
-    background-color: #4B8559;
-    margin: 0px;
-    width: min(10vh, 12.5vw);
-    height: min(10vh, 12.5vw);
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-}
-
-.reversi-shade {
-    background-color: rgba(0, 0, 0, 0.3);
-    margin: auto;
-    border-radius: 2px;
-    height: 90%;
-    width: 90%;
-}
-
-.reversi-piece {
-    border-radius: 50%;
-    margin: auto;
-    height: 100%;
-    width: 100%;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-}
-
-.reversi-piece.white {
-    background-color: #fee;
-}
-
-.reversi-piece.black {
-    background-color: #011;
-}
-
-.reversi-piece.ghost {
-    background-color: rgba(0, 0, 0, 0.15);
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 4px 12px;
-    display: flex;
-    color: transparent;
-}
-
-.ghost-text {
-    margin: auto;
-    font-size: 2.2rem;
-}
-
-.reversi-piece.ghost.black:hover {
-    color: black;
-}
-
-.reversi-piece.ghost.white:hover {
-    color: white;
-}
