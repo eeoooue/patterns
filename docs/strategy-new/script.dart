@@ -1,6 +1,5 @@
 import 'dart:html';
 import 'game.dart';
-import 'chess/chess_game.dart';
 import 'mimic/mimic_game.dart';
 
 class GameSelector {
@@ -44,7 +43,7 @@ class GameSelector {
       case "Chess":
         return MimicGame(gameContainer);
       default:
-        return ChessGame(gameContainer);
+        return MimicGame(gameContainer);
     }
   }
 }
