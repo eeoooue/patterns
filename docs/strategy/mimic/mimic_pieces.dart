@@ -1,18 +1,25 @@
-import 'boardgames.dart';
-import 'chess.dart';
+import '../game.dart';
+import 'mimic_board.dart';
 
 class MimicPiece extends GamePiece {
-  int i;
-  int j;
+  bool threatened = false;
   MovementStrategy moveStrategy;
+  bool hasMoved = false;
+  bool active = false;
 
-  MimicPiece(this.i, this.j, this.moveStrategy) {
-    setSource("./assets/checkers/checkers_cream.png");
+  MimicPiece(int iPos, int jPos, this.moveStrategy) {
+    setSource("./assets/checkers/checkers_red.png");
+    i = iPos;
+    j = jPos;
   }
 
-  List<MoveOption> move(ChessBoard board) {
+  List<MoveOption> move(MimicBoard board) {
     return moveStrategy.move(board, i, j);
   }
+}
+
+class EmptyPiece extends MimicPiece {
+  EmptyPiece(int iPos, int jPos) : super(iPos, jPos, NoMovement()) {}
 }
 
 class MoveOption {
@@ -23,11 +30,19 @@ class MoveOption {
 }
 
 abstract class MovementStrategy {
-  List<MoveOption> move(ChessBoard board, int i, int j);
+  List<MoveOption> move(MimicBoard board, int i, int j);
+}
+
+class NoMovement implements MovementStrategy {
+  List<MoveOption> move(MimicBoard board, int i, int j) {
+    List<MoveOption> options = List.empty(growable: true);
+
+    return options;
+  }
 }
 
 class PawnMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, int i, int j) {
+  List<MoveOption> move(MimicBoard board, int i, int j) {
     List<MoveOption> options = List.empty(growable: true);
 
     MoveOption move = MoveOption(i - 1, j);
@@ -40,7 +55,7 @@ class PawnMovement implements MovementStrategy {
 }
 
 class KnightMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, int i, int j) {
+  List<MoveOption> move(MimicBoard board, int i, int j) {
     List<MoveOption> options = List.empty(growable: true);
 
     List<int> components = List.from({1, 2, -2, -1});
@@ -61,7 +76,7 @@ class KnightMovement implements MovementStrategy {
 }
 
 class BishopMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, int i, int j) {
+  List<MoveOption> move(MimicBoard board, int i, int j) {
     List<MoveOption> options = List.empty(growable: true);
 
     List<int> components = List.from({1, -1});
@@ -78,7 +93,7 @@ class BishopMovement implements MovementStrategy {
   }
 
   List<MoveOption> exploreDiagonal(
-      ChessBoard board, int i, int j, int di, int dj) {
+      MimicBoard board, int i, int j, int di, int dj) {
     List<MoveOption> options = List.empty(growable: true);
 
     while (true) {
@@ -96,7 +111,7 @@ class BishopMovement implements MovementStrategy {
 }
 
 class RookMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, int i, int j) {
+  List<MoveOption> move(MimicBoard board, int i, int j) {
     List<MoveOption> options = List.empty(growable: true);
 
     for (MoveOption move in exploreImpulse(board, i, j, 0, 1)) {
@@ -119,7 +134,7 @@ class RookMovement implements MovementStrategy {
   }
 
   List<MoveOption> exploreImpulse(
-      ChessBoard board, int i, int j, int di, int dj) {
+      MimicBoard board, int i, int j, int di, int dj) {
     List<MoveOption> options = List.empty(growable: true);
 
     while (true) {
@@ -137,7 +152,7 @@ class RookMovement implements MovementStrategy {
 }
 
 class QueenMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, int i, int j) {
+  List<MoveOption> move(MimicBoard board, int i, int j) {
     List<MoveOption> options = List.empty(growable: true);
 
     var pair = List.from({RookMovement(), BishopMovement()});
@@ -152,7 +167,7 @@ class QueenMovement implements MovementStrategy {
 }
 
 class KingMovement implements MovementStrategy {
-  List<MoveOption> move(ChessBoard board, int i, int j) {
+  List<MoveOption> move(MimicBoard board, int i, int j) {
     List<MoveOption> options = List.empty(growable: true);
 
     List<int> components = List.from({-1, 0, 1});
