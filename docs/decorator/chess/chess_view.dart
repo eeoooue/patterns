@@ -1,6 +1,6 @@
 import 'dart:html';
 import 'dart:collection';
-import 'game.dart';
+import '../game.dart';
 import 'chess_pieces.dart';
 
 class ChessBoardView implements GameView {
@@ -68,6 +68,12 @@ class ChessBoardView implements GameView {
       if (piece.threatened) {
         Element marker = createMarker(piece);
         tile.children.add(marker);
+
+        if (piece is ChessKing) {
+          tile.children.clear();
+          Element img = piece.getCheckImage();
+          tile.children.add(img);
+        }
       }
     }
 
@@ -78,15 +84,13 @@ class ChessBoardView implements GameView {
     Element tile = document.createElement("div");
     tile.classes.add("chess-tile");
 
-    if (piece is ChessPiece) {
-      if ((piece.i + piece.j) % 2 != 0) {
-        tile.classes.add("dark");
-      }
-
-      tile.addEventListener("click", (event) {
-        game.submitMove(piece.i, piece.j);
-      });
+    if ((piece.i + piece.j) % 2 != 0) {
+      tile.classes.add("dark");
     }
+
+    tile.addEventListener("click", (event) {
+      game.submitMove(piece.i, piece.j);
+    });
 
     return tile;
   }

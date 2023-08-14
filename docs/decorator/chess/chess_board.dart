@@ -1,4 +1,5 @@
-import 'game.dart';
+import '../game.dart';
+
 import 'chess_pieces.dart';
 
 class ChequeredBoard implements GameBoard {
@@ -22,10 +23,8 @@ class ChequeredBoard implements GameBoard {
 
   void placePiece(GamePiece piece, int i, int j) {
     pieces[i][j] = piece;
-    if (piece is ChessPiece) {
-      piece.i = i;
-      piece.j = j;
-    }
+    piece.i = i;
+    piece.j = j;
   }
 
   void removePiece(int i, int j) {
@@ -143,7 +142,7 @@ class BoardWithKings extends BoardWithPieces {
   }
 
   void placeKing(String colour, int i, int j) {
-    ChessPiece king = ChessPiece(colour, "king", KingMovement());
+    ChessPiece king = ChessKing(colour);
     base.placePiece(king, i, j);
   }
 }

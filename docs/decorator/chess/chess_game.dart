@@ -1,18 +1,28 @@
 import 'dart:html';
-import 'game.dart';
+import '../game.dart';
+
 import 'chess_pieces.dart';
 import 'chess_view.dart';
 import 'chess_board.dart';
+import 'chess_logic.dart';
 
 class ChessGame implements Game {
-  ChessPiece activePiece = EmptyPiece(0, 0);
   bool rotated = false;
   int turnCount = 0;
   GameBoard board = ChequeredBoard();
+  bool gameOver = false;
+  ChessKing? blackKing = null;
+  ChessKing? whiteKing = null;
   late GameView view;
+  late ChessLogic logic;
 
   ChessGame(Element container) {
     view = ChessBoardView(this, container);
+    logic = ChessLogic(this);
+  }
+
+  bool gameIsOver() {
+    return gameOver;
   }
 
   void startGame() {
@@ -25,6 +35,7 @@ class ChessGame implements Game {
     initState.add(true);
 
     setupPieces(initState);
+    logic.pairKings();
     refreshView();
   }
 
@@ -33,23 +44,7 @@ class ChessGame implements Game {
   }
 
   void submitMove(int i, int j) {
-    if (validMove(activePiece, i, j)) {
-      movePiece(activePiece, i, j);
-      endTurn();
-      return;
-    }
-    clearMoveOptions();
-    activePiece = EmptyPiece(0, 0);
-
-    GamePiece piece = board.getPiece(i, j);
-
-    if (piece is ChessPiece) {
-      if (piece.colour == getTurnPlayer()) {
-        piece.move(board);
-        activePiece = piece;
-      }
-    }
-
+    logic.submitMove(i, j);
     refreshView();
   }
 
@@ -60,22 +55,25 @@ class ChessGame implements Game {
     }
   }
 
-  void clearMoveOptions() {
-    for (int i = 0; i < 8; i++) {
-      for (int j = 0; j < 8; j++) {
-        GamePiece piece = board.getPiece(i, j);
-        if (piece is ChessPiece) {
-          piece.threatened = false;
-        }
-      }
-    }
-  }
-
   void endTurn() {
     turnCount += 1;
-    activePiece = EmptyPiece(0, 0);
-    clearMoveOptions();
+    logic.activePiece = EmptyPiece(0, 0);
+    logic.clearMoveOptions();
+    updateKings();
     refreshView();
+  }
+
+  void updateKings() {
+    var bKing = blackKing;
+    var wKing = whiteKing;
+
+    if (bKing is ChessKing) {
+      bKing.threatened = bKing.isTheatened(board);
+    }
+
+    if (wKing is ChessKing) {
+      wKing.threatened = wKing.isTheatened(board);
+    }
   }
 
   bool validMove(ChessPiece piece, int i, int j) {
