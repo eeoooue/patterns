@@ -6,29 +6,13 @@
     border-radius: 10px;
     display: flex;
     flex-wrap: wrap;
+    font-size: 1rem;
 }
 
-.game-choice {
-    background-color: #666;
-    color: white;
-    padding: 10px 20px;
-    margin: 10px 10px;
-    border: none;
-    border-radius: 1000px;
-    cursor: pointer;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-    font-size: 0.8rem;
+#strategy-selector {
+    margin: 1vh;
 }
 
-.game-choice:hover {
-    background-color: #333;
-}
-
-.game-choice.active {
-    background-color: white;
-    color: #333;
-    box-shadow: none;
-}
 
 #game-container {
     display: flex;
