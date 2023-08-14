@@ -1,5 +1,5 @@
 import 'checkers_logic.dart';
-import 'game.dart';
+import '../game.dart';
 
 class CheckersPiece extends GamePiece {
   bool threatened = false;

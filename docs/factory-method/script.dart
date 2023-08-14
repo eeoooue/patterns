@@ -1,9 +1,9 @@
 import 'dart:html';
-import 'checkers_game.dart';
-import 'connect_game.dart';
 import 'game.dart';
-import 'chess_game.dart';
-import 'reversi_game.dart';
+import 'checkers/checkers_game.dart';
+import 'connect/connect_game.dart';
+import 'chess/chess_game.dart';
+import 'reversi/reversi_game.dart';
 
 class GameSelector {
   Element choicesContainer;

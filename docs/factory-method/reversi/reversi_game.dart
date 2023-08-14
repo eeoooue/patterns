@@ -1,4 +1,4 @@
-import 'game.dart';
+import '../game.dart';
 import 'dart:html';
 import 'reversi_board.dart';
 import 'reversi_logic.dart';

@@ -1,6 +1,6 @@
 import 'connect_board.dart';
 import 'connect_logic.dart';
-import 'game.dart';
+import '../game.dart';
 import 'dart:html';
 import 'connect_view.dart';
 

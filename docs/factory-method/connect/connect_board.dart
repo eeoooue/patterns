@@ -1,27 +1,21 @@
-import 'game.dart';
-import 'reversi_pieces.dart';
+import 'connect_pieces.dart';
+import '../game.dart';
 
-class ReversiBoard {
+class ConnectBoard implements GameBoard {
   List<List<GamePiece>> pieces = List.empty(growable: true);
 
   void removePiece(int i, int j) {
-    pieces[i][j] = EmptyReversiPiece(i, j);
+    pieces[i][j] = EmptyConnectPiece(i, j);
   }
 
   void setupPieces() {
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 6; i++) {
       List<GamePiece> row = List.empty(growable: true);
-      for (int j = 0; j < 8; j++) {
-        GamePiece piece = EmptyReversiPiece(i, j);
-        row.add(piece);
+      for (int j = 0; j < 7; j++) {
+        row.add(EmptyConnectPiece(i, j));
       }
       pieces.add(row);
     }
-
-    placePiece(ReversiPiece("black"), 3, 3);
-    placePiece(ReversiPiece("white"), 3, 4);
-    placePiece(ReversiPiece("white"), 4, 3);
-    placePiece(ReversiPiece("black"), 4, 4);
   }
 
   GamePiece getPiece(int i, int j) {

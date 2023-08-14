@@ -1,7 +1,7 @@
 import 'checkers_board.dart';
 import 'checkers_game.dart';
 import 'checkers_pieces.dart';
-import 'game.dart';
+import '../game.dart';
 
 class BoardPosition {
   int i;

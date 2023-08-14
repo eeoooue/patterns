@@ -1,5 +1,6 @@
 import 'dart:html';
-import 'game.dart';
+import '../game.dart';
+
 import 'chess_pieces.dart';
 import 'chess_view.dart';
 import 'chess_board.dart';

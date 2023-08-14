@@ -1,7 +1,7 @@
 import 'connect_board.dart';
 import 'connect_game.dart';
 import 'connect_pieces.dart';
-import 'game.dart';
+import '../game.dart';
 import 'dart:math';
 
 class ConnectLogic {

@@ -1,6 +1,5 @@
 import 'dart:html';
-
-import 'game.dart';
+import '../game.dart';
 import 'reversi_game.dart';
 import 'reversi_pieces.dart';
 

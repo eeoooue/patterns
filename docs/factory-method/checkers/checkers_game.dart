@@ -1,7 +1,8 @@
 import 'checkers_logic.dart';
 import 'checkers_pieces.dart';
 import 'checkers_view.dart';
-import 'game.dart';
+import '../game.dart';
+
 import 'checkers_board.dart';
 import 'dart:html';
 
