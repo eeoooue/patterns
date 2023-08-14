@@ -1,15 +1,14 @@
 import 'dart:html';
-import 'chess.dart';
-import 'strategy.dart';
+import 'mimic/mimic_board.dart';
+import 'mimic/mimic_game.dart';
+import 'mimic/mimic_pieces.dart';
 
 class StrategyDemo {
-  ChessGame game;
-  MimicPiece piece = MimicPiece(4, 3, PawnMovement());
+  MimicGame game;
   SelectElement selector;
-  ChessBoard board;
+  MimicBoard board;
 
   StrategyDemo(this.game, this.board, this.selector) {
-    game.board.placePiece(piece, piece.i, piece.j);
     armSelector();
   }
 
@@ -17,15 +16,16 @@ class StrategyDemo {
     selector.addEventListener("input", (event) {
       String? strategy = selector.value;
       if (strategy is String) {
-        board.clearHighlights();
         swapToStrategy(strategy);
+        game.clearMoveOptions();
+        game.refreshView();
       }
     });
   }
 
   void swapToStrategy(String name) {
     MovementStrategy strategy = getMatchingStrategy(name);
-    piece.moveStrategy = strategy;
+    game.demoPiece.moveStrategy = strategy;
 
     print("swapped strat to ${name}");
   }
@@ -71,13 +71,11 @@ void setupDemo() {
   Element? selector = document.getElementById("strategy-selector");
 
   if (gameContainer is Element && selector is SelectElement) {
-    ChessGame game = ChessGame(gameContainer);
+    MimicGame game = MimicGame(gameContainer);
     game.startGame();
 
     var myBoard = game.board;
 
-    if (myBoard is ChessBoard) {
-      StrategyDemo(game, myBoard, selector);
-    }
+    StrategyDemo(game, myBoard, selector);
   }
 }
