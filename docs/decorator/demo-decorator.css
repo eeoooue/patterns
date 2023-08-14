@@ -4,14 +4,16 @@
 
 #side-tray {
     background-color: #eee;
-    padding: 24px;
-    width: 300px;
-    margin: 0px 10px;
+    margin: 1vw 1vw;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
 }
 
 .deco-cbox {
-    margin: 10px 10px;
-    padding: 10px 10px;
+    margin: 1vw 1vw;
+    padding: 1vh 1vh;
+    width: 20vh;
     display: flex;
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 10px;
