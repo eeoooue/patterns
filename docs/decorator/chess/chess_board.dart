@@ -1,4 +1,5 @@
-import 'game.dart';
+import '../game.dart';
+
 import 'chess_pieces.dart';
 
 class ChequeredBoard implements GameBoard {

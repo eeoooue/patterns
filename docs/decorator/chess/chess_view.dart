@@ -1,6 +1,6 @@
 import 'dart:html';
 import 'dart:collection';
-import 'game.dart';
+import '../game.dart';
 import 'chess_pieces.dart';
 
 class ChessBoardView implements GameView {
