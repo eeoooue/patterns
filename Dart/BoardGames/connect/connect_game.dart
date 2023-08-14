@@ -15,6 +15,10 @@ class ConnectGame implements Game {
     logic = ConnectLogic(this, board);
   }
 
+  ConnectBoard createBoard() {
+    return ConnectBoard();
+  }
+
   bool gameIsOver() {
     return logic.gameOver;
   }

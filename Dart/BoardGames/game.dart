@@ -4,6 +4,9 @@ abstract class Game {
   void startGame();
   void submitMove(int i, int j);
   bool gameIsOver();
+  GameBoard createBoard();
+
+  void endTurn();
 }
 
 abstract class GameBoard {

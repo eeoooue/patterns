@@ -24,6 +24,10 @@ class CheckersGame implements Game {
     return gameOver;
   }
 
+  GameBoard createBoard() {
+    return CheckersBoard();
+  }
+
   void startGame() {
     board.setupPieces();
     tryLogic();

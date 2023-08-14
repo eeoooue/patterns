@@ -19,6 +19,10 @@ class ReversiGame implements Game {
     return logic.gameOver;
   }
 
+  ReversiBoard createBoard() {
+    return ReversiBoard();
+  }
+
   void startGame() {
     board.setupPieces();
     logic.refreshMoveOptions();
