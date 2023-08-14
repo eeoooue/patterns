@@ -25,7 +25,7 @@ class CheckersLogic {
   CheckersLogic(this.board, this.game) {}
 
   void clearOptions() {
-    clearHighlights();
+    clearThreats();
     captureAvailable = false;
     for (List<GamePiece> row in board.getBoardState()) {
       for (GamePiece piece in row) {
@@ -36,7 +36,7 @@ class CheckersLogic {
     }
   }
 
-  void clearHighlights() {
+  void clearThreats() {
     for (List<GamePiece> row in board.getBoardState()) {
       for (GamePiece piece in row) {
         if (piece is CheckersPiece) {

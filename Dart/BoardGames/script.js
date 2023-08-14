@@ -4918,19 +4918,17 @@
       t2.displayBoard$1(t1.pieces);
     },
     submitMove$2(i, j) {
-      var _this = this, _s4_ = "view",
-        t1 = _this.validMoveEnd$2(i, j),
-        t2 = _this.__CheckersGame_logic_A;
-      if (t1) {
-        t2 === $ && A.throwLateFieldNI("logic");
-        t2.clearOptions$0();
+      var t1, _this = this, _s4_ = "view";
+      if (_this.validMoveEnd$2(i, j)) {
+        t1 = _this.__CheckersGame_logic_A;
+        t1 === $ && A.throwLateFieldNI("logic");
+        t1.clearOptions$0();
         if (_this.capturedThisTurn)
           _this.__CheckersGame_logic_A.findCapturesForPiece$1(_this.activePiece);
         if (_this.activePiece.moveOptions.length === 0) {
-          _this.activePiece = A.EmptyCheckersPiece$(0, 0);
           ++_this.turnCount;
           _this.capturedThisTurn = false;
-          _this.activePiece = A.EmptyCheckersPiece$(0, 0);
+          _this.activePiece = _this.createPiece$0();
           _this.__CheckersGame_logic_A.clearOptions$0();
           t1 = _this.__CheckersGame_view_A;
           t1 === $ && A.throwLateFieldNI(_s4_);
@@ -4941,17 +4939,17 @@
         t1 === $ && A.throwLateFieldNI(_s4_);
         t1.displayBoard$1(_this.board.pieces);
         return;
-      } else {
-        t2 === $ && A.throwLateFieldNI("logic");
-        t2.clearHighlights$0();
       }
+      t1 = _this.__CheckersGame_logic_A;
+      t1 === $ && A.throwLateFieldNI("logic");
+      t1.clearHighlights$0();
       _this.processMoveStart$2(i, j);
       t1 = _this.__CheckersGame_view_A;
       t1 === $ && A.throwLateFieldNI(_s4_);
       t1.displayBoard$1(_this.board.pieces);
     },
     validMoveEnd$2(i, j) {
-      var t1, t2, t3, _i, move, t4, t5, t6, cap, _this = this;
+      var t1, t2, t3, _i, move, t4, t5, t6, capture, _this = this;
       for (t1 = _this.activePiece, t2 = t1.moveOptions, t3 = t2.length, _i = 0; _i < t3; ++_i) {
         move = t2[_i];
         t4 = move.end;
@@ -4977,10 +4975,10 @@
             t1.__GamePiece_src_A = "./assets/checkers/checkers_" + t1.colour + "_king.png";
             _this.capturedThisTurn = false;
           }
-          cap = move.capture;
-          if (cap instanceof A.BoardPosition) {
-            t1 = cap.i;
-            t2 = cap.j;
+          capture = move.capture;
+          if (capture instanceof A.BoardPosition) {
+            t1 = capture.i;
+            t2 = capture.j;
             if (!(t1 >= 0 && t1 < t6.length))
               return A.ioore(t6, t1);
             B.JSArray_methods.$indexSet(t6[t1], t2, A.EmptyCheckersPiece$(t1, t2));
@@ -4992,17 +4990,17 @@
       return false;
     },
     processMoveStart$2(i, j) {
-      var t2, t3, _i, pos, t4, t5,
-        t1 = this.board.pieces;
+      var t2, t3, _i, pos, t4, t5, _this = this,
+        t1 = _this.board.pieces;
       if (!(i >= 0 && i < t1.length))
         return A.ioore(t1, i);
       t2 = t1[i];
       if (!(j >= 0 && j < t2.length))
         return A.ioore(t2, j);
       t2 = t2[j];
-      this.activePiece = A.EmptyCheckersPiece$(0, 0);
+      _this.activePiece = _this.createPiece$0();
       if (t2 instanceof A.CheckersPiece && t2.moveOptions.length > 0) {
-        this.set$activePiece(t2);
+        _this.set$activePiece(t2);
         for (t2 = t2.moveOptions, t3 = t2.length, _i = 0; _i < t3; ++_i) {
           pos = t2[_i].end;
           t4 = pos.i;
@@ -5019,6 +5017,10 @@
         return true;
       }
       return false;
+    },
+    createPiece$0() {
+      var t1 = A.EmptyCheckersPiece$(0, 0);
+      return t1;
     },
     set$activePiece(activePiece) {
       this.activePiece = type$.CheckersPiece._as(activePiece);

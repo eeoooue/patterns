@@ -1,9 +1,8 @@
 import 'checkers_logic.dart';
 import 'checkers_pieces.dart';
 import 'checkers_view.dart';
-import '../game.dart';
-
 import 'checkers_board.dart';
+import '../game.dart';
 import 'dart:html';
 
 class CheckersGame implements Game {
@@ -44,19 +43,12 @@ class CheckersGame implements Game {
     }
 
     if (validMoveEnd(i, j)) {
-      logic.clearOptions();
-      if (capturedThisTurn) {
-        logic.findCapturesForPiece(activePiece);
-      }
-      if (activePiece.moveOptions.length == 0) {
-        activePiece = EmptyCheckersPiece(0, 0);
-        endTurn();
-      }
+      processMoveContinuation();
       refreshView();
       return;
-    } else {
-      logic.clearHighlights();
     }
+
+    logic.clearThreats();
 
     processMoveStart(i, j);
     refreshView();
@@ -74,17 +66,26 @@ class CheckersGame implements Game {
 
   void makeMove(CheckersMove move) {
     movePiece(activePiece, move.end.i, move.end.j);
-    BoardPosition? cap = move.capture;
-    if (cap is BoardPosition) {
-      board.removePiece(cap.i, cap.j);
+    BoardPosition? capture = move.capture;
+    if (capture is BoardPosition) {
+      board.removePiece(capture.i, capture.j);
       capturedThisTurn = true;
+    }
+  }
+
+  void processMoveContinuation() {
+    logic.clearOptions();
+    if (capturedThisTurn) {
+      logic.findCapturesForPiece(activePiece);
+    }
+    if (activePiece.moveOptions.length == 0) {
+      endTurn();
     }
   }
 
   bool processMoveStart(int i, int j) {
     GamePiece target = board.getPiece(i, j);
-
-    activePiece = EmptyCheckersPiece(0, 0);
+    activePiece = createPiece();
 
     if (target is CheckersPiece && target.moveOptions.length > 0) {
       activePiece = target;
@@ -106,7 +107,7 @@ class CheckersGame implements Game {
   void endTurn() {
     turnCount += 1;
     capturedThisTurn = false;
-    activePiece = EmptyCheckersPiece(0, 0);
+    activePiece = createPiece();
     logic.clearOptions();
     refreshView();
     logic.findPossibleMoves();
@@ -127,5 +128,12 @@ class CheckersGame implements Game {
 
   void refreshView() {
     view.displayBoard(board.getBoardState());
+  }
+
+  CheckersPiece createPiece({String colour = "none"}) {
+    if (colour == "none") {
+      return EmptyCheckersPiece(0, 0);
+    }
+    return CheckersPiece(colour);
   }
 }
