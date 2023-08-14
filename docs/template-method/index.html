@@ -3,30 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-
     
-    <title>Board Games (Template Method)</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./chess/boardgame-chess.css">
+    <link rel="stylesheet" href="./connect/boardgame-connect.css">
+    <link rel="stylesheet" href="./reversi/boardgame-reversi.css">
+    <link rel="stylesheet" href="./demo.css">
+
+    <title>Factory Method</title>
     
 </head>
 
-
 <body>
+    <div class="header container bookshelf" id="site-header">
+        <div class="left-box">
+            <div class="anchor-tags">
+                <div class="category-tag"><a href="https://github.com/eeoooue/patterns">Patterns</a></div>
+            </div>
+        </div>
 
-    <div class="option-header">
-        <button class="btn" id="option-btn">Choose Game</button>
+        <div class="right-box">
+            <div class="anchor-tags">
+                <div class="category-tag"><a href="https://github.com/eeoooue?tab=repositories">Projects</a></div>
+                <div class="category-tag"><a href="https://github.com/eeoooue">About</a></div>
+            </div>
+        </div>
     </div>
 
-    <div class="container" id="choices-container">
-
-        
+    <div class="" id="demo-area">
+        <div class="demo-stack totempole">
+            <div class="container" id="choices-container"></div>
+            <div class="container" id="game-container"></div>
+        </div>
     </div>
-
-    <div class="container" id="game-container">
-
-
-    </div>
-
     
     <script src="script.js"></script>
 </body>

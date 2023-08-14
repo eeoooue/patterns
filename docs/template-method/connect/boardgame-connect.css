@@ -1,0 +1,8 @@
+
+.connect-tile {
+    background-color: #333;
+    margin: min(1vh, 1vw);
+    width: min(10vh, 10vw);
+    height: min(10vh, 10vw);
+    border-radius: 50%;
+}
