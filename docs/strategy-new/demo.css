@@ -1,0 +1,60 @@
+
+#choices-container {
+    background-color: #ccc;
+    margin: 10px 0;
+    justify-content: center;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.game-choice {
+    background-color: #666;
+    color: white;
+    padding: 10px 20px;
+    margin: 10px 10px;
+    border: none;
+    border-radius: 1000px;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    font-size: 0.8rem;
+}
+
+.game-choice:hover {
+    background-color: #333;
+}
+
+.game-choice.active {
+    background-color: white;
+    color: #333;
+    box-shadow: none;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.board-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.container {
+    align-items: center;
+}
+
+.bookshelf {
+    display: flex;
+    flex-direction: row;
+}
+
+.totempole {
+    display: flex;
+    flex-direction: column;
+}
+
+.demo-stack {
+    width: min(80vh, 80vw);
+}
