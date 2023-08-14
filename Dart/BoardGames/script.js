@@ -4919,7 +4919,7 @@
     },
     submitMove$2(i, j) {
       var _this = this, _s4_ = "view",
-        t1 = _this.processMoveEnd$2(i, j),
+        t1 = _this.validMoveEnd$2(i, j),
         t2 = _this.__CheckersGame_logic_A;
       if (t1) {
         t2 === $ && A.throwLateFieldNI("logic");
@@ -4950,27 +4950,29 @@
       t1 === $ && A.throwLateFieldNI(_s4_);
       t1.displayBoard$1(_this.board.pieces);
     },
-    processMoveEnd$2(i, j) {
-      var t1, t2, t3, _i, move, endPos, t4, cap, _this = this;
+    validMoveEnd$2(i, j) {
+      var t1, t2, t3, _i, move, t4, t5, t6, cap, _this = this;
       for (t1 = _this.activePiece, t2 = t1.moveOptions, t3 = t2.length, _i = 0; _i < t3; ++_i) {
         move = t2[_i];
-        endPos = move.end;
-        if (endPos.i === i && endPos.j === j) {
-          t2 = t1.i;
-          t3 = t1.j;
-          t4 = _this.board.pieces;
-          if (!(t2 >= 0 && t2 < t4.length))
-            return A.ioore(t4, t2);
-          B.JSArray_methods.$indexSet(t4[t2], t3, A.EmptyCheckersPiece$(t2, t3));
-          if (!(i >= 0 && i < t4.length))
-            return A.ioore(t4, i);
-          B.JSArray_methods.$indexSet(t4[i], j, A.EmptyCheckersPiece$(i, j));
-          if (!(i < t4.length))
-            return A.ioore(t4, i);
-          B.JSArray_methods.$indexSet(t4[i], j, t1);
-          t1.i = i;
-          t1.j = j;
-          if (i === 0 || i === 7) {
+        t4 = move.end;
+        t5 = t4.i;
+        if (t5 === i && t4.j === j) {
+          t2 = t4.j;
+          t3 = t1.i;
+          t4 = t1.j;
+          t6 = _this.board.pieces;
+          if (!(t3 >= 0 && t3 < t6.length))
+            return A.ioore(t6, t3);
+          B.JSArray_methods.$indexSet(t6[t3], t4, A.EmptyCheckersPiece$(t3, t4));
+          if (!(t5 >= 0 && t5 < t6.length))
+            return A.ioore(t6, t5);
+          B.JSArray_methods.$indexSet(t6[t5], t2, A.EmptyCheckersPiece$(t5, t2));
+          if (!(t5 < t6.length))
+            return A.ioore(t6, t5);
+          B.JSArray_methods.$indexSet(t6[t5], t2, t1);
+          t1.i = t5;
+          t1.j = t2;
+          if (t5 === 0 || t5 === 7) {
             t1.king = true;
             t1.__GamePiece_src_A = "./assets/checkers/checkers_" + t1.colour + "_king.png";
             _this.capturedThisTurn = false;
@@ -4979,9 +4981,9 @@
           if (cap instanceof A.BoardPosition) {
             t1 = cap.i;
             t2 = cap.j;
-            if (!(t1 >= 0 && t1 < t4.length))
-              return A.ioore(t4, t1);
-            B.JSArray_methods.$indexSet(t4[t1], t2, A.EmptyCheckersPiece$(t1, t2));
+            if (!(t1 >= 0 && t1 < t6.length))
+              return A.ioore(t6, t1);
+            B.JSArray_methods.$indexSet(t6[t1], t2, A.EmptyCheckersPiece$(t1, t2));
             _this.capturedThisTurn = true;
           }
           return true;

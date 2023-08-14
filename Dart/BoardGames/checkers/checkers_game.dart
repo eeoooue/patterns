@@ -47,7 +47,7 @@ class CheckersGame implements Game {
       return;
     }
 
-    if (processMoveEnd(i, j)) {
+    if (validMoveEnd(i, j)) {
       logic.clearOptions();
       if (capturedThisTurn) {
         logic.findCapturesForPiece(activePiece);
@@ -66,21 +66,23 @@ class CheckersGame implements Game {
     refreshView();
   }
 
-  bool processMoveEnd(int i, int j) {
+  bool validMoveEnd(int i, int j) {
     for (CheckersMove move in activePiece.moveOptions) {
-      BoardPosition endPos = move.end;
-      if (endPos.i == i && endPos.j == j) {
-        movePiece(activePiece, i, j);
-        BoardPosition? cap = move.capture;
-        if (cap is BoardPosition) {
-          board.removePiece(cap.i, cap.j);
-          capturedThisTurn = true;
-        }
+      if (move.end.i == i && move.end.j == j) {
+        makeMove(move);
         return true;
       }
     }
-
     return false;
+  }
+
+  void makeMove(CheckersMove move) {
+    movePiece(activePiece, move.end.i, move.end.j);
+    BoardPosition? cap = move.capture;
+    if (cap is BoardPosition) {
+      board.removePiece(cap.i, cap.j);
+      capturedThisTurn = true;
+    }
   }
 
   bool processMoveStart(int i, int j) {
