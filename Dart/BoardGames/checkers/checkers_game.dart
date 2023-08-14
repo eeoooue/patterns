@@ -30,12 +30,8 @@ class CheckersGame implements Game {
 
   void startGame() {
     board.setupPieces();
-    tryLogic();
-    refreshView();
-  }
-
-  void tryLogic() {
     logic.findPossibleMoves();
+    refreshView();
   }
 
   String getTurnPlayer() {
@@ -113,7 +109,7 @@ class CheckersGame implements Game {
     activePiece = EmptyCheckersPiece(0, 0);
     logic.clearOptions();
     refreshView();
-    tryLogic();
+    logic.findPossibleMoves();
   }
 
   void movePiece(GamePiece piece, int i, int j) {
