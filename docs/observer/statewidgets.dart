@@ -1,6 +1,6 @@
 import 'dart:html';
 import 'dart:math';
-import 'chess.dart';
+import 'chess/chess_game.dart';
 import 'observer.dart';
 
 class TurnplayerWidget implements Observer {
@@ -34,6 +34,8 @@ class TurnplayerWidget implements Observer {
 
   Element createContainer() {
     Element container = document.createElement("div");
+    container.classes.add("widget");
+
     container.classes.add("container");
     container.classes.add("totempole");
     container.id = "turnplayer-widget";
@@ -124,6 +126,7 @@ class AnalysisWidget implements Observer {
 
   Element createContainer() {
     Element container = document.createElement("div");
+    container.classes.add("widget");
     container.classes.add("container");
     container.classes.add("totempole");
     container.id = "analysis-widget";

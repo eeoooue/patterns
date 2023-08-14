@@ -1,32 +1,62 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto');
 
+
 * {
     box-sizing: border-box;
 }
 
+
 body {
     font-family: 'Roboto', sans-serif;
-    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    overflow: hidden;
     margin: 0;
 }
 
-.hidden {
-    display: none;
-}  
+#site-header {
+    background-color: #333;
+    height: 5.5vh;
+    width: 100vw;
+    justify-content: space-between;
+    color: white;
+    display: flex;
+}
 
-#choices-container {
+#site-header a {
+    text-decoration: none;
+    color: white;
+    margin: 1vw;
+}
+
+#site-header a:hover {
+    color: #ddd;
+}
+
+#site-header .left-box {
+    margin: 0 1vh;
+    display: flex;
+}
+
+#site-header .right-box {
+    margin: 0 1vh;
+    display: flex;
+}
+
+#site-header .anchor-tags {
+    margin: auto;
     display: flex;
     flex-direction: row;
 }
 
-#game-container {
+#demo-area {
+    height: 80vh;
+    width: 100%;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
 }
 
 .board-row {
@@ -34,102 +64,10 @@ body {
     flex-direction: row;
 }
 
-.dot {
-    height: 25%;
-    width: 25%;
-    background-color: rgba(0,0,0,0.4);
-    border-radius: 50%;
-    margin: auto;
-    
-}
+
+/* Game Pieces */
 
 .piece-img {
     width: 100%;
 }
 
-.piece-img:hover {
-    cursor: pointer;
-}
-
-
-.bookshelf {
-    display: flex;
-    flex-direction: row;
-}
-
-.totempole {
-    display: flex;
-    flex-direction: column;
-}
-
-#side-tray {
-    background-color: #eee;
-    padding: 24px;
-    width: 420px;
-    margin: 0px 10px;
-}
-
-.chess-tile {
-    background-color: #e0c46e;
-    margin: 0px;
-    width: 100px;
-    height: 100px;
-    display: flex;
-}
-
-.chess-tile:hover {
-    cursor: pointer;
-}
-
-.chess-tile.dark {
-    background-color: #735e47;
-}
-
-#turnswitch-bar {
-    display: flex;
-    justify-content: space-around;
-    background-color: rgba(0, 0, 0, 0.2);
-    padding: 4px 10px;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-}
-
-
-.player-block {
-    padding:  10px 32px;
-    border-radius: 10px;
-    font-size: 1rem;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-}
-
-.player-block.white {
-    background-color: white;
-    color: black;
-}
-
-.player-block.black {
-    background-color: black;
-    color: white;
-}
-
-.player-block.inactive {
-    background-color: transparent;
-    box-shadow: none;
-    color: rgba(0, 0, 0, 0.5);
-}
-
-#analysis-bar {
-    border-radius: 10px 10px;
-    width: 100%;
-    overflow: hidden;
-    border: 1px solid #888;
-    height: 28px;
-    background-color: black;
-}
-
-.white-block {
-    height: 100%;
-    background-color: white;
-    width: 50%;
-}

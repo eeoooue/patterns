@@ -1,5 +1,5 @@
 import 'dart:html';
-import 'chess.dart';
+import 'chess/chess_game.dart';
 import 'statewidgets.dart';
 
 class ObserverDemo {
