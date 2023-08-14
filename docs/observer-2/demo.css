@@ -1,0 +1,34 @@
+
+#demo-area {
+    margin: 5vh 0;
+    background-color: pink;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.board-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.container {
+    align-items: center;
+}
+
+.bookshelf {
+    display: flex;
+    flex-direction: row;
+}
+
+.totempole {
+    display: flex;
+    flex-direction: column;
+}
+
+.demo-stack {
+    width: min(80vh, 80vw);
+}
