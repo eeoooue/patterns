@@ -1,64 +1,58 @@
 import 'dart:html';
-
-// board games
-import 'boardgames.dart';
-// game-specific classes
-import 'tictactoe.dart';
-import 'chess.dart';
-import 'checkers.dart';
-import 'connect.dart';
+import 'game.dart';
+import 'checkers/checkers_game.dart';
+import 'connect/connect_game.dart';
+import 'chess/chess_game.dart';
+import 'reversi/reversi_game.dart';
 
 class GameSelector {
-  ButtonElement button;
   Element choicesContainer;
   Element gameContainer;
+  late Game game;
 
-  List<String> gameChoices =
-      List.from({"Checkers", "Chess", "Connect 4", "Tic-Tac-Toe"});
+  List<String> choices = List.from({"Chess", "Connect", "Draughts", "Reversi"});
 
-  GameSelector(this.button, this.choicesContainer, this.gameContainer) {
-    armButton();
-  }
-
-  void armButton() {
-    button.addEventListener("click", (event) {
-      showChoices();
-    });
+  GameSelector(this.choicesContainer, this.gameContainer) {
+    showChoices();
   }
 
   void showChoices() {
-    button.classes.add("hidden");
-
-    for (String title in gameChoices) {
+    for (String title in choices) {
       GameChoice choice = GameChoice(this, title);
       choicesContainer.children.add(choice.element);
+
+      if (title == "Chess") {
+        choice.activate();
+      }
     }
   }
 
-  void hideChoices() {
-    button.classes.remove("hidden");
-    choicesContainer.children.clear();
+  void resetButtons() {
+    List<Element> buttons = document.querySelectorAll(".game-choice");
+    for (Element button in buttons) {
+      button.classes.remove("active");
+    }
   }
 
   void selectGame(String title) {
+    resetButtons();
     print("'${title}' was chosen.");
-    hideChoices();
     Game game = getGame(title);
     game.startGame();
   }
 
   Game getGame(String title) {
     switch (title) {
-      case "Checkers":
-        return CheckersGame(gameContainer);
       case "Chess":
         return ChessGame(gameContainer);
-      case "Connect 4":
+      case "Connect":
         return ConnectGame(gameContainer);
-      case "Tic-Tac-Toe":
-        return TicTacToeGame(gameContainer);
+      case "Draughts":
+        return CheckersGame(gameContainer);
+      case "Reversi":
+        return ReversiGame(gameContainer);
       default:
-        return TicTacToeGame(gameContainer);
+        return ChessGame(gameContainer);
     }
   }
 }
@@ -82,8 +76,13 @@ class GameChoice {
 
   void armElement() {
     element.addEventListener("click", (event) {
-      parent.selectGame(title);
+      activate();
     });
+  }
+
+  void activate() {
+    parent.selectGame(title);
+    element.classes.add("active");
   }
 }
 
@@ -92,13 +91,10 @@ void main() {
 }
 
 void createGameSelector() {
-  Element? optionBtn = document.getElementById("option-btn");
   Element? choicesContainer = document.getElementById("choices-container");
   Element? gameContainer = document.getElementById("game-container");
 
-  if (optionBtn is ButtonElement) {
-    if (choicesContainer is Element && gameContainer is Element) {
-      GameSelector(optionBtn, choicesContainer, gameContainer);
-    }
+  if (choicesContainer is Element && gameContainer is Element) {
+    GameSelector(choicesContainer, gameContainer);
   }
 }

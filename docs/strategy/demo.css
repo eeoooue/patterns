@@ -1,0 +1,44 @@
+
+#choices-container {
+    background-color: #ccc;
+    margin: 10px 0;
+    justify-content: center;
+    border-radius: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 1rem;
+}
+
+#strategy-selector {
+    margin: 1vh;
+}
+
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.board-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.container {
+    align-items: center;
+}
+
+.bookshelf {
+    display: flex;
+    flex-direction: row;
+}
+
+.totempole {
+    display: flex;
+    flex-direction: column;
+}
+
+.demo-stack {
+    width: min(80vh, 80vw);
+}

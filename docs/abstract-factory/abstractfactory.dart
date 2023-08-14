@@ -1,6 +1,7 @@
 // board games
 // game-specific classes
-import 'chess.dart';
+import './chess/chess_pieces.dart';
+
 import 'blackpieces.dart';
 import 'whitepieces.dart';
 
@@ -71,4 +72,28 @@ class WhitePieceFactory extends ChessPieceFactory {
   Queen createQueen() {
     return WhiteQueen();
   }
+}
+
+class Pawn extends ChessPiece {
+  Pawn(String colour) : super(colour, "pawn", PawnMovement()) {}
+}
+
+class Knight extends ChessPiece {
+  Knight(String colour) : super(colour, "knight", KnightMovement()) {}
+}
+
+class Bishop extends ChessPiece {
+  Bishop(String colour) : super(colour, "bishop", BishopMovement()) {}
+}
+
+class Rook extends ChessPiece {
+  Rook(String colour) : super(colour, "rook", RookMovement()) {}
+}
+
+class King extends ChessPiece {
+  King(String colour) : super(colour, "king", KingMovement()) {}
+}
+
+class Queen extends ChessPiece {
+  Queen(String colour) : super(colour, "queen", QueenMovement()) {}
 }

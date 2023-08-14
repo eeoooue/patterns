@@ -3,28 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     
-    <title>Analysis Board (Abstract Factory)</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./chess/boardgame-chess.css">
+    <link rel="stylesheet" href="./demo-abstract-factory.css">
+    
+    <title>Abstract Factory Pattern</title>
     
 </head>
 
 
 <body>
 
-    <div class="container bookshelf pinkbg">
+    <div class="header container bookshelf" id="site-header">
+        <div class="left-box">
+            <div class="anchor-tags">
+                <div class="category-tag"><a href="https://github.com/eeoooue">eeoooue</a></div>
+            </div>
+        </div>
+
+        <div class="right-box">
+            <div class="anchor-tags">
+                <div class="category-tag"><a href="https://github.com/eeoooue/patterns">/patterns</a></div>
+                <div class="category-tag"><a href="https://github.com/eeoooue?tab=repositories">/repositories</a></div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="" id="demo-area">
+
 
         <div class="container" id="game-container"></div>
 
         <div class="container totempole" id="side-tray">
 
-            <button class="colour-switcher black-btn">Black</button>
+            <button class="colour-switcher black-btn">BlackPieceFactory</button>
 
             <div class="container totempole" id="piece-box"></div>
 
         </div>
 
     </div>
+
+
+
 
     
     <script src="script.js"></script>
