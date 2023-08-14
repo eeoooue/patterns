@@ -1,6 +1,5 @@
 import 'dart:html';
 import 'game.dart';
-import 'checkers/checkers_game.dart';
 import 'chess/chess_game.dart';
 
 class GameSelector {
@@ -43,8 +42,6 @@ class GameSelector {
     switch (title) {
       case "Chess":
         return ChessGame(gameContainer);
-      case "Draughts":
-        return CheckersGame(gameContainer);
       default:
         return ChessGame(gameContainer);
     }
