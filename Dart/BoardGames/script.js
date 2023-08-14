@@ -1104,6 +1104,9 @@
       t1 = starErasedRti._cachedRuntimeType;
       return t1 == null ? starErasedRti._cachedRuntimeType = A._createRuntimeType(starErasedRti) : t1;
     },
+    typeLiteral(recipe) {
+      return A.createRuntimeType(A._Universe_eval(init.typeUniverse, recipe, false));
+    },
     _installSpecializedIsTest(object) {
       var t1, unstarred, isFn, $name, predicate, testRti = this;
       if (testRti === type$.Object)
@@ -2868,13 +2871,16 @@
     CheckersBoard: function CheckersBoard(t0) {
       this.pieces = t0;
     },
-    CheckersGame: function CheckersGame(t0, t1) {
+    CheckersFactory: function CheckersFactory() {
+    },
+    CheckersGame: function CheckersGame(t0, t1, t2) {
       var _ = this;
       _.board = t0;
       _.__CheckersGame_logic_A = _.__CheckersGame_view_A = $;
       _.turnCount = 0;
       _.activePiece = t1;
       _.capturedThisTurn = false;
+      _.factory = t2;
     },
     BoardPosition: function BoardPosition(t0, t1) {
       this.i = t0;
@@ -2898,7 +2904,18 @@
       t1.j = b;
       return t1;
     },
-    CheckersPiece: function CheckersPiece(t0, t1) {
+    CheckersPiece: function CheckersPiece() {
+    },
+    RedChecker: function RedChecker(t0, t1) {
+      var _ = this;
+      _.empty = _.threatened = false;
+      _.colour = t0;
+      _.king = false;
+      _.moveOptions = t1;
+      _.__GamePiece_src_A = $;
+      _.j = _.i = 0;
+    },
+    CreamChecker: function CreamChecker(t0, t1) {
       var _ = this;
       _.empty = _.threatened = false;
       _.colour = t0;
@@ -3083,6 +3100,8 @@
     ConnectView_buildTile_closure: function ConnectView_buildTile_closure(t0, t1) {
       this.$this = t0;
       this.piece = t1;
+    },
+    GamePieceFactory: function GamePieceFactory() {
     },
     GamePiece: function GamePiece() {
     },
@@ -3906,7 +3925,8 @@
   A._Type.prototype = {
     toString$0(_) {
       return A._rtiToString(this._rti, null);
-    }
+    },
+    $isType: 1
   };
   A._Error.prototype = {
     toString$0(_) {
@@ -4850,38 +4870,6 @@
           B.JSArray_methods.add$1(row, A.EmptyCheckersPiece$(i, j));
         B.JSArray_methods.add$1(t1, row);
       }
-      this.setupCreamPieces$0();
-      this.setupRedPieces$0();
-    },
-    setupCreamPieces$0() {
-      var t1, t2, i, j, t3, piece;
-      for (t1 = this.pieces, t2 = type$.JSArray_CheckersMove, i = 0; i < 3; ++i)
-        for (j = 0; j < 8; ++j)
-          if (B.JSInt_methods.$mod(i + j, 2) !== 0) {
-            t3 = A._setArrayType(new Array(0), t2);
-            piece = new A.CheckersPiece("cream", t3);
-            piece.__GamePiece_src_A = "./assets/checkers/checkers_cream.png";
-            if (!(i < t1.length))
-              return A.ioore(t1, i);
-            B.JSArray_methods.$indexSet(t1[i], j, piece);
-            piece.i = i;
-            piece.j = j;
-          }
-    },
-    setupRedPieces$0() {
-      var t1, t2, i, j, t3, piece;
-      for (t1 = this.pieces, t2 = type$.JSArray_CheckersMove, i = 5; i < 8; ++i)
-        for (j = 0; j < 8; ++j)
-          if (B.JSInt_methods.$mod(i + j, 2) !== 0) {
-            t3 = A._setArrayType(new Array(0), t2);
-            piece = new A.CheckersPiece("red", t3);
-            piece.__GamePiece_src_A = "./assets/checkers/checkers_red.png";
-            if (!(i < t1.length))
-              return A.ioore(t1, i);
-            B.JSArray_methods.$indexSet(t1[i], j, piece);
-            piece.i = i;
-            piece.j = j;
-          }
     },
     getPiece$2(i, j) {
       var t1 = this.pieces;
@@ -4905,15 +4893,34 @@
     },
     $isGameBoard: 1
   };
+  A.CheckersFactory.prototype = {
+    createPiece$1(pieceType) {
+      var t1;
+      if (B.Type_RedChecker_qRH === pieceType) {
+        t1 = J.JSArray_JSArray$growable(0, type$.CheckersMove);
+        t1 = new A.RedChecker("red", t1);
+        t1.__GamePiece_src_A = "./assets/checkers/checkers_red.png";
+        return t1;
+      }
+      if (B.Type_CreamChecker_RoN === pieceType) {
+        t1 = J.JSArray_JSArray$growable(0, type$.CheckersMove);
+        t1 = new A.CreamChecker("cream", t1);
+        t1.__GamePiece_src_A = "./assets/checkers/checkers_cream.png";
+        return t1;
+      }
+      return A.EmptyCheckersPiece$(0, 0);
+    }
+  };
   A.CheckersGame.prototype = {
     startGame$0() {
-      var t2,
-        t1 = this.board;
+      var t2, _this = this,
+        t1 = _this.board;
       t1.setupPieces$0();
-      t2 = this.__CheckersGame_logic_A;
+      _this.placePieces$0();
+      t2 = _this.__CheckersGame_logic_A;
       t2 === $ && A.throwLateFieldNI("logic");
       t2.findPossibleMoves$0();
-      t2 = this.__CheckersGame_view_A;
+      t2 = _this.__CheckersGame_view_A;
       t2 === $ && A.throwLateFieldNI("view");
       t2.displayBoard$1(t1.pieces);
     },
@@ -4942,7 +4949,7 @@
       }
       t1 = _this.__CheckersGame_logic_A;
       t1 === $ && A.throwLateFieldNI("logic");
-      t1.clearHighlights$0();
+      t1.clearThreats$0();
       _this.processMoveStart$2(i, j);
       t1 = _this.__CheckersGame_view_A;
       t1 === $ && A.throwLateFieldNI(_s4_);
@@ -5018,6 +5025,27 @@
       }
       return false;
     },
+    placePieces$0() {
+      var t1, t2, i, t3, t4, j, piece;
+      for (t1 = this.factory, t2 = this.board.pieces, i = 0; i < 8; ++i)
+        for (t3 = i >= 5, t4 = i <= 2, j = 0; j < 8; ++j)
+          if (B.JSInt_methods.$mod(i + j, 2) !== 0)
+            if (t4) {
+              piece = t1.createPiece$1(B.Type_CreamChecker_RoN);
+              if (!(i < t2.length))
+                return A.ioore(t2, i);
+              B.JSArray_methods.$indexSet(t2[i], j, piece);
+              piece.i = i;
+              piece.j = j;
+            } else if (t3) {
+              piece = t1.createPiece$1(B.Type_RedChecker_qRH);
+              if (!(i < t2.length))
+                return A.ioore(t2, i);
+              B.JSArray_methods.$indexSet(t2[i], j, piece);
+              piece.i = i;
+              piece.j = j;
+            }
+    },
     createPiece$0() {
       var t1 = A.EmptyCheckersPiece$(0, 0);
       return t1;
@@ -5032,7 +5060,7 @@
   A.CheckersLogic.prototype = {
     clearOptions$0() {
       var t1, t2, t3, _i, t4, t5, t6;
-      this.clearHighlights$0();
+      this.clearThreats$0();
       this.captureAvailable = false;
       for (t1 = this.board.pieces, t2 = t1.length, t3 = type$.JSArray_CheckersMove, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         for (t4 = B.JSArray_methods.get$iterator(t1[_i]); t4.moveNext$0();) {
@@ -5043,7 +5071,7 @@
           }
         }
     },
-    clearHighlights$0() {
+    clearThreats$0() {
       var t1, t2, _i, t3, t4;
       for (t1 = this.board.pieces, t2 = t1.length, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
         for (t3 = B.JSArray_methods.get$iterator(t1[_i]); t3.moveNext$0();) {
@@ -5168,6 +5196,8 @@
       this.moveOptions = type$.List_CheckersMove._as(moveOptions);
     }
   };
+  A.RedChecker.prototype = {};
+  A.CreamChecker.prototype = {};
   A.EmptyCheckersPiece.prototype = {};
   A.CheckersView.prototype = {
     displayBoard$1(boardstate) {
@@ -5977,6 +6007,7 @@
     },
     $signature: 0
   };
+  A.GamePieceFactory.prototype = {};
   A.GamePiece.prototype = {
     getElement$0() {
       var t1,
@@ -6310,7 +6341,7 @@
         case "Draughts":
           t2 = J.JSArray_JSArray$growable(0, type$.List_GamePiece);
           t2 = new A.CheckersBoard(t2);
-          t3 = new A.CheckersGame(t2, A.EmptyCheckersPiece$(0, 0));
+          t3 = new A.CheckersGame(t2, A.EmptyCheckersPiece$(0, 0), new A.CheckersFactory());
           t3.__CheckersGame_view_A = new A.CheckersView(t1, t3);
           t3.__CheckersGame_logic_A = new A.CheckersLogic(t3, t2);
           return t3;
@@ -6362,7 +6393,7 @@
       _inherit = hunkHelpers.inherit,
       _inheritMany = hunkHelpers.inheritMany;
     _inherit(A.Object, null);
-    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._HashSetIterator, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.CheckersBoard, A.CheckersGame, A.BoardPosition, A.CheckersMove, A.CheckersLogic, A.GamePiece, A.CheckersView, A.ChequeredBoard, A.BoardWithPieces, A.ChessGame, A.ChessLogic, A.NoMovement, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement, A.ChessBoardView, A.ConnectBoard, A.ConnectGame, A.ConnectLogic, A.ConnectView, A.ReversiBoard, A.ReversiGame, A.ReversiLogic, A.ReversiView, A.GameSelector, A.GameChoice]);
+    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._HashSetIterator, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.CheckersBoard, A.GamePieceFactory, A.CheckersGame, A.BoardPosition, A.CheckersMove, A.CheckersLogic, A.GamePiece, A.CheckersView, A.ChequeredBoard, A.BoardWithPieces, A.ChessGame, A.ChessLogic, A.NoMovement, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement, A.ChessBoardView, A.ConnectBoard, A.ConnectGame, A.ConnectLogic, A.ConnectView, A.ReversiBoard, A.ReversiGame, A.ReversiLogic, A.ReversiView, A.GameSelector, A.GameChoice]);
     _inheritMany(J.Interceptor, [J.JSBool, J.JSNull, J.JavaScriptObject, J.JSNumber, J.JSString]);
     _inheritMany(J.JavaScriptObject, [J.LegacyJavaScriptObject, J.JSArray, A.EventTarget, A.DomException, A.DomTokenList, A.Event, A._HtmlCollection_JavaScriptObject_ListMixin, A._NodeList_JavaScriptObject_ListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin]);
     _inheritMany(J.LegacyJavaScriptObject, [J.PlainJavaScriptObject, J.UnknownJavaScriptObject, J.JavaScriptFunction]);
@@ -6390,8 +6421,9 @@
     _inherit(A.__NamedNodeMap_JavaScriptObject_ListMixin_ImmutableListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin);
     _inherit(A._NamedNodeMap, A.__NamedNodeMap_JavaScriptObject_ListMixin_ImmutableListMixin);
     _inheritMany(A.CssClassSetImpl, [A._ElementCssClassSet, A.AttributeClassSet]);
+    _inherit(A.CheckersFactory, A.GamePieceFactory);
     _inheritMany(A.GamePiece, [A.CheckersPiece, A.ChessPiece, A.ConnectPiece, A.ReversiPiece]);
-    _inherit(A.EmptyCheckersPiece, A.CheckersPiece);
+    _inheritMany(A.CheckersPiece, [A.RedChecker, A.CreamChecker, A.EmptyCheckersPiece]);
     _inheritMany(A.BoardWithPieces, [A.BoardWithPawns, A.BoardWithBishops, A.BoardWithKnights, A.BoardWithRooks, A.BoardWithKings, A.BoardWithQueens]);
     _inheritMany(A.ChessPiece, [A.ChessKing, A.EmptyPiece]);
     _inherit(A.EmptyConnectPiece, A.ConnectPiece);
@@ -6412,7 +6444,7 @@
     leafTags: null,
     arrayRti: Symbol("$ti")
   };
-  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_HashSet":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"_HashSetIterator":{"Iterator":["1"]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"int":{"num":[]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"_FrozenElementList":{"ListBase":["1"],"List":["1"],"Iterable":["1"],"ListBase.E":"1"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"CheckersBoard":{"GameBoard":[]},"CheckersGame":{"Game":[]},"CheckersPiece":{"GamePiece":[]},"EmptyCheckersPiece":{"CheckersPiece":[],"GamePiece":[]},"CheckersView":{"GameView":[]},"ChequeredBoard":{"GameBoard":[]},"BoardWithPieces":{"GameBoard":[]},"BoardWithPawns":{"GameBoard":[]},"BoardWithBishops":{"GameBoard":[]},"BoardWithKnights":{"GameBoard":[]},"BoardWithRooks":{"GameBoard":[]},"BoardWithKings":{"GameBoard":[]},"BoardWithQueens":{"GameBoard":[]},"ChessGame":{"Game":[]},"ChessPiece":{"GamePiece":[]},"ChessKing":{"ChessPiece":[],"GamePiece":[]},"EmptyPiece":{"ChessPiece":[],"GamePiece":[]},"NoMovement":{"MovementStrategy":[]},"PawnMovement":{"MovementStrategy":[]},"KnightMovement":{"MovementStrategy":[]},"BishopMovement":{"MovementStrategy":[]},"RookMovement":{"MovementStrategy":[]},"QueenMovement":{"MovementStrategy":[]},"KingMovement":{"MovementStrategy":[]},"ChessBoardView":{"GameView":[]},"ConnectBoard":{"GameBoard":[]},"ConnectGame":{"Game":[]},"ConnectPiece":{"GamePiece":[]},"EmptyConnectPiece":{"GamePiece":[]},"ConnectView":{"GameView":[]},"ReversiBoard":{"GameBoard":[]},"ReversiGame":{"Game":[]},"ReversiPiece":{"GamePiece":[]},"EmptyReversiPiece":{"ReversiPiece":[],"GamePiece":[]},"ReversiView":{"GameView":[]}}'));
+  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_Type":{"Type":[]},"_HashSet":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"_HashSetIterator":{"Iterator":["1"]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"int":{"num":[]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"_FrozenElementList":{"ListBase":["1"],"List":["1"],"Iterable":["1"],"ListBase.E":"1"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"CheckersBoard":{"GameBoard":[]},"CheckersGame":{"Game":[]},"RedChecker":{"CheckersPiece":[],"GamePiece":[]},"CreamChecker":{"CheckersPiece":[],"GamePiece":[]},"CheckersPiece":{"GamePiece":[]},"EmptyCheckersPiece":{"CheckersPiece":[],"GamePiece":[]},"CheckersView":{"GameView":[]},"ChequeredBoard":{"GameBoard":[]},"BoardWithPieces":{"GameBoard":[]},"BoardWithPawns":{"GameBoard":[]},"BoardWithBishops":{"GameBoard":[]},"BoardWithKnights":{"GameBoard":[]},"BoardWithRooks":{"GameBoard":[]},"BoardWithKings":{"GameBoard":[]},"BoardWithQueens":{"GameBoard":[]},"ChessGame":{"Game":[]},"ChessPiece":{"GamePiece":[]},"ChessKing":{"ChessPiece":[],"GamePiece":[]},"EmptyPiece":{"ChessPiece":[],"GamePiece":[]},"NoMovement":{"MovementStrategy":[]},"PawnMovement":{"MovementStrategy":[]},"KnightMovement":{"MovementStrategy":[]},"BishopMovement":{"MovementStrategy":[]},"RookMovement":{"MovementStrategy":[]},"QueenMovement":{"MovementStrategy":[]},"KingMovement":{"MovementStrategy":[]},"ChessBoardView":{"GameView":[]},"ConnectBoard":{"GameBoard":[]},"ConnectGame":{"Game":[]},"ConnectPiece":{"GamePiece":[]},"EmptyConnectPiece":{"GamePiece":[]},"ConnectView":{"GameView":[]},"ReversiBoard":{"GameBoard":[]},"ReversiGame":{"Game":[]},"ReversiPiece":{"GamePiece":[]},"EmptyReversiPiece":{"ReversiPiece":[],"GamePiece":[]},"ReversiView":{"GameView":[]}}'));
   A._Universe_addErasedTypes(init.typeUniverse, JSON.parse('{"_SetBase":1}'));
   var type$ = (function rtii() {
     var findType = A.findType;
@@ -6592,6 +6624,8 @@
 };
     B.C_JS_CONST3 = function(hooks) { return hooks; }
 ;
+    B.Type_CreamChecker_RoN = A.typeLiteral("CreamChecker");
+    B.Type_RedChecker_qRH = A.typeLiteral("RedChecker");
   })();
   (function staticFields() {
     $._JS_INTEROP_INTERCEPTOR_TAG = null;

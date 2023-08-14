@@ -18,6 +18,14 @@ class CheckersPiece extends GamePiece {
   }
 }
 
+class RedChecker extends CheckersPiece {
+  RedChecker() : super("red") {}
+}
+
+class CreamChecker extends CheckersPiece {
+  CreamChecker() : super("cream") {}
+}
+
 class EmptyCheckersPiece extends CheckersPiece {
   EmptyCheckersPiece(int a, int b) : super("none") {
     empty = true;

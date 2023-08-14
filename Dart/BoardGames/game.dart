@@ -23,6 +23,10 @@ abstract class GameView {
   void rotateBoard();
 }
 
+abstract class GamePieceFactory {
+  GamePiece createPiece(Type pieceType);
+}
+
 abstract class GamePiece {
   late String src;
   int i = 0;

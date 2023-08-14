@@ -2,6 +2,7 @@ import 'checkers_logic.dart';
 import 'checkers_pieces.dart';
 import 'checkers_view.dart';
 import 'checkers_board.dart';
+import 'checkers_factory.dart';
 import '../game.dart';
 import 'dart:html';
 
@@ -13,6 +14,7 @@ class CheckersGame implements Game {
   CheckersPiece activePiece = EmptyCheckersPiece(0, 0);
   bool capturedThisTurn = false;
   bool gameOver = false;
+  CheckersFactory factory = CheckersFactory();
 
   CheckersGame(Element container) {
     view = CheckersView(container, this);
@@ -29,6 +31,7 @@ class CheckersGame implements Game {
 
   void startGame() {
     board.setupPieces();
+    placePieces();
     logic.findPossibleMoves();
     refreshView();
   }
@@ -128,6 +131,22 @@ class CheckersGame implements Game {
 
   void refreshView() {
     view.displayBoard(board.getBoardState());
+  }
+
+  void placePieces() {
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 8; j++) {
+        if ((i + j) % 2 != 0) {
+          if (i <= 2) {
+            GamePiece piece = factory.createPiece(CreamChecker);
+            board.placePiece(piece, i, j);
+          } else if (i >= 5) {
+            GamePiece piece = factory.createPiece(RedChecker);
+            board.placePiece(piece, i, j);
+          }
+        }
+      }
+    }
   }
 
   CheckersPiece createPiece({String colour = "none"}) {
