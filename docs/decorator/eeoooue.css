@@ -1,0 +1,14 @@
+
+
+.mytitle{
+    padding: 0px 6px;
+}
+
+
+.myheaderbadge {
+    padding: 0px 36px;
+    color: white;
+    align-items: center;
+    font-size: 1.4rem;
+    justify-content: space-between;
+}

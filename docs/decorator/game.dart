@@ -3,6 +3,7 @@ import 'dart:html';
 abstract class Game {
   void startGame();
   void submitMove(int i, int j);
+  bool gameIsOver();
 }
 
 abstract class GameBoard {
@@ -21,6 +22,8 @@ abstract class GameView {
 
 abstract class GamePiece {
   late String src;
+  int i = 0;
+  int j = 0;
 
   GamePiece() {}
 
