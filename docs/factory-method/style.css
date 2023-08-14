@@ -12,64 +12,58 @@ body {
     align-items: center;
     justify-content: center;
     height: 100vh;
-    overflow: hidden;
     margin: 0;
 }
 
-#choices-container {
-    background-color: #ccc;
-    padding: 10px 10px;
-    margin: 10px 0;
-    justify-content: center;
-    border-radius: 10px;
-}
-
-.game-choice {
-    background-color: #666;
-    color: white;
-    padding: 10px 20px;
-    margin: 0px 10px;
-    border: none;
-    border-radius: 1000px;
-    cursor: pointer;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-}
-
-.game-choice:hover {
+#site-header {
     background-color: #333;
-}
-
-.game-choice.active {
-    background-color: white;
-    color: #333;
-    box-shadow: none;
-}
-
-#game-container {
+    height: 5.5vh;
+    width: 100vw;
+    justify-content: space-between;
+    color: white;
     display: flex;
-    flex-direction: column;
 }
 
+#site-header a {
+    text-decoration: none;
+    color: white;
+    margin: 1vw;
+}
+
+#site-header a:hover {
+    color: #ddd;
+}
+
+#site-header .left-box {
+    margin: 0 1vh;
+    display: flex;
+}
+
+#site-header .right-box {
+    margin: 0 1vh;
+    display: flex;
+}
+
+#site-header .anchor-tags {
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+}
+
+#demo-area {
+    height: 80vh;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
 
 .board-row {
     display: flex;
     flex-direction: row;
 }
 
-.container {
-    display: flex;
-    align-items: center;
-}
-
-.bookshelf {
-    display: flex;
-    flex-direction: row;
-}
-
-.totempole {
-    display: flex;
-    flex-direction: column;
-}
 
 /* Game Pieces */
 
