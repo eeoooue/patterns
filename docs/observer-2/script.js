@@ -3035,6 +3035,7 @@
         widget = new A.TurnplayerWidget(t3, t4);
         container = t1.createElement("div");
         t5 = J.getInterceptor$x(container);
+        t5.get$classes(container).add$1(0, "widget");
         t5.get$classes(container).add$1(0, _s9_);
         t5.get$classes(container).add$1(0, _s9_0);
         container.id = "turnplayer-widget";
@@ -3065,6 +3066,7 @@
         widget = new A.AnalysisWidget(B.C__JSRandom);
         container = t1.createElement("div");
         t3 = J.getInterceptor$x(container);
+        t3.get$classes(container).add$1(0, "widget");
         t3.get$classes(container).add$1(0, _s9_);
         t3.get$classes(container).add$1(0, _s9_0);
         container.id = "analysis-widget";

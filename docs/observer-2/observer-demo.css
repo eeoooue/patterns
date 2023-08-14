@@ -1,10 +1,51 @@
 
 
+#demo-area {
+    margin: 5vh 0;
+}
+
+#game-container {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.board-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.container {
+    align-items: center;
+}
+
+.bookshelf {
+    display: flex;
+    flex-direction: row;
+}
+
+.totempole {
+    display: flex;
+    flex-direction: column;
+}
+
+.demo-stack {
+    width: min(80vh, 80vw);
+}
+
 #side-tray {
-    background-color: #eee;
-    padding: 24px;
     width: 420px;
-    margin: 0px 10px;
+    margin: 1vh 1vh;
+}
+
+.widget {
+    background-color: #eee;
+    width: 90%;
+    margin: 1vh 1vh;
+    padding: 0vh 1vh;
+    padding-bottom: 1vh;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 #turnswitch-bar {

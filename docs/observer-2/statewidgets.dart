@@ -34,6 +34,8 @@ class TurnplayerWidget implements Observer {
 
   Element createContainer() {
     Element container = document.createElement("div");
+    container.classes.add("widget");
+
     container.classes.add("container");
     container.classes.add("totempole");
     container.id = "turnplayer-widget";
@@ -124,6 +126,7 @@ class AnalysisWidget implements Observer {
 
   Element createContainer() {
     Element container = document.createElement("div");
+    container.classes.add("widget");
     container.classes.add("container");
     container.classes.add("totempole");
     container.id = "analysis-widget";
