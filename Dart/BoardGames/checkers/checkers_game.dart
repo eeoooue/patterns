@@ -86,9 +86,16 @@ class CheckersGame implements Game {
     }
   }
 
+  void resetActivePiece() {
+    GamePiece piece = factory.createPiece(EmptyCheckersPiece);
+    if (piece is EmptyCheckersPiece) {
+      activePiece = piece;
+    }
+  }
+
   bool processMoveStart(int i, int j) {
     GamePiece target = board.getPiece(i, j);
-    activePiece = createPiece();
+    resetActivePiece();
 
     if (target is CheckersPiece && target.moveOptions.length > 0) {
       activePiece = target;
@@ -110,7 +117,7 @@ class CheckersGame implements Game {
   void endTurn() {
     turnCount += 1;
     capturedThisTurn = false;
-    activePiece = createPiece();
+    resetActivePiece();
     logic.clearOptions();
     refreshView();
     logic.findPossibleMoves();
@@ -147,12 +154,5 @@ class CheckersGame implements Game {
         }
       }
     }
-  }
-
-  CheckersPiece createPiece({String colour = "none"}) {
-    if (colour == "none") {
-      return EmptyCheckersPiece(0, 0);
-    }
-    return CheckersPiece(colour);
   }
 }
