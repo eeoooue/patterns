@@ -1,13 +1,14 @@
 import 'dart:html';
 import 'game.dart';
 import 'chess/chess_game.dart';
+import 'mimic/mimic_game.dart';
 
 class GameSelector {
   Element choicesContainer;
   Element gameContainer;
   late Game game;
 
-  List<String> choices = List.from({"Chess", "Draughts"});
+  List<String> choices = List.from({"Chess"});
 
   GameSelector(this.choicesContainer, this.gameContainer) {
     showChoices();
@@ -41,7 +42,7 @@ class GameSelector {
   Game getGame(String title) {
     switch (title) {
       case "Chess":
-        return ChessGame(gameContainer);
+        return MimicGame(gameContainer);
       default:
         return ChessGame(gameContainer);
     }

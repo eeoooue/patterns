@@ -2,10 +2,13 @@ import '../game.dart';
 import 'mimic_board.dart';
 
 class MimicPiece extends GamePiece {
+  bool threatened = false;
   MovementStrategy moveStrategy;
+  bool hasMoved = false;
+  bool active = false;
 
   MimicPiece(int iPos, int jPos, this.moveStrategy) {
-    setSource("./assets/checkers/checkers_cream.png");
+    setSource("./assets/checkers/checkers_red.png");
     i = iPos;
     j = jPos;
   }

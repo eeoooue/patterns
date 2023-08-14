@@ -17,6 +17,10 @@ class MimicBoard implements GameBoard {
   }
 
   bool tileIsEmpty(int i, int j) {
+    if (!validCoordinates(i, j)) {
+      return false;
+    }
+
     return pieces[i][j] is EmptyPiece;
   }
 
