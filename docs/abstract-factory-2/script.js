@@ -2501,7 +2501,7 @@
     },
     _LinkedHashSetCell: function _LinkedHashSetCell(t0) {
       this._collection$_element = t0;
-      this._next = null;
+      this._previous = this._next = null;
     },
     _LinkedHashSetIterator: function _LinkedHashSetIterator(t0, t1, t2) {
       var _ = this;
@@ -2780,6 +2780,8 @@
     },
     AreaElement: function AreaElement() {
     },
+    ButtonElement: function ButtonElement() {
+    },
     CharacterData: function CharacterData() {
     },
     DomException: function DomException() {
@@ -2801,10 +2803,6 @@
     HtmlCollection: function HtmlCollection() {
     },
     ImageElement: function ImageElement() {
-    },
-    InputElement: function InputElement() {
-    },
-    LabelElement: function LabelElement() {
     },
     _ChildNodeListLazy: function _ChildNodeListLazy(t0) {
       this._this = t0;
@@ -2858,6 +2856,86 @@
       this._svg$_element = t0;
     },
     SvgElement: function SvgElement() {
+    },
+    ChessPieceFactory: function ChessPieceFactory() {
+    },
+    BlackPieceFactory: function BlackPieceFactory(t0) {
+      this.colour = t0;
+    },
+    WhitePieceFactory: function WhitePieceFactory(t0) {
+      this.colour = t0;
+    },
+    Pawn: function Pawn() {
+    },
+    Knight: function Knight() {
+    },
+    Bishop: function Bishop() {
+    },
+    Rook: function Rook() {
+    },
+    King: function King() {
+    },
+    Queen: function Queen() {
+    },
+    BlackPawn: function BlackPawn(t0, t1, t2) {
+      var _ = this;
+      _.moveStrategy = t0;
+      _.colour = t1;
+      _.name = t2;
+      _.threatened = _.hasMoved = false;
+      _.myKing = null;
+      _.__GamePiece_src_A = $;
+      _.j = _.i = 0;
+    },
+    BlackKnight: function BlackKnight(t0, t1, t2) {
+      var _ = this;
+      _.moveStrategy = t0;
+      _.colour = t1;
+      _.name = t2;
+      _.threatened = _.hasMoved = false;
+      _.myKing = null;
+      _.__GamePiece_src_A = $;
+      _.j = _.i = 0;
+    },
+    BlackBishop: function BlackBishop(t0, t1, t2) {
+      var _ = this;
+      _.moveStrategy = t0;
+      _.colour = t1;
+      _.name = t2;
+      _.threatened = _.hasMoved = false;
+      _.myKing = null;
+      _.__GamePiece_src_A = $;
+      _.j = _.i = 0;
+    },
+    BlackRook: function BlackRook(t0, t1, t2) {
+      var _ = this;
+      _.moveStrategy = t0;
+      _.colour = t1;
+      _.name = t2;
+      _.threatened = _.hasMoved = false;
+      _.myKing = null;
+      _.__GamePiece_src_A = $;
+      _.j = _.i = 0;
+    },
+    BlackKing: function BlackKing(t0, t1, t2) {
+      var _ = this;
+      _.moveStrategy = t0;
+      _.colour = t1;
+      _.name = t2;
+      _.threatened = _.hasMoved = false;
+      _.myKing = null;
+      _.__GamePiece_src_A = $;
+      _.j = _.i = 0;
+    },
+    BlackQueen: function BlackQueen(t0, t1, t2) {
+      var _ = this;
+      _.moveStrategy = t0;
+      _.colour = t1;
+      _.name = t2;
+      _.threatened = _.hasMoved = false;
+      _.myKing = null;
+      _.__GamePiece_src_A = $;
+      _.j = _.i = 0;
     },
     ChequeredBoard: function ChequeredBoard(t0) {
       this.pieces = t0;
@@ -2965,18 +3043,23 @@
     },
     GamePiece: function GamePiece() {
     },
+    PieceOption$($parent, piece) {
+      var t1 = new A.PieceOption($parent, piece);
+      t1.__PieceOption_element_A = t1.createElement$0(0);
+      return t1;
+    },
     main() {
-      var game, initState,
+      var t3, game, initState, switchBtn, pieceContainer,
         t1 = document,
         gameContainer = t1.getElementById("game-container"),
-        sideTray = t1.getElementById("side-tray");
-      t1 = type$.Element;
-      if (t1._is(gameContainer) && t1._is(sideTray)) {
-        t1 = J.JSArray_JSArray$growable(0, type$.List_GamePiece);
-        game = new A.ChessGame(new A.ChequeredBoard(t1));
+        t2 = type$.Element;
+      if (t2._is(gameContainer)) {
+        t3 = J.JSArray_JSArray$growable(0, type$.List_GamePiece);
+        game = new A.ChessGame(new A.ChequeredBoard(t3));
         game.__ChessGame_view_A = new A.ChessBoardView(gameContainer, game);
         game.__ChessGame_logic_A = new A.ChessLogic(game, A.EmptyPiece$(0, 0));
-        initState = J.JSArray_JSArray$growable(0, type$.bool);
+        t3 = type$.bool;
+        initState = J.JSArray_JSArray$growable(0, t3);
         B.JSArray_methods.add$1(initState, true);
         B.JSArray_methods.add$1(initState, true);
         B.JSArray_methods.add$1(initState, true);
@@ -2986,30 +3069,100 @@
         game.setupPieces$1(initState);
         game.__ChessGame_logic_A.pairKings$0();
         game.refreshView$0();
-        t1 = J.JSArray_JSArray$growable(0, type$.DecoratorCheckbox);
-        t1 = new A.DecoratorDemo(sideTray, t1, game);
-        t1.addCheckbox$1("Pawn");
-        t1.addCheckbox$1("Bishop");
-        t1.addCheckbox$1("Knight");
-        t1.addCheckbox$1("Rook");
-        t1.addCheckbox$1("Queen");
-        t1.addCheckbox$1("King");
+        initState = J.JSArray_JSArray$growable(0, t3);
+        B.JSArray_methods.add$1(initState, false);
+        B.JSArray_methods.add$1(initState, false);
+        B.JSArray_methods.add$1(initState, false);
+        B.JSArray_methods.add$1(initState, false);
+        B.JSArray_methods.add$1(initState, false);
+        B.JSArray_methods.add$1(initState, false);
+        game.setupPieces$1(initState);
+        switchBtn = t1.querySelector(".colour-switcher");
+        pieceContainer = t1.getElementById("piece-box");
+        if (type$.ButtonElement._is(switchBtn) && t2._is(pieceContainer)) {
+          t1 = new A.PieceBox(game, pieceContainer, switchBtn, new A.BlackPieceFactory("black"));
+          t1.armButton$0();
+          t1.switchColour$0();
+        }
       }
     },
-    DecoratorDemo: function DecoratorDemo(t0, t1, t2) {
-      this.sideTray = t0;
-      this.checkboxes = t1;
-      this.game = t2;
-    },
-    DecoratorCheckbox: function DecoratorCheckbox(t0, t1, t2) {
+    PieceBox: function PieceBox(t0, t1, t2, t3) {
       var _ = this;
-      _.container = t0;
-      _.demo = t1;
-      _.piece = t2;
-      _.checked = true;
+      _.game = t0;
+      _.container = t1;
+      _.button = t2;
+      _.factory = t3;
     },
-    DecoratorCheckbox_armCheckbox_closure: function DecoratorCheckbox_armCheckbox_closure(t0) {
+    PieceBox_armButton_closure: function PieceBox_armButton_closure(t0) {
       this.$this = t0;
+    },
+    PieceOption: function PieceOption(t0, t1) {
+      this.parent = t0;
+      this.piece = t1;
+      this.__PieceOption_element_A = $;
+    },
+    PieceOption_createElement_closure: function PieceOption_createElement_closure(t0) {
+      this.$this = t0;
+    },
+    WhitePawn: function WhitePawn(t0, t1, t2) {
+      var _ = this;
+      _.moveStrategy = t0;
+      _.colour = t1;
+      _.name = t2;
+      _.threatened = _.hasMoved = false;
+      _.myKing = null;
+      _.__GamePiece_src_A = $;
+      _.j = _.i = 0;
+    },
+    WhiteKnight: function WhiteKnight(t0, t1, t2) {
+      var _ = this;
+      _.moveStrategy = t0;
+      _.colour = t1;
+      _.name = t2;
+      _.threatened = _.hasMoved = false;
+      _.myKing = null;
+      _.__GamePiece_src_A = $;
+      _.j = _.i = 0;
+    },
+    WhiteBishop: function WhiteBishop(t0, t1, t2) {
+      var _ = this;
+      _.moveStrategy = t0;
+      _.colour = t1;
+      _.name = t2;
+      _.threatened = _.hasMoved = false;
+      _.myKing = null;
+      _.__GamePiece_src_A = $;
+      _.j = _.i = 0;
+    },
+    WhiteRook: function WhiteRook(t0, t1, t2) {
+      var _ = this;
+      _.moveStrategy = t0;
+      _.colour = t1;
+      _.name = t2;
+      _.threatened = _.hasMoved = false;
+      _.myKing = null;
+      _.__GamePiece_src_A = $;
+      _.j = _.i = 0;
+    },
+    WhiteKing: function WhiteKing(t0, t1, t2) {
+      var _ = this;
+      _.moveStrategy = t0;
+      _.colour = t1;
+      _.name = t2;
+      _.threatened = _.hasMoved = false;
+      _.myKing = null;
+      _.__GamePiece_src_A = $;
+      _.j = _.i = 0;
+    },
+    WhiteQueen: function WhiteQueen(t0, t1, t2) {
+      var _ = this;
+      _.moveStrategy = t0;
+      _.colour = t1;
+      _.name = t2;
+      _.threatened = _.hasMoved = false;
+      _.myKing = null;
+      _.__GamePiece_src_A = $;
+      _.j = _.i = 0;
     },
     printString(string) {
       if (typeof dartPrint == "function") {
@@ -3941,23 +4094,32 @@
       table[element] = this._newLinkedCell$1(element);
       return true;
     },
+    _modified$0() {
+      this._modifications = this._modifications + 1 & 1073741823;
+    },
     _newLinkedCell$1(element) {
-      var _this = this,
+      var t1, _this = this,
         cell = new A._LinkedHashSetCell(A._instanceType(_this)._precomputed1._as(element));
       if (_this._first == null)
         _this._first = _this._last = cell;
-      else
-        _this._last = _this._last._next = cell;
+      else {
+        t1 = _this._last;
+        t1.toString;
+        cell._previous = t1;
+        _this._last = t1._next = cell;
+      }
       ++_this._collection$_length;
-      _this._modifications = _this._modifications + 1 & 1073741823;
+      _this._modified$0();
       return cell;
     },
     _computeHashCode$1(element) {
       return J.get$hashCode$(element) & 1073741823;
     },
     _findBucketIndex$2(bucket, element) {
-      var i,
-        $length = bucket.length;
+      var $length, i;
+      if (bucket == null)
+        return -1;
+      $length = bucket.length;
       for (i = 0; i < $length; ++i)
         if (J.$eq$(bucket[i]._collection$_element, element))
           return i;
@@ -4241,6 +4403,7 @@
       return t1;
     }
   };
+  A.ButtonElement.prototype = {$isButtonElement: 1};
   A.CharacterData.prototype = {
     get$length(receiver) {
       return receiver.length;
@@ -4347,16 +4510,6 @@
     },
     $isImageElement: 1
   };
-  A.InputElement.prototype = {
-    set$checked(receiver, value) {
-      receiver.checked = true;
-    },
-    set$type(receiver, value) {
-      receiver.type = value;
-    },
-    $isInputElement: 1
-  };
-  A.LabelElement.prototype = {$isLabelElement: 1};
   A._ChildNodeListLazy.prototype = {
     get$iterator(_) {
       var t1 = this._this.childNodes;
@@ -4598,6 +4751,83 @@
       return new A.FilteredElementList(new A._ChildNodeListLazy(receiver));
     }
   };
+  A.ChessPieceFactory.prototype = {};
+  A.BlackPieceFactory.prototype = {
+    createPawn$0() {
+      var t1 = new A.BlackPawn(new A.PawnMovement(), "b", "pawn");
+      t1.__GamePiece_src_A = "./assets/chess/pawn_b.png";
+      return t1;
+    },
+    createKnight$0() {
+      var t1 = new A.BlackKnight(new A.KnightMovement(), "b", "knight");
+      t1.__GamePiece_src_A = "./assets/chess/knight_b.png";
+      return t1;
+    },
+    createBishop$0() {
+      var t1 = new A.BlackBishop(new A.BishopMovement(), "b", "bishop");
+      t1.__GamePiece_src_A = "./assets/chess/bishop_b.png";
+      return t1;
+    },
+    createRook$0() {
+      var t1 = new A.BlackRook(new A.RookMovement(), "b", "rook");
+      t1.__GamePiece_src_A = "./assets/chess/rook_b.png";
+      return t1;
+    },
+    createKing$0() {
+      var t1 = new A.BlackKing(new A.KingMovement(), "b", "king");
+      t1.__GamePiece_src_A = "./assets/chess/king_b.png";
+      return t1;
+    },
+    createQueen$0() {
+      var t1 = new A.BlackQueen(new A.QueenMovement(), "b", "queen");
+      t1.__GamePiece_src_A = "./assets/chess/queen_b.png";
+      return t1;
+    }
+  };
+  A.WhitePieceFactory.prototype = {
+    createPawn$0() {
+      var t1 = new A.WhitePawn(new A.PawnMovement(), "w", "pawn");
+      t1.__GamePiece_src_A = "./assets/chess/pawn_w.png";
+      return t1;
+    },
+    createKnight$0() {
+      var t1 = new A.WhiteKnight(new A.KnightMovement(), "w", "knight");
+      t1.__GamePiece_src_A = "./assets/chess/knight_w.png";
+      return t1;
+    },
+    createBishop$0() {
+      var t1 = new A.WhiteBishop(new A.BishopMovement(), "w", "bishop");
+      t1.__GamePiece_src_A = "./assets/chess/bishop_w.png";
+      return t1;
+    },
+    createRook$0() {
+      var t1 = new A.WhiteRook(new A.RookMovement(), "w", "rook");
+      t1.__GamePiece_src_A = "./assets/chess/rook_w.png";
+      return t1;
+    },
+    createKing$0() {
+      var t1 = new A.WhiteKing(new A.KingMovement(), "w", "king");
+      t1.__GamePiece_src_A = "./assets/chess/king_w.png";
+      return t1;
+    },
+    createQueen$0() {
+      var t1 = new A.WhiteQueen(new A.QueenMovement(), "w", "queen");
+      t1.__GamePiece_src_A = "./assets/chess/queen_w.png";
+      return t1;
+    }
+  };
+  A.Pawn.prototype = {};
+  A.Knight.prototype = {};
+  A.Bishop.prototype = {};
+  A.Rook.prototype = {};
+  A.King.prototype = {};
+  A.Queen.prototype = {};
+  A.BlackPawn.prototype = {};
+  A.BlackKnight.prototype = {};
+  A.BlackBishop.prototype = {};
+  A.BlackRook.prototype = {};
+  A.BlackKing.prototype = {};
+  A.BlackQueen.prototype = {};
   A.ChequeredBoard.prototype = {
     setupPieces$0() {
       var t1, t2, i, row, j;
@@ -4724,6 +4954,20 @@
     }
   };
   A.ChessGame.prototype = {
+    threatenAllWith$1(selection) {
+      var t2, t3, _i, t4, t5, t6,
+        t1 = this.__ChessGame_logic_A;
+      t1 === $ && A.throwLateFieldNI("logic");
+      t1.clearMoveOptions$0();
+      this.__ChessGame_logic_A.activePiece = selection;
+      for (t1 = this.board.getBoardState$0(), t2 = t1.length, t3 = selection.colour, _i = 0; _i < t1.length; t1.length === t2 || (0, A.throwConcurrentModificationError)(t1), ++_i)
+        for (t4 = B.JSArray_methods.get$iterator(t1[_i]); t4.moveNext$0();) {
+          t5 = t4.get$current();
+          t6 = t5.colour;
+          if (t6 !== t3)
+            t5.threatened = true;
+        }
+    },
     refreshView$0() {
       var t1 = this.__ChessGame_view_A;
       t1 === $ && A.throwLateFieldNI("view");
@@ -5181,74 +5425,117 @@
   };
   A.ChessBoardView_createTile_closure.prototype = {
     call$1($event) {
-      var t1, t2, t3, t4;
+      var t1, t2, t3, counter, t4;
       type$.Event._as($event);
       t1 = this.$this.game;
       t2 = this.piece;
       t3 = t2.i;
       t2 = t2.j;
+      counter = t1.turnCount;
       t4 = t1.__ChessGame_logic_A;
       t4 === $ && A.throwLateFieldNI("logic");
       t4.submitMove$2(t3, t2);
+      t4 = t1.turnCount;
+      if (counter === t4) {
+        t1.turnCount = t4 + 1;
+        t1.__ChessGame_logic_A.submitMove$2(t3, t2);
+      }
       t1.refreshView$0();
     },
     $signature: 0
   };
-  A.GamePiece.prototype = {};
-  A.DecoratorDemo.prototype = {
-    addCheckbox$1(piece) {
-      var cbox, t4, t5, label,
-        t1 = document,
-        t2 = t1.createElement("div"),
-        box = new A.DecoratorCheckbox(t2, this, piece),
-        t3 = J.getInterceptor$x(t2);
-      t3.get$classes(t2).add$1(0, "deco-cbox");
-      cbox = t1.createElement("input");
-      t4 = piece + "-cbox";
-      cbox.id = t4;
-      J.get$classes$x(cbox).add$1(0, "cbox");
-      t5 = type$.InputElement._is(cbox);
-      if (t5) {
-        B.InputElement_methods.set$type(cbox, "checkbox");
-        B.InputElement_methods.set$checked(cbox, true);
+  A.GamePiece.prototype = {
+    getElement$0() {
+      var t1,
+        img = document.createElement("img");
+      J.get$classes$x(img).add$1(0, "piece-img");
+      if (type$.ImageElement._is(img)) {
+        t1 = this.__GamePiece_src_A;
+        t1 === $ && A.throwLateFieldNI("src");
+        B.ImageElement_methods.set$src(img, t1);
       }
-      t3.get$children(t2).add$1(0, cbox);
-      label = t1.createElement("label");
-      J.get$classes$x(label).add$1(0, "cbox-label");
-      if (type$.LabelElement._is(label)) {
-        label.htmlFor = t4;
-        label.innerText = piece + "s";
-      }
-      t3.get$children(t2).add$1(0, label);
-      if (t5)
-        box.armCheckbox$1(cbox);
-      B.JSArray_methods.add$1(this.checkboxes, box);
-      J.get$children$x(this.sideTray).add$1(0, t2);
-    },
-    rebuildGame$0() {
-      var t1, i,
-        state = J.JSArray_JSArray$growable(0, type$.bool);
-      for (t1 = this.checkboxes, i = 0; i < t1.length; ++i)
-        B.JSArray_methods.add$1(state, t1[i].checked);
-      this.game.setupPieces$1(state);
-    },
-    $isDemo: 1
-  };
-  A.DecoratorCheckbox.prototype = {
-    armCheckbox$1(cbox) {
-      B.InputElement_methods.addEventListener$2(cbox, "input", new A.DecoratorCheckbox_armCheckbox_closure(this));
+      return img;
     }
   };
-  A.DecoratorCheckbox_armCheckbox_closure.prototype = {
+  A.PieceBox.prototype = {
+    armButton$0() {
+      B.ButtonElement_methods.addEventListener$2(this.button, "click", new A.PieceBox_armButton_closure(this));
+    },
+    switchColour$0() {
+      var t1, t2, list, _this = this,
+        current = _this.factory.colour;
+      _this.factory = current === "black" ? new A.WhitePieceFactory("white") : new A.BlackPieceFactory("black");
+      t1 = _this.button;
+      t2 = current + "-btn";
+      list = t1.classList;
+      list.contains(t2).toString;
+      list.remove(t2);
+      t2 = _this.factory.colour + "-btn";
+      list = t1.classList;
+      list.contains(t2).toString;
+      list.add(t2);
+      t1.innerText = (_this.factory.colour === "black" ? "Black" : "White") + "PieceFactory";
+      _this.presentPieces$0();
+    },
+    presentPieces$0() {
+      var options, t3, _i, option, t4, t5, _this = this,
+        t1 = _this.container,
+        t2 = J.getInterceptor$x(t1);
+      t2.get$children(t1).clear$0(0);
+      options = J.JSArray_JSArray$growable(0, type$.PieceOption);
+      B.JSArray_methods.add$1(options, A.PieceOption$(_this, _this.factory.createPawn$0()));
+      B.JSArray_methods.add$1(options, A.PieceOption$(_this, _this.factory.createBishop$0()));
+      B.JSArray_methods.add$1(options, A.PieceOption$(_this, _this.factory.createKnight$0()));
+      B.JSArray_methods.add$1(options, A.PieceOption$(_this, _this.factory.createRook$0()));
+      B.JSArray_methods.add$1(options, A.PieceOption$(_this, _this.factory.createQueen$0()));
+      B.JSArray_methods.add$1(options, A.PieceOption$(_this, _this.factory.createKing$0()));
+      t3 = options.length;
+      _i = 0;
+      for (; _i < options.length; options.length === t3 || (0, A.throwConcurrentModificationError)(options), ++_i) {
+        option = options[_i];
+        t4 = t2.get$children(t1);
+        t5 = option.__PieceOption_element_A;
+        t5 === $ && A.throwLateFieldNI("element");
+        t4.add$1(0, t5);
+      }
+    }
+  };
+  A.PieceBox_armButton_closure.prototype = {
     call$1($event) {
-      var t1;
       type$.Event._as($event);
-      t1 = this.$this;
-      t1.checked = !t1.checked;
-      t1.demo.rebuildGame$0();
+      this.$this.switchColour$0();
     },
     $signature: 0
   };
+  A.PieceOption.prototype = {
+    createElement$0(_) {
+      var element = document.createElement("div"),
+        t1 = J.getInterceptor$x(element);
+      t1.get$classes(element).add$1(0, "piece-option");
+      t1.addEventListener$2(element, "click", new A.PieceOption_createElement_closure(this));
+      t1.get$children(element).add$1(0, this.piece.getElement$0());
+      return element;
+    }
+  };
+  A.PieceOption_createElement_closure.prototype = {
+    call$1($event) {
+      var t1, t2;
+      type$.Event._as($event);
+      t1 = this.$this;
+      t2 = t1.parent;
+      t1 = t1.piece;
+      A.print("selection indicated! " + t1.name + " " + t1.colour);
+      t2.game.threatenAllWith$1(t1);
+      t2.presentPieces$0();
+    },
+    $signature: 0
+  };
+  A.WhitePawn.prototype = {};
+  A.WhiteKnight.prototype = {};
+  A.WhiteBishop.prototype = {};
+  A.WhiteRook.prototype = {};
+  A.WhiteKing.prototype = {};
+  A.WhiteQueen.prototype = {};
   (function aliases() {
     var _ = J.Interceptor.prototype;
     _.super$Interceptor$toString = _.toString$0;
@@ -5260,7 +5547,7 @@
       _inherit = hunkHelpers.inherit,
       _inheritMany = hunkHelpers.inheritMany;
     _inherit(A.Object, null);
-    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._HashSetIterator, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.ChequeredBoard, A.BoardWithPieces, A.ChessGame, A.ChessLogic, A.GamePiece, A.NoMovement, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement, A.ChessBoardView, A.DecoratorDemo, A.DecoratorCheckbox]);
+    _inheritMany(A.Object, [A.JS_CONST, J.Interceptor, J.ArrayIterator, A.Error, A.ListIterator, A.Iterable, A.MappedIterator, A.WhereIterator, A.Closure, A.JSSyntaxRegExp, A.Rti, A._FunctionParameters, A._Type, A.SetBase, A._HashSetIterator, A._LinkedHashSetCell, A._LinkedHashSetIterator, A.ListBase, A._Exception, A.FormatException, A.Null, A.StringBuffer, A.ImmutableListMixin, A.FixedSizeListIterator, A.ChessPieceFactory, A.GamePiece, A.ChequeredBoard, A.BoardWithPieces, A.ChessGame, A.ChessLogic, A.NoMovement, A.PawnMovement, A.KnightMovement, A.BishopMovement, A.RookMovement, A.QueenMovement, A.KingMovement, A.ChessBoardView, A.PieceBox, A.PieceOption]);
     _inheritMany(J.Interceptor, [J.JSBool, J.JSNull, J.JavaScriptObject, J.JSNumber, J.JSString]);
     _inheritMany(J.JavaScriptObject, [J.LegacyJavaScriptObject, J.JSArray, A.EventTarget, A.DomException, A.DomTokenList, A.Event, A._HtmlCollection_JavaScriptObject_ListMixin, A._NodeList_JavaScriptObject_ListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin]);
     _inheritMany(J.LegacyJavaScriptObject, [J.PlainJavaScriptObject, J.UnknownJavaScriptObject, J.JavaScriptFunction]);
@@ -5268,7 +5555,7 @@
     _inheritMany(J.JSNumber, [J.JSInt, J.JSNumNotInt]);
     _inheritMany(A.Error, [A.LateError, A._CyclicInitializationError, A.RuntimeError, A.AssertionError, A._Error, A.TypeError, A.ArgumentError, A.UnsupportedError, A.UnimplementedError, A.ConcurrentModificationError]);
     _inheritMany(A.Iterable, [A.MappedIterable, A.WhereIterable]);
-    _inheritMany(A.Closure, [A.Closure2Args, A.TearOffClosure, A.initHooks_closure, A.initHooks_closure1, A.CssClassSetImpl_add_closure, A.FilteredElementList__iterable_closure, A.FilteredElementList__iterable_closure0, A.ChessBoardView_createTile_closure, A.DecoratorCheckbox_armCheckbox_closure]);
+    _inheritMany(A.Closure, [A.Closure2Args, A.TearOffClosure, A.initHooks_closure, A.initHooks_closure1, A.CssClassSetImpl_add_closure, A.FilteredElementList__iterable_closure, A.FilteredElementList__iterable_closure0, A.ChessBoardView_createTile_closure, A.PieceBox_armButton_closure, A.PieceOption_createElement_closure]);
     _inheritMany(A.TearOffClosure, [A.StaticClosure, A.BoundClosure]);
     _inherit(A._AssertionError, A.AssertionError);
     _inherit(A.initHooks_closure0, A.Closure2Args);
@@ -5279,7 +5566,7 @@
     _inherit(A.Node, A.EventTarget);
     _inheritMany(A.Node, [A.Element, A.CharacterData]);
     _inheritMany(A.Element, [A.HtmlElement, A.SvgElement]);
-    _inheritMany(A.HtmlElement, [A.AnchorElement, A.AreaElement, A.FormElement, A.ImageElement, A.InputElement, A.LabelElement, A.SelectElement]);
+    _inheritMany(A.HtmlElement, [A.AnchorElement, A.AreaElement, A.ButtonElement, A.FormElement, A.ImageElement, A.SelectElement]);
     _inheritMany(A.ListBase, [A._ChildrenElementList, A._ChildNodeListLazy, A.FilteredElementList]);
     _inherit(A._HtmlCollection_JavaScriptObject_ListMixin_ImmutableListMixin, A._HtmlCollection_JavaScriptObject_ListMixin);
     _inherit(A.HtmlCollection, A._HtmlCollection_JavaScriptObject_ListMixin_ImmutableListMixin);
@@ -5288,9 +5575,16 @@
     _inherit(A.__NamedNodeMap_JavaScriptObject_ListMixin_ImmutableListMixin, A.__NamedNodeMap_JavaScriptObject_ListMixin);
     _inherit(A._NamedNodeMap, A.__NamedNodeMap_JavaScriptObject_ListMixin_ImmutableListMixin);
     _inheritMany(A.CssClassSetImpl, [A._ElementCssClassSet, A.AttributeClassSet]);
-    _inheritMany(A.BoardWithPieces, [A.BoardWithPawns, A.BoardWithBishops, A.BoardWithKnights, A.BoardWithRooks, A.BoardWithKings, A.BoardWithQueens]);
+    _inheritMany(A.ChessPieceFactory, [A.BlackPieceFactory, A.WhitePieceFactory]);
     _inherit(A.ChessPiece, A.GamePiece);
-    _inheritMany(A.ChessPiece, [A.ChessKing, A.EmptyPiece]);
+    _inheritMany(A.ChessPiece, [A.Pawn, A.Knight, A.Bishop, A.Rook, A.King, A.Queen, A.ChessKing, A.EmptyPiece]);
+    _inheritMany(A.Pawn, [A.BlackPawn, A.WhitePawn]);
+    _inheritMany(A.Knight, [A.BlackKnight, A.WhiteKnight]);
+    _inheritMany(A.Bishop, [A.BlackBishop, A.WhiteBishop]);
+    _inheritMany(A.Rook, [A.BlackRook, A.WhiteRook]);
+    _inheritMany(A.King, [A.BlackKing, A.WhiteKing]);
+    _inheritMany(A.Queen, [A.BlackQueen, A.WhiteQueen]);
+    _inheritMany(A.BoardWithPieces, [A.BoardWithPawns, A.BoardWithBishops, A.BoardWithKnights, A.BoardWithRooks, A.BoardWithKings, A.BoardWithQueens]);
     _mixin(A._HtmlCollection_JavaScriptObject_ListMixin, A.ListBase);
     _mixin(A._HtmlCollection_JavaScriptObject_ListMixin_ImmutableListMixin, A.ImmutableListMixin);
     _mixin(A._NodeList_JavaScriptObject_ListMixin, A.ListBase);
@@ -5307,18 +5601,17 @@
     leafTags: null,
     arrayRti: Symbol("$ti")
   };
-  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_HashSet":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"_HashSetIterator":{"Iterator":["1"]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"int":{"num":[]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"InputElement":{"Element":[],"Node":[]},"LabelElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"ChequeredBoard":{"GameBoard":[]},"BoardWithPieces":{"GameBoard":[]},"BoardWithPawns":{"GameBoard":[]},"BoardWithBishops":{"GameBoard":[]},"BoardWithKnights":{"GameBoard":[]},"BoardWithRooks":{"GameBoard":[]},"BoardWithKings":{"GameBoard":[]},"BoardWithQueens":{"GameBoard":[]},"ChessGame":{"Game":[]},"ChessPiece":{"GamePiece":[]},"ChessKing":{"ChessPiece":[],"GamePiece":[]},"EmptyPiece":{"ChessPiece":[],"GamePiece":[]},"NoMovement":{"MovementStrategy":[]},"PawnMovement":{"MovementStrategy":[]},"KnightMovement":{"MovementStrategy":[]},"BishopMovement":{"MovementStrategy":[]},"RookMovement":{"MovementStrategy":[]},"QueenMovement":{"MovementStrategy":[]},"KingMovement":{"MovementStrategy":[]},"ChessBoardView":{"GameView":[]},"DecoratorDemo":{"Demo":[]}}'));
+  A._Universe_addRules(init.typeUniverse, JSON.parse('{"PlainJavaScriptObject":"LegacyJavaScriptObject","UnknownJavaScriptObject":"LegacyJavaScriptObject","JavaScriptFunction":"LegacyJavaScriptObject","AbortPaymentEvent":"Event","ExtendableEvent":"Event","AElement":"SvgElement","GraphicsElement":"SvgElement","AudioElement":"HtmlElement","MediaElement":"HtmlElement","HtmlDocument":"Node","Document":"Node","CDataSection":"CharacterData","Text":"CharacterData","MathMLElement":"Element","HtmlFormControlsCollection":"HtmlCollection","JSBool":{"bool":[],"TrustedGetRuntimeType":[]},"JSNull":{"TrustedGetRuntimeType":[]},"JSArray":{"List":["1"],"Iterable":["1"]},"JSUnmodifiableArray":{"JSArray":["1"],"List":["1"],"Iterable":["1"]},"ArrayIterator":{"Iterator":["1"]},"JSNumber":{"num":[]},"JSInt":{"int":[],"num":[],"TrustedGetRuntimeType":[]},"JSNumNotInt":{"num":[],"TrustedGetRuntimeType":[]},"JSString":{"String":[],"TrustedGetRuntimeType":[]},"ListIterator":{"Iterator":["1"]},"MappedIterable":{"Iterable":["2"]},"MappedIterator":{"Iterator":["2"]},"WhereIterable":{"Iterable":["1"]},"WhereIterator":{"Iterator":["1"]},"Closure":{"Function":[]},"Closure2Args":{"Function":[]},"TearOffClosure":{"Function":[]},"StaticClosure":{"Function":[]},"BoundClosure":{"Function":[]},"_HashSet":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"_HashSetIterator":{"Iterator":["1"]},"_LinkedHashSet":{"SetBase":["1"],"LinkedHashSet":["1"],"Set":["1"],"Iterable":["1"]},"_LinkedHashSetIterator":{"Iterator":["1"]},"ListBase":{"List":["1"],"Iterable":["1"]},"SetBase":{"Set":["1"],"Iterable":["1"]},"_SetBase":{"SetBase":["1"],"Set":["1"],"Iterable":["1"]},"int":{"num":[]},"List":{"Iterable":["1"]},"Set":{"Iterable":["1"]},"Element":{"Node":[]},"HtmlElement":{"Element":[],"Node":[]},"AnchorElement":{"Element":[],"Node":[]},"AreaElement":{"Element":[],"Node":[]},"ButtonElement":{"Element":[],"Node":[]},"CharacterData":{"Node":[]},"_ChildrenElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"FormElement":{"Element":[],"Node":[]},"HtmlCollection":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"ImageElement":{"Element":[],"Node":[]},"_ChildNodeListLazy":{"ListBase":["Node"],"List":["Node"],"Iterable":["Node"],"ListBase.E":"Node"},"NodeList":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"SelectElement":{"Element":[],"Node":[]},"_NamedNodeMap":{"ListBase":["Node"],"ImmutableListMixin":["Node"],"List":["Node"],"JavaScriptIndexingBehavior":["Node"],"Iterable":["Node"],"ListBase.E":"Node","ImmutableListMixin.E":"Node"},"_ElementCssClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FixedSizeListIterator":{"Iterator":["1"]},"CssClassSetImpl":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"FilteredElementList":{"ListBase":["Element"],"List":["Element"],"Iterable":["Element"],"ListBase.E":"Element"},"AttributeClassSet":{"SetBase":["String"],"Set":["String"],"Iterable":["String"]},"SvgElement":{"Element":[],"Node":[]},"BlackPieceFactory":{"ChessPieceFactory":[]},"WhitePieceFactory":{"ChessPieceFactory":[]},"Pawn":{"ChessPiece":[],"GamePiece":[]},"Knight":{"ChessPiece":[],"GamePiece":[]},"Bishop":{"ChessPiece":[],"GamePiece":[]},"Rook":{"ChessPiece":[],"GamePiece":[]},"King":{"ChessPiece":[],"GamePiece":[]},"Queen":{"ChessPiece":[],"GamePiece":[]},"BlackPawn":{"ChessPiece":[],"GamePiece":[]},"BlackKnight":{"ChessPiece":[],"GamePiece":[]},"BlackBishop":{"ChessPiece":[],"GamePiece":[]},"BlackRook":{"ChessPiece":[],"GamePiece":[]},"BlackKing":{"ChessPiece":[],"GamePiece":[]},"BlackQueen":{"ChessPiece":[],"GamePiece":[]},"ChequeredBoard":{"GameBoard":[]},"BoardWithPieces":{"GameBoard":[]},"BoardWithPawns":{"GameBoard":[]},"BoardWithBishops":{"GameBoard":[]},"BoardWithKnights":{"GameBoard":[]},"BoardWithRooks":{"GameBoard":[]},"BoardWithKings":{"GameBoard":[]},"BoardWithQueens":{"GameBoard":[]},"ChessGame":{"Game":[]},"ChessPiece":{"GamePiece":[]},"ChessKing":{"ChessPiece":[],"GamePiece":[]},"EmptyPiece":{"ChessPiece":[],"GamePiece":[]},"NoMovement":{"MovementStrategy":[]},"PawnMovement":{"MovementStrategy":[]},"KnightMovement":{"MovementStrategy":[]},"BishopMovement":{"MovementStrategy":[]},"RookMovement":{"MovementStrategy":[]},"QueenMovement":{"MovementStrategy":[]},"KingMovement":{"MovementStrategy":[]},"ChessBoardView":{"GameView":[]},"WhitePawn":{"ChessPiece":[],"GamePiece":[]},"WhiteKnight":{"ChessPiece":[],"GamePiece":[]},"WhiteBishop":{"ChessPiece":[],"GamePiece":[]},"WhiteRook":{"ChessPiece":[],"GamePiece":[]},"WhiteKing":{"ChessPiece":[],"GamePiece":[]},"WhiteQueen":{"ChessPiece":[],"GamePiece":[]}}'));
   A._Universe_addErasedTypes(init.typeUniverse, JSON.parse('{"_SetBase":1}'));
   var type$ = (function rtii() {
     var findType = A.findType;
     return {
+      ButtonElement: findType("ButtonElement"),
       ChessPiece: findType("ChessPiece"),
-      DecoratorCheckbox: findType("DecoratorCheckbox"),
       Element: findType("Element"),
       Event: findType("Event"),
       Function: findType("Function"),
       ImageElement: findType("ImageElement"),
-      InputElement: findType("InputElement"),
       Iterable_dynamic: findType("Iterable<@>"),
       JSArray_ChessPiece: findType("JSArray<ChessPiece>"),
       JSArray_String: findType("JSArray<String>"),
@@ -5326,7 +5619,6 @@
       JSNull: findType("JSNull"),
       JavaScriptFunction: findType("JavaScriptFunction"),
       JavaScriptIndexingBehavior_dynamic: findType("JavaScriptIndexingBehavior<@>"),
-      LabelElement: findType("LabelElement"),
       List_GamePiece: findType("List<GamePiece>"),
       List_List_GamePiece: findType("List<List<GamePiece>>"),
       List_bool: findType("List<bool>"),
@@ -5334,6 +5626,7 @@
       Node: findType("Node"),
       Null: findType("Null"),
       Object: findType("Object"),
+      PieceOption: findType("PieceOption"),
       Record: findType("Record"),
       Set_String: findType("Set<String>"),
       String: findType("String"),
@@ -5354,8 +5647,8 @@
     };
   })();
   (function constants() {
+    B.ButtonElement_methods = A.ButtonElement.prototype;
     B.ImageElement_methods = A.ImageElement.prototype;
-    B.InputElement_methods = A.InputElement.prototype;
     B.Interceptor_methods = J.Interceptor.prototype;
     B.JSArray_methods = J.JSArray.prototype;
     B.JSBool_methods = J.JSBool.prototype;
@@ -5527,8 +5820,8 @@
       }
       init.dispatchPropertyName = init.getIsolateTag("dispatch_record");
     }();
-    hunkHelpers.setOrUpdateInterceptorsByTag({DOMError: J.JavaScriptObject, MediaError: J.JavaScriptObject, NavigatorUserMediaError: J.JavaScriptObject, OverconstrainedError: J.JavaScriptObject, PositionError: J.JavaScriptObject, GeolocationPositionError: J.JavaScriptObject, HTMLAudioElement: A.HtmlElement, HTMLBRElement: A.HtmlElement, HTMLBaseElement: A.HtmlElement, HTMLBodyElement: A.HtmlElement, HTMLButtonElement: A.HtmlElement, HTMLCanvasElement: A.HtmlElement, HTMLContentElement: A.HtmlElement, HTMLDListElement: A.HtmlElement, HTMLDataElement: A.HtmlElement, HTMLDataListElement: A.HtmlElement, HTMLDetailsElement: A.HtmlElement, HTMLDialogElement: A.HtmlElement, HTMLDivElement: A.HtmlElement, HTMLEmbedElement: A.HtmlElement, HTMLFieldSetElement: A.HtmlElement, HTMLHRElement: A.HtmlElement, HTMLHeadElement: A.HtmlElement, HTMLHeadingElement: A.HtmlElement, HTMLHtmlElement: A.HtmlElement, HTMLIFrameElement: A.HtmlElement, HTMLLIElement: A.HtmlElement, HTMLLegendElement: A.HtmlElement, HTMLLinkElement: A.HtmlElement, HTMLMapElement: A.HtmlElement, HTMLMediaElement: A.HtmlElement, HTMLMenuElement: A.HtmlElement, HTMLMetaElement: A.HtmlElement, HTMLMeterElement: A.HtmlElement, HTMLModElement: A.HtmlElement, HTMLOListElement: A.HtmlElement, HTMLObjectElement: A.HtmlElement, HTMLOptGroupElement: A.HtmlElement, HTMLOptionElement: A.HtmlElement, HTMLOutputElement: A.HtmlElement, HTMLParagraphElement: A.HtmlElement, HTMLParamElement: A.HtmlElement, HTMLPictureElement: A.HtmlElement, HTMLPreElement: A.HtmlElement, HTMLProgressElement: A.HtmlElement, HTMLQuoteElement: A.HtmlElement, HTMLScriptElement: A.HtmlElement, HTMLShadowElement: A.HtmlElement, HTMLSlotElement: A.HtmlElement, HTMLSourceElement: A.HtmlElement, HTMLSpanElement: A.HtmlElement, HTMLStyleElement: A.HtmlElement, HTMLTableCaptionElement: A.HtmlElement, HTMLTableCellElement: A.HtmlElement, HTMLTableDataCellElement: A.HtmlElement, HTMLTableHeaderCellElement: A.HtmlElement, HTMLTableColElement: A.HtmlElement, HTMLTableElement: A.HtmlElement, HTMLTableRowElement: A.HtmlElement, HTMLTableSectionElement: A.HtmlElement, HTMLTemplateElement: A.HtmlElement, HTMLTextAreaElement: A.HtmlElement, HTMLTimeElement: A.HtmlElement, HTMLTitleElement: A.HtmlElement, HTMLTrackElement: A.HtmlElement, HTMLUListElement: A.HtmlElement, HTMLUnknownElement: A.HtmlElement, HTMLVideoElement: A.HtmlElement, HTMLDirectoryElement: A.HtmlElement, HTMLFontElement: A.HtmlElement, HTMLFrameElement: A.HtmlElement, HTMLFrameSetElement: A.HtmlElement, HTMLMarqueeElement: A.HtmlElement, HTMLElement: A.HtmlElement, HTMLAnchorElement: A.AnchorElement, HTMLAreaElement: A.AreaElement, CDATASection: A.CharacterData, CharacterData: A.CharacterData, Comment: A.CharacterData, ProcessingInstruction: A.CharacterData, Text: A.CharacterData, DOMException: A.DomException, DOMTokenList: A.DomTokenList, MathMLElement: A.Element, Element: A.Element, AbortPaymentEvent: A.Event, AnimationEvent: A.Event, AnimationPlaybackEvent: A.Event, ApplicationCacheErrorEvent: A.Event, BackgroundFetchClickEvent: A.Event, BackgroundFetchEvent: A.Event, BackgroundFetchFailEvent: A.Event, BackgroundFetchedEvent: A.Event, BeforeInstallPromptEvent: A.Event, BeforeUnloadEvent: A.Event, BlobEvent: A.Event, CanMakePaymentEvent: A.Event, ClipboardEvent: A.Event, CloseEvent: A.Event, CompositionEvent: A.Event, CustomEvent: A.Event, DeviceMotionEvent: A.Event, DeviceOrientationEvent: A.Event, ErrorEvent: A.Event, Event: A.Event, InputEvent: A.Event, SubmitEvent: A.Event, ExtendableEvent: A.Event, ExtendableMessageEvent: A.Event, FetchEvent: A.Event, FocusEvent: A.Event, FontFaceSetLoadEvent: A.Event, ForeignFetchEvent: A.Event, GamepadEvent: A.Event, HashChangeEvent: A.Event, InstallEvent: A.Event, KeyboardEvent: A.Event, MediaEncryptedEvent: A.Event, MediaKeyMessageEvent: A.Event, MediaQueryListEvent: A.Event, MediaStreamEvent: A.Event, MediaStreamTrackEvent: A.Event, MessageEvent: A.Event, MIDIConnectionEvent: A.Event, MIDIMessageEvent: A.Event, MouseEvent: A.Event, DragEvent: A.Event, MutationEvent: A.Event, NotificationEvent: A.Event, PageTransitionEvent: A.Event, PaymentRequestEvent: A.Event, PaymentRequestUpdateEvent: A.Event, PointerEvent: A.Event, PopStateEvent: A.Event, PresentationConnectionAvailableEvent: A.Event, PresentationConnectionCloseEvent: A.Event, ProgressEvent: A.Event, PromiseRejectionEvent: A.Event, PushEvent: A.Event, RTCDataChannelEvent: A.Event, RTCDTMFToneChangeEvent: A.Event, RTCPeerConnectionIceEvent: A.Event, RTCTrackEvent: A.Event, SecurityPolicyViolationEvent: A.Event, SensorErrorEvent: A.Event, SpeechRecognitionError: A.Event, SpeechRecognitionEvent: A.Event, SpeechSynthesisEvent: A.Event, StorageEvent: A.Event, SyncEvent: A.Event, TextEvent: A.Event, TouchEvent: A.Event, TrackEvent: A.Event, TransitionEvent: A.Event, WebKitTransitionEvent: A.Event, UIEvent: A.Event, VRDeviceEvent: A.Event, VRDisplayEvent: A.Event, VRSessionEvent: A.Event, WheelEvent: A.Event, MojoInterfaceRequestEvent: A.Event, ResourceProgressEvent: A.Event, USBConnectionEvent: A.Event, IDBVersionChangeEvent: A.Event, AudioProcessingEvent: A.Event, OfflineAudioCompletionEvent: A.Event, WebGLContextEvent: A.Event, EventTarget: A.EventTarget, HTMLFormElement: A.FormElement, HTMLCollection: A.HtmlCollection, HTMLFormControlsCollection: A.HtmlCollection, HTMLOptionsCollection: A.HtmlCollection, HTMLImageElement: A.ImageElement, HTMLInputElement: A.InputElement, HTMLLabelElement: A.LabelElement, Document: A.Node, DocumentFragment: A.Node, HTMLDocument: A.Node, ShadowRoot: A.Node, XMLDocument: A.Node, Attr: A.Node, DocumentType: A.Node, Node: A.Node, NodeList: A.NodeList, RadioNodeList: A.NodeList, HTMLSelectElement: A.SelectElement, NamedNodeMap: A._NamedNodeMap, MozNamedAttrMap: A._NamedNodeMap, SVGAElement: A.SvgElement, SVGAnimateElement: A.SvgElement, SVGAnimateMotionElement: A.SvgElement, SVGAnimateTransformElement: A.SvgElement, SVGAnimationElement: A.SvgElement, SVGCircleElement: A.SvgElement, SVGClipPathElement: A.SvgElement, SVGDefsElement: A.SvgElement, SVGDescElement: A.SvgElement, SVGDiscardElement: A.SvgElement, SVGEllipseElement: A.SvgElement, SVGFEBlendElement: A.SvgElement, SVGFEColorMatrixElement: A.SvgElement, SVGFEComponentTransferElement: A.SvgElement, SVGFECompositeElement: A.SvgElement, SVGFEConvolveMatrixElement: A.SvgElement, SVGFEDiffuseLightingElement: A.SvgElement, SVGFEDisplacementMapElement: A.SvgElement, SVGFEDistantLightElement: A.SvgElement, SVGFEFloodElement: A.SvgElement, SVGFEFuncAElement: A.SvgElement, SVGFEFuncBElement: A.SvgElement, SVGFEFuncGElement: A.SvgElement, SVGFEFuncRElement: A.SvgElement, SVGFEGaussianBlurElement: A.SvgElement, SVGFEImageElement: A.SvgElement, SVGFEMergeElement: A.SvgElement, SVGFEMergeNodeElement: A.SvgElement, SVGFEMorphologyElement: A.SvgElement, SVGFEOffsetElement: A.SvgElement, SVGFEPointLightElement: A.SvgElement, SVGFESpecularLightingElement: A.SvgElement, SVGFESpotLightElement: A.SvgElement, SVGFETileElement: A.SvgElement, SVGFETurbulenceElement: A.SvgElement, SVGFilterElement: A.SvgElement, SVGForeignObjectElement: A.SvgElement, SVGGElement: A.SvgElement, SVGGeometryElement: A.SvgElement, SVGGraphicsElement: A.SvgElement, SVGImageElement: A.SvgElement, SVGLineElement: A.SvgElement, SVGLinearGradientElement: A.SvgElement, SVGMarkerElement: A.SvgElement, SVGMaskElement: A.SvgElement, SVGMetadataElement: A.SvgElement, SVGPathElement: A.SvgElement, SVGPatternElement: A.SvgElement, SVGPolygonElement: A.SvgElement, SVGPolylineElement: A.SvgElement, SVGRadialGradientElement: A.SvgElement, SVGRectElement: A.SvgElement, SVGScriptElement: A.SvgElement, SVGSetElement: A.SvgElement, SVGStopElement: A.SvgElement, SVGStyleElement: A.SvgElement, SVGElement: A.SvgElement, SVGSVGElement: A.SvgElement, SVGSwitchElement: A.SvgElement, SVGSymbolElement: A.SvgElement, SVGTSpanElement: A.SvgElement, SVGTextContentElement: A.SvgElement, SVGTextElement: A.SvgElement, SVGTextPathElement: A.SvgElement, SVGTextPositioningElement: A.SvgElement, SVGTitleElement: A.SvgElement, SVGUseElement: A.SvgElement, SVGViewElement: A.SvgElement, SVGGradientElement: A.SvgElement, SVGComponentTransferFunctionElement: A.SvgElement, SVGFEDropShadowElement: A.SvgElement, SVGMPathElement: A.SvgElement});
-    hunkHelpers.setOrUpdateLeafTags({DOMError: true, MediaError: true, NavigatorUserMediaError: true, OverconstrainedError: true, PositionError: true, GeolocationPositionError: true, HTMLAudioElement: true, HTMLBRElement: true, HTMLBaseElement: true, HTMLBodyElement: true, HTMLButtonElement: true, HTMLCanvasElement: true, HTMLContentElement: true, HTMLDListElement: true, HTMLDataElement: true, HTMLDataListElement: true, HTMLDetailsElement: true, HTMLDialogElement: true, HTMLDivElement: true, HTMLEmbedElement: true, HTMLFieldSetElement: true, HTMLHRElement: true, HTMLHeadElement: true, HTMLHeadingElement: true, HTMLHtmlElement: true, HTMLIFrameElement: true, HTMLLIElement: true, HTMLLegendElement: true, HTMLLinkElement: true, HTMLMapElement: true, HTMLMediaElement: true, HTMLMenuElement: true, HTMLMetaElement: true, HTMLMeterElement: true, HTMLModElement: true, HTMLOListElement: true, HTMLObjectElement: true, HTMLOptGroupElement: true, HTMLOptionElement: true, HTMLOutputElement: true, HTMLParagraphElement: true, HTMLParamElement: true, HTMLPictureElement: true, HTMLPreElement: true, HTMLProgressElement: true, HTMLQuoteElement: true, HTMLScriptElement: true, HTMLShadowElement: true, HTMLSlotElement: true, HTMLSourceElement: true, HTMLSpanElement: true, HTMLStyleElement: true, HTMLTableCaptionElement: true, HTMLTableCellElement: true, HTMLTableDataCellElement: true, HTMLTableHeaderCellElement: true, HTMLTableColElement: true, HTMLTableElement: true, HTMLTableRowElement: true, HTMLTableSectionElement: true, HTMLTemplateElement: true, HTMLTextAreaElement: true, HTMLTimeElement: true, HTMLTitleElement: true, HTMLTrackElement: true, HTMLUListElement: true, HTMLUnknownElement: true, HTMLVideoElement: true, HTMLDirectoryElement: true, HTMLFontElement: true, HTMLFrameElement: true, HTMLFrameSetElement: true, HTMLMarqueeElement: true, HTMLElement: false, HTMLAnchorElement: true, HTMLAreaElement: true, CDATASection: true, CharacterData: true, Comment: true, ProcessingInstruction: true, Text: true, DOMException: true, DOMTokenList: true, MathMLElement: true, Element: false, AbortPaymentEvent: true, AnimationEvent: true, AnimationPlaybackEvent: true, ApplicationCacheErrorEvent: true, BackgroundFetchClickEvent: true, BackgroundFetchEvent: true, BackgroundFetchFailEvent: true, BackgroundFetchedEvent: true, BeforeInstallPromptEvent: true, BeforeUnloadEvent: true, BlobEvent: true, CanMakePaymentEvent: true, ClipboardEvent: true, CloseEvent: true, CompositionEvent: true, CustomEvent: true, DeviceMotionEvent: true, DeviceOrientationEvent: true, ErrorEvent: true, Event: true, InputEvent: true, SubmitEvent: true, ExtendableEvent: true, ExtendableMessageEvent: true, FetchEvent: true, FocusEvent: true, FontFaceSetLoadEvent: true, ForeignFetchEvent: true, GamepadEvent: true, HashChangeEvent: true, InstallEvent: true, KeyboardEvent: true, MediaEncryptedEvent: true, MediaKeyMessageEvent: true, MediaQueryListEvent: true, MediaStreamEvent: true, MediaStreamTrackEvent: true, MessageEvent: true, MIDIConnectionEvent: true, MIDIMessageEvent: true, MouseEvent: true, DragEvent: true, MutationEvent: true, NotificationEvent: true, PageTransitionEvent: true, PaymentRequestEvent: true, PaymentRequestUpdateEvent: true, PointerEvent: true, PopStateEvent: true, PresentationConnectionAvailableEvent: true, PresentationConnectionCloseEvent: true, ProgressEvent: true, PromiseRejectionEvent: true, PushEvent: true, RTCDataChannelEvent: true, RTCDTMFToneChangeEvent: true, RTCPeerConnectionIceEvent: true, RTCTrackEvent: true, SecurityPolicyViolationEvent: true, SensorErrorEvent: true, SpeechRecognitionError: true, SpeechRecognitionEvent: true, SpeechSynthesisEvent: true, StorageEvent: true, SyncEvent: true, TextEvent: true, TouchEvent: true, TrackEvent: true, TransitionEvent: true, WebKitTransitionEvent: true, UIEvent: true, VRDeviceEvent: true, VRDisplayEvent: true, VRSessionEvent: true, WheelEvent: true, MojoInterfaceRequestEvent: true, ResourceProgressEvent: true, USBConnectionEvent: true, IDBVersionChangeEvent: true, AudioProcessingEvent: true, OfflineAudioCompletionEvent: true, WebGLContextEvent: true, EventTarget: false, HTMLFormElement: true, HTMLCollection: true, HTMLFormControlsCollection: true, HTMLOptionsCollection: true, HTMLImageElement: true, HTMLInputElement: true, HTMLLabelElement: true, Document: true, DocumentFragment: true, HTMLDocument: true, ShadowRoot: true, XMLDocument: true, Attr: true, DocumentType: true, Node: false, NodeList: true, RadioNodeList: true, HTMLSelectElement: true, NamedNodeMap: true, MozNamedAttrMap: true, SVGAElement: true, SVGAnimateElement: true, SVGAnimateMotionElement: true, SVGAnimateTransformElement: true, SVGAnimationElement: true, SVGCircleElement: true, SVGClipPathElement: true, SVGDefsElement: true, SVGDescElement: true, SVGDiscardElement: true, SVGEllipseElement: true, SVGFEBlendElement: true, SVGFEColorMatrixElement: true, SVGFEComponentTransferElement: true, SVGFECompositeElement: true, SVGFEConvolveMatrixElement: true, SVGFEDiffuseLightingElement: true, SVGFEDisplacementMapElement: true, SVGFEDistantLightElement: true, SVGFEFloodElement: true, SVGFEFuncAElement: true, SVGFEFuncBElement: true, SVGFEFuncGElement: true, SVGFEFuncRElement: true, SVGFEGaussianBlurElement: true, SVGFEImageElement: true, SVGFEMergeElement: true, SVGFEMergeNodeElement: true, SVGFEMorphologyElement: true, SVGFEOffsetElement: true, SVGFEPointLightElement: true, SVGFESpecularLightingElement: true, SVGFESpotLightElement: true, SVGFETileElement: true, SVGFETurbulenceElement: true, SVGFilterElement: true, SVGForeignObjectElement: true, SVGGElement: true, SVGGeometryElement: true, SVGGraphicsElement: true, SVGImageElement: true, SVGLineElement: true, SVGLinearGradientElement: true, SVGMarkerElement: true, SVGMaskElement: true, SVGMetadataElement: true, SVGPathElement: true, SVGPatternElement: true, SVGPolygonElement: true, SVGPolylineElement: true, SVGRadialGradientElement: true, SVGRectElement: true, SVGScriptElement: true, SVGSetElement: true, SVGStopElement: true, SVGStyleElement: true, SVGElement: true, SVGSVGElement: true, SVGSwitchElement: true, SVGSymbolElement: true, SVGTSpanElement: true, SVGTextContentElement: true, SVGTextElement: true, SVGTextPathElement: true, SVGTextPositioningElement: true, SVGTitleElement: true, SVGUseElement: true, SVGViewElement: true, SVGGradientElement: true, SVGComponentTransferFunctionElement: true, SVGFEDropShadowElement: true, SVGMPathElement: true});
+    hunkHelpers.setOrUpdateInterceptorsByTag({DOMError: J.JavaScriptObject, MediaError: J.JavaScriptObject, NavigatorUserMediaError: J.JavaScriptObject, OverconstrainedError: J.JavaScriptObject, PositionError: J.JavaScriptObject, GeolocationPositionError: J.JavaScriptObject, HTMLAudioElement: A.HtmlElement, HTMLBRElement: A.HtmlElement, HTMLBaseElement: A.HtmlElement, HTMLBodyElement: A.HtmlElement, HTMLCanvasElement: A.HtmlElement, HTMLContentElement: A.HtmlElement, HTMLDListElement: A.HtmlElement, HTMLDataElement: A.HtmlElement, HTMLDataListElement: A.HtmlElement, HTMLDetailsElement: A.HtmlElement, HTMLDialogElement: A.HtmlElement, HTMLDivElement: A.HtmlElement, HTMLEmbedElement: A.HtmlElement, HTMLFieldSetElement: A.HtmlElement, HTMLHRElement: A.HtmlElement, HTMLHeadElement: A.HtmlElement, HTMLHeadingElement: A.HtmlElement, HTMLHtmlElement: A.HtmlElement, HTMLIFrameElement: A.HtmlElement, HTMLInputElement: A.HtmlElement, HTMLLIElement: A.HtmlElement, HTMLLabelElement: A.HtmlElement, HTMLLegendElement: A.HtmlElement, HTMLLinkElement: A.HtmlElement, HTMLMapElement: A.HtmlElement, HTMLMediaElement: A.HtmlElement, HTMLMenuElement: A.HtmlElement, HTMLMetaElement: A.HtmlElement, HTMLMeterElement: A.HtmlElement, HTMLModElement: A.HtmlElement, HTMLOListElement: A.HtmlElement, HTMLObjectElement: A.HtmlElement, HTMLOptGroupElement: A.HtmlElement, HTMLOptionElement: A.HtmlElement, HTMLOutputElement: A.HtmlElement, HTMLParagraphElement: A.HtmlElement, HTMLParamElement: A.HtmlElement, HTMLPictureElement: A.HtmlElement, HTMLPreElement: A.HtmlElement, HTMLProgressElement: A.HtmlElement, HTMLQuoteElement: A.HtmlElement, HTMLScriptElement: A.HtmlElement, HTMLShadowElement: A.HtmlElement, HTMLSlotElement: A.HtmlElement, HTMLSourceElement: A.HtmlElement, HTMLSpanElement: A.HtmlElement, HTMLStyleElement: A.HtmlElement, HTMLTableCaptionElement: A.HtmlElement, HTMLTableCellElement: A.HtmlElement, HTMLTableDataCellElement: A.HtmlElement, HTMLTableHeaderCellElement: A.HtmlElement, HTMLTableColElement: A.HtmlElement, HTMLTableElement: A.HtmlElement, HTMLTableRowElement: A.HtmlElement, HTMLTableSectionElement: A.HtmlElement, HTMLTemplateElement: A.HtmlElement, HTMLTextAreaElement: A.HtmlElement, HTMLTimeElement: A.HtmlElement, HTMLTitleElement: A.HtmlElement, HTMLTrackElement: A.HtmlElement, HTMLUListElement: A.HtmlElement, HTMLUnknownElement: A.HtmlElement, HTMLVideoElement: A.HtmlElement, HTMLDirectoryElement: A.HtmlElement, HTMLFontElement: A.HtmlElement, HTMLFrameElement: A.HtmlElement, HTMLFrameSetElement: A.HtmlElement, HTMLMarqueeElement: A.HtmlElement, HTMLElement: A.HtmlElement, HTMLAnchorElement: A.AnchorElement, HTMLAreaElement: A.AreaElement, HTMLButtonElement: A.ButtonElement, CDATASection: A.CharacterData, CharacterData: A.CharacterData, Comment: A.CharacterData, ProcessingInstruction: A.CharacterData, Text: A.CharacterData, DOMException: A.DomException, DOMTokenList: A.DomTokenList, MathMLElement: A.Element, Element: A.Element, AbortPaymentEvent: A.Event, AnimationEvent: A.Event, AnimationPlaybackEvent: A.Event, ApplicationCacheErrorEvent: A.Event, BackgroundFetchClickEvent: A.Event, BackgroundFetchEvent: A.Event, BackgroundFetchFailEvent: A.Event, BackgroundFetchedEvent: A.Event, BeforeInstallPromptEvent: A.Event, BeforeUnloadEvent: A.Event, BlobEvent: A.Event, CanMakePaymentEvent: A.Event, ClipboardEvent: A.Event, CloseEvent: A.Event, CompositionEvent: A.Event, CustomEvent: A.Event, DeviceMotionEvent: A.Event, DeviceOrientationEvent: A.Event, ErrorEvent: A.Event, Event: A.Event, InputEvent: A.Event, SubmitEvent: A.Event, ExtendableEvent: A.Event, ExtendableMessageEvent: A.Event, FetchEvent: A.Event, FocusEvent: A.Event, FontFaceSetLoadEvent: A.Event, ForeignFetchEvent: A.Event, GamepadEvent: A.Event, HashChangeEvent: A.Event, InstallEvent: A.Event, KeyboardEvent: A.Event, MediaEncryptedEvent: A.Event, MediaKeyMessageEvent: A.Event, MediaQueryListEvent: A.Event, MediaStreamEvent: A.Event, MediaStreamTrackEvent: A.Event, MessageEvent: A.Event, MIDIConnectionEvent: A.Event, MIDIMessageEvent: A.Event, MouseEvent: A.Event, DragEvent: A.Event, MutationEvent: A.Event, NotificationEvent: A.Event, PageTransitionEvent: A.Event, PaymentRequestEvent: A.Event, PaymentRequestUpdateEvent: A.Event, PointerEvent: A.Event, PopStateEvent: A.Event, PresentationConnectionAvailableEvent: A.Event, PresentationConnectionCloseEvent: A.Event, ProgressEvent: A.Event, PromiseRejectionEvent: A.Event, PushEvent: A.Event, RTCDataChannelEvent: A.Event, RTCDTMFToneChangeEvent: A.Event, RTCPeerConnectionIceEvent: A.Event, RTCTrackEvent: A.Event, SecurityPolicyViolationEvent: A.Event, SensorErrorEvent: A.Event, SpeechRecognitionError: A.Event, SpeechRecognitionEvent: A.Event, SpeechSynthesisEvent: A.Event, StorageEvent: A.Event, SyncEvent: A.Event, TextEvent: A.Event, TouchEvent: A.Event, TrackEvent: A.Event, TransitionEvent: A.Event, WebKitTransitionEvent: A.Event, UIEvent: A.Event, VRDeviceEvent: A.Event, VRDisplayEvent: A.Event, VRSessionEvent: A.Event, WheelEvent: A.Event, MojoInterfaceRequestEvent: A.Event, ResourceProgressEvent: A.Event, USBConnectionEvent: A.Event, IDBVersionChangeEvent: A.Event, AudioProcessingEvent: A.Event, OfflineAudioCompletionEvent: A.Event, WebGLContextEvent: A.Event, EventTarget: A.EventTarget, HTMLFormElement: A.FormElement, HTMLCollection: A.HtmlCollection, HTMLFormControlsCollection: A.HtmlCollection, HTMLOptionsCollection: A.HtmlCollection, HTMLImageElement: A.ImageElement, Document: A.Node, DocumentFragment: A.Node, HTMLDocument: A.Node, ShadowRoot: A.Node, XMLDocument: A.Node, Attr: A.Node, DocumentType: A.Node, Node: A.Node, NodeList: A.NodeList, RadioNodeList: A.NodeList, HTMLSelectElement: A.SelectElement, NamedNodeMap: A._NamedNodeMap, MozNamedAttrMap: A._NamedNodeMap, SVGAElement: A.SvgElement, SVGAnimateElement: A.SvgElement, SVGAnimateMotionElement: A.SvgElement, SVGAnimateTransformElement: A.SvgElement, SVGAnimationElement: A.SvgElement, SVGCircleElement: A.SvgElement, SVGClipPathElement: A.SvgElement, SVGDefsElement: A.SvgElement, SVGDescElement: A.SvgElement, SVGDiscardElement: A.SvgElement, SVGEllipseElement: A.SvgElement, SVGFEBlendElement: A.SvgElement, SVGFEColorMatrixElement: A.SvgElement, SVGFEComponentTransferElement: A.SvgElement, SVGFECompositeElement: A.SvgElement, SVGFEConvolveMatrixElement: A.SvgElement, SVGFEDiffuseLightingElement: A.SvgElement, SVGFEDisplacementMapElement: A.SvgElement, SVGFEDistantLightElement: A.SvgElement, SVGFEFloodElement: A.SvgElement, SVGFEFuncAElement: A.SvgElement, SVGFEFuncBElement: A.SvgElement, SVGFEFuncGElement: A.SvgElement, SVGFEFuncRElement: A.SvgElement, SVGFEGaussianBlurElement: A.SvgElement, SVGFEImageElement: A.SvgElement, SVGFEMergeElement: A.SvgElement, SVGFEMergeNodeElement: A.SvgElement, SVGFEMorphologyElement: A.SvgElement, SVGFEOffsetElement: A.SvgElement, SVGFEPointLightElement: A.SvgElement, SVGFESpecularLightingElement: A.SvgElement, SVGFESpotLightElement: A.SvgElement, SVGFETileElement: A.SvgElement, SVGFETurbulenceElement: A.SvgElement, SVGFilterElement: A.SvgElement, SVGForeignObjectElement: A.SvgElement, SVGGElement: A.SvgElement, SVGGeometryElement: A.SvgElement, SVGGraphicsElement: A.SvgElement, SVGImageElement: A.SvgElement, SVGLineElement: A.SvgElement, SVGLinearGradientElement: A.SvgElement, SVGMarkerElement: A.SvgElement, SVGMaskElement: A.SvgElement, SVGMetadataElement: A.SvgElement, SVGPathElement: A.SvgElement, SVGPatternElement: A.SvgElement, SVGPolygonElement: A.SvgElement, SVGPolylineElement: A.SvgElement, SVGRadialGradientElement: A.SvgElement, SVGRectElement: A.SvgElement, SVGScriptElement: A.SvgElement, SVGSetElement: A.SvgElement, SVGStopElement: A.SvgElement, SVGStyleElement: A.SvgElement, SVGElement: A.SvgElement, SVGSVGElement: A.SvgElement, SVGSwitchElement: A.SvgElement, SVGSymbolElement: A.SvgElement, SVGTSpanElement: A.SvgElement, SVGTextContentElement: A.SvgElement, SVGTextElement: A.SvgElement, SVGTextPathElement: A.SvgElement, SVGTextPositioningElement: A.SvgElement, SVGTitleElement: A.SvgElement, SVGUseElement: A.SvgElement, SVGViewElement: A.SvgElement, SVGGradientElement: A.SvgElement, SVGComponentTransferFunctionElement: A.SvgElement, SVGFEDropShadowElement: A.SvgElement, SVGMPathElement: A.SvgElement});
+    hunkHelpers.setOrUpdateLeafTags({DOMError: true, MediaError: true, NavigatorUserMediaError: true, OverconstrainedError: true, PositionError: true, GeolocationPositionError: true, HTMLAudioElement: true, HTMLBRElement: true, HTMLBaseElement: true, HTMLBodyElement: true, HTMLCanvasElement: true, HTMLContentElement: true, HTMLDListElement: true, HTMLDataElement: true, HTMLDataListElement: true, HTMLDetailsElement: true, HTMLDialogElement: true, HTMLDivElement: true, HTMLEmbedElement: true, HTMLFieldSetElement: true, HTMLHRElement: true, HTMLHeadElement: true, HTMLHeadingElement: true, HTMLHtmlElement: true, HTMLIFrameElement: true, HTMLInputElement: true, HTMLLIElement: true, HTMLLabelElement: true, HTMLLegendElement: true, HTMLLinkElement: true, HTMLMapElement: true, HTMLMediaElement: true, HTMLMenuElement: true, HTMLMetaElement: true, HTMLMeterElement: true, HTMLModElement: true, HTMLOListElement: true, HTMLObjectElement: true, HTMLOptGroupElement: true, HTMLOptionElement: true, HTMLOutputElement: true, HTMLParagraphElement: true, HTMLParamElement: true, HTMLPictureElement: true, HTMLPreElement: true, HTMLProgressElement: true, HTMLQuoteElement: true, HTMLScriptElement: true, HTMLShadowElement: true, HTMLSlotElement: true, HTMLSourceElement: true, HTMLSpanElement: true, HTMLStyleElement: true, HTMLTableCaptionElement: true, HTMLTableCellElement: true, HTMLTableDataCellElement: true, HTMLTableHeaderCellElement: true, HTMLTableColElement: true, HTMLTableElement: true, HTMLTableRowElement: true, HTMLTableSectionElement: true, HTMLTemplateElement: true, HTMLTextAreaElement: true, HTMLTimeElement: true, HTMLTitleElement: true, HTMLTrackElement: true, HTMLUListElement: true, HTMLUnknownElement: true, HTMLVideoElement: true, HTMLDirectoryElement: true, HTMLFontElement: true, HTMLFrameElement: true, HTMLFrameSetElement: true, HTMLMarqueeElement: true, HTMLElement: false, HTMLAnchorElement: true, HTMLAreaElement: true, HTMLButtonElement: true, CDATASection: true, CharacterData: true, Comment: true, ProcessingInstruction: true, Text: true, DOMException: true, DOMTokenList: true, MathMLElement: true, Element: false, AbortPaymentEvent: true, AnimationEvent: true, AnimationPlaybackEvent: true, ApplicationCacheErrorEvent: true, BackgroundFetchClickEvent: true, BackgroundFetchEvent: true, BackgroundFetchFailEvent: true, BackgroundFetchedEvent: true, BeforeInstallPromptEvent: true, BeforeUnloadEvent: true, BlobEvent: true, CanMakePaymentEvent: true, ClipboardEvent: true, CloseEvent: true, CompositionEvent: true, CustomEvent: true, DeviceMotionEvent: true, DeviceOrientationEvent: true, ErrorEvent: true, Event: true, InputEvent: true, SubmitEvent: true, ExtendableEvent: true, ExtendableMessageEvent: true, FetchEvent: true, FocusEvent: true, FontFaceSetLoadEvent: true, ForeignFetchEvent: true, GamepadEvent: true, HashChangeEvent: true, InstallEvent: true, KeyboardEvent: true, MediaEncryptedEvent: true, MediaKeyMessageEvent: true, MediaQueryListEvent: true, MediaStreamEvent: true, MediaStreamTrackEvent: true, MessageEvent: true, MIDIConnectionEvent: true, MIDIMessageEvent: true, MouseEvent: true, DragEvent: true, MutationEvent: true, NotificationEvent: true, PageTransitionEvent: true, PaymentRequestEvent: true, PaymentRequestUpdateEvent: true, PointerEvent: true, PopStateEvent: true, PresentationConnectionAvailableEvent: true, PresentationConnectionCloseEvent: true, ProgressEvent: true, PromiseRejectionEvent: true, PushEvent: true, RTCDataChannelEvent: true, RTCDTMFToneChangeEvent: true, RTCPeerConnectionIceEvent: true, RTCTrackEvent: true, SecurityPolicyViolationEvent: true, SensorErrorEvent: true, SpeechRecognitionError: true, SpeechRecognitionEvent: true, SpeechSynthesisEvent: true, StorageEvent: true, SyncEvent: true, TextEvent: true, TouchEvent: true, TrackEvent: true, TransitionEvent: true, WebKitTransitionEvent: true, UIEvent: true, VRDeviceEvent: true, VRDisplayEvent: true, VRSessionEvent: true, WheelEvent: true, MojoInterfaceRequestEvent: true, ResourceProgressEvent: true, USBConnectionEvent: true, IDBVersionChangeEvent: true, AudioProcessingEvent: true, OfflineAudioCompletionEvent: true, WebGLContextEvent: true, EventTarget: false, HTMLFormElement: true, HTMLCollection: true, HTMLFormControlsCollection: true, HTMLOptionsCollection: true, HTMLImageElement: true, Document: true, DocumentFragment: true, HTMLDocument: true, ShadowRoot: true, XMLDocument: true, Attr: true, DocumentType: true, Node: false, NodeList: true, RadioNodeList: true, HTMLSelectElement: true, NamedNodeMap: true, MozNamedAttrMap: true, SVGAElement: true, SVGAnimateElement: true, SVGAnimateMotionElement: true, SVGAnimateTransformElement: true, SVGAnimationElement: true, SVGCircleElement: true, SVGClipPathElement: true, SVGDefsElement: true, SVGDescElement: true, SVGDiscardElement: true, SVGEllipseElement: true, SVGFEBlendElement: true, SVGFEColorMatrixElement: true, SVGFEComponentTransferElement: true, SVGFECompositeElement: true, SVGFEConvolveMatrixElement: true, SVGFEDiffuseLightingElement: true, SVGFEDisplacementMapElement: true, SVGFEDistantLightElement: true, SVGFEFloodElement: true, SVGFEFuncAElement: true, SVGFEFuncBElement: true, SVGFEFuncGElement: true, SVGFEFuncRElement: true, SVGFEGaussianBlurElement: true, SVGFEImageElement: true, SVGFEMergeElement: true, SVGFEMergeNodeElement: true, SVGFEMorphologyElement: true, SVGFEOffsetElement: true, SVGFEPointLightElement: true, SVGFESpecularLightingElement: true, SVGFESpotLightElement: true, SVGFETileElement: true, SVGFETurbulenceElement: true, SVGFilterElement: true, SVGForeignObjectElement: true, SVGGElement: true, SVGGeometryElement: true, SVGGraphicsElement: true, SVGImageElement: true, SVGLineElement: true, SVGLinearGradientElement: true, SVGMarkerElement: true, SVGMaskElement: true, SVGMetadataElement: true, SVGPathElement: true, SVGPatternElement: true, SVGPolygonElement: true, SVGPolylineElement: true, SVGRadialGradientElement: true, SVGRectElement: true, SVGScriptElement: true, SVGSetElement: true, SVGStopElement: true, SVGStyleElement: true, SVGElement: true, SVGSVGElement: true, SVGSwitchElement: true, SVGSymbolElement: true, SVGTSpanElement: true, SVGTextContentElement: true, SVGTextElement: true, SVGTextPathElement: true, SVGTextPositioningElement: true, SVGTitleElement: true, SVGUseElement: true, SVGViewElement: true, SVGGradientElement: true, SVGComponentTransferFunctionElement: true, SVGFEDropShadowElement: true, SVGMPathElement: true});
   })();
   convertAllToFastObject(holders);
   convertToFastObject($);

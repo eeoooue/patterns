@@ -1,110 +1,118 @@
 import 'dart:html';
-import 'game.dart';
-import 'chess/chess_game.dart';
 
-abstract class Demo {
-  void insertCheckboxes();
-  void rebuildGame();
-}
+// game-specific classes
+import 'abstractfactory.dart';
+import './chess/chess_game.dart';
+import './chess/chess_pieces.dart';
 
-class DecoratorDemo implements Demo {
-  Element sideTray;
-  List<DecoratorCheckbox> checkboxes = List.empty(growable: true);
-  Game game;
+class PieceBox {
+  ChessGame game;
+  Element container;
+  ButtonElement button;
+  ChessPieceFactory factory = BlackPieceFactory();
+  ChessPiece? selection = null;
 
-  DecoratorDemo(this.sideTray, this.game) {
-    insertCheckboxes();
+  PieceBox(this.game, this.container, this.button) {
+    armButton();
+    switchColour();
   }
 
-  void insertCheckboxes() {
-    addCheckbox("Pawn");
-    addCheckbox("Bishop");
-    addCheckbox("Knight");
-    addCheckbox("Rook");
-    addCheckbox("Queen");
-    addCheckbox("King");
-  }
-
-  void addCheckbox(String piece) {
-    DecoratorCheckbox box = DecoratorCheckbox(this, piece);
-    checkboxes.add(box);
-    sideTray.children.add(box.container);
-  }
-
-  void rebuildGame() {
-    List<bool> state = List.empty(growable: true);
-    for (int i = 0; i < checkboxes.length; i++) {
-      state.add(checkboxes[i].checked);
-    }
-
-    var chessGame = game;
-    if (chessGame is ChessGame) {
-      chessGame.setupPieces(state);
-    }
-  }
-}
-
-class DecoratorCheckbox {
-  Element container = document.createElement("div");
-  Demo demo;
-  String piece;
-  bool checked = true;
-
-  DecoratorCheckbox(this.demo, this.piece) {
-    container.classes.add("deco-cbox");
-    Element cbox = createCheckbox();
-    container.children.add(cbox);
-    Element label = createLabel();
-    container.children.add(label);
-
-    if (cbox is InputElement) {
-      armCheckbox(cbox);
-    }
-  }
-
-  void armCheckbox(InputElement cbox) {
-    cbox.addEventListener("input", (event) {
-      checked = !checked;
-      demo.rebuildGame();
+  void armButton() {
+    button.addEventListener("click", (event) {
+      switchColour();
     });
   }
 
-  Element createCheckbox() {
-    Element cbox = document.createElement("input");
-    cbox.id = "${piece}-cbox";
-    cbox.classes.add("cbox");
-    if (cbox is InputElement) {
-      cbox.type = "checkbox";
-      cbox.checked = true;
-    }
+  void switchColour() {
+    String current = factory.colour;
+    factory = (current == "black") ? WhitePieceFactory() : BlackPieceFactory();
 
-    return cbox;
+    button.classes.remove("${current}-btn");
+    button.classes.add("${factory.colour}-btn");
+
+    String title = (factory.colour == "black") ? "Black" : "White";
+    button.innerText = "${title}PieceFactory";
+
+    presentPieces();
   }
 
-  Element createLabel() {
-    Element label = document.createElement("label");
-    label.classes.add("cbox-label");
-    if (label is LabelElement) {
-      label.htmlFor = "${piece}-cbox";
-      label.innerText = "${piece}s";
-    }
+  void activateSelection(ChessPiece piece) {
+    print("selection indicated! ${piece.name} ${piece.colour}");
+    selection = piece;
+    game.threatenAllWith(piece);
+    presentPieces();
+  }
 
-    return label;
+  void presentPieces() {
+    container.children.clear();
+    for (PieceOption option in getOptions()) {
+      container.children.add(option.element);
+    }
+  }
+
+  List<PieceOption> getOptions() {
+    List<PieceOption> options = List.empty(growable: true);
+
+    options.add(PieceOption(this, factory.createPawn()));
+    options.add(PieceOption(this, factory.createBishop()));
+    options.add(PieceOption(this, factory.createKnight()));
+    options.add(PieceOption(this, factory.createRook()));
+    options.add(PieceOption(this, factory.createQueen()));
+    options.add(PieceOption(this, factory.createKing()));
+
+    return options;
+  }
+}
+
+class PieceOption {
+  PieceBox parent;
+  ChessPiece piece;
+  late Element element;
+
+  PieceOption(this.parent, this.piece) {
+    element = createElement();
+  }
+
+  Element createElement() {
+    Element element = document.createElement("div");
+
+    element.classes.add("piece-option");
+
+    element.addEventListener("click", (event) {
+      parent.activateSelection(piece);
+    });
+
+    element.children.add(piece.getElement());
+
+    return element;
   }
 }
 
 void main() {
-  setupDemo();
+  setupBox();
 }
 
-void setupDemo() {
+void setupBox() {
   Element? gameContainer = document.getElementById("game-container");
-  Element? sideTray = document.getElementById("side-tray");
 
-  if (gameContainer is Element && sideTray is Element) {
-    Game game = ChessGame(gameContainer);
+  if (gameContainer is Element) {
+    ChessGame game = ChessGame(gameContainer);
     game.startGame();
 
-    DecoratorDemo(sideTray, game);
+    List<bool> initState = List.empty(growable: true);
+    initState.add(false);
+    initState.add(false);
+    initState.add(false);
+    initState.add(false);
+    initState.add(false);
+    initState.add(false);
+    game.setupPieces(initState);
+
+    Element? switchBtn = document.querySelector(".colour-switcher");
+    Element? pieceContainer = document.getElementById("piece-box");
+
+    if (switchBtn is ButtonElement && pieceContainer is Element) {
+      PieceBox(game, pieceContainer, switchBtn);
+    }
   }
 }

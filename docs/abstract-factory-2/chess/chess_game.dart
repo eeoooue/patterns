@@ -39,12 +39,35 @@ class ChessGame implements Game {
     refreshView();
   }
 
+  void threatenAllWith(ChessPiece selection) {
+    logic.clearMoveOptions();
+    logic.activePiece = selection;
+
+    for (List<GamePiece> row in board.getBoardState()) {
+      for (GamePiece piece in row) {
+        if (piece is ChessPiece && piece.colour != selection.colour) {
+          piece.threatened = true;
+        }
+      }
+    }
+
+    /// refreshView();
+  }
+
   String getTurnPlayer() {
     return (turnCount % 2 == 0) ? "w" : "b";
   }
 
   void submitMove(int i, int j) {
+    int counter = turnCount;
+
     logic.submitMove(i, j);
+
+    if (counter == turnCount) {
+      turnCount += 1;
+      logic.submitMove(i, j);
+    }
+
     refreshView();
   }
 
