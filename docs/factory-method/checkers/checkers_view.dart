@@ -1,5 +1,6 @@
 import 'checkers_pieces.dart';
-import 'game.dart';
+import '../game.dart';
+
 import 'dart:html';
 
 class CheckersView implements GameView {

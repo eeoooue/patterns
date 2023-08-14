@@ -1,4 +1,4 @@
-import 'game.dart';
+import '../game.dart';
 
 class ReversiPiece extends GamePiece {
   String colour;

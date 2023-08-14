@@ -1,6 +1,6 @@
 import 'dart:collection';
 import 'dart:html';
-import 'game.dart';
+import '../game.dart';
 
 class ChessPiece extends GamePiece {
   MovementStrategy moveStrategy;

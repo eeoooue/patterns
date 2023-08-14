@@ -1,6 +1,6 @@
 import 'reversi_game.dart';
 import 'reversi_board.dart';
-import 'game.dart';
+import '../game.dart';
 import 'reversi_pieces.dart';
 
 class ReversiMove {

@@ -1,7 +1,7 @@
 import 'dart:html';
 import 'connect_game.dart';
 import 'connect_pieces.dart';
-import 'game.dart';
+import '../game.dart';
 
 class ConnectView implements GameView {
   Element container;

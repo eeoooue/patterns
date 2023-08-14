@@ -1,5 +1,6 @@
 import 'chess_game.dart';
-import 'game.dart';
+import '../game.dart';
+
 import 'chess_pieces.dart';
 
 class ChessLogic {

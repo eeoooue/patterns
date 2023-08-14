@@ -1,4 +1,4 @@
-import 'game.dart';
+import '../game.dart';
 
 class ConnectPiece extends GamePiece {
   bool empty = false;
