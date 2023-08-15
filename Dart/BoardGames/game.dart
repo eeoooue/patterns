@@ -4,6 +4,9 @@ abstract class Game {
   void startGame();
   void submitMove(int i, int j);
   bool gameIsOver();
+  GameBoard createBoard();
+
+  void endTurn();
 }
 
 abstract class GameBoard {
@@ -18,6 +21,10 @@ abstract class GameView {
   void displayBoard(List<List<GamePiece>> boardstate);
   Element buildTile(GamePiece piece);
   void rotateBoard();
+}
+
+abstract class GamePieceFactory {
+  GamePiece createPiece(Type pieceType);
 }
 
 abstract class GamePiece {

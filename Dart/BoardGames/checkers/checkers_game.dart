@@ -1,9 +1,9 @@
 import 'checkers_logic.dart';
 import 'checkers_pieces.dart';
 import 'checkers_view.dart';
-import '../game.dart';
-
 import 'checkers_board.dart';
+import 'checkers_factory.dart';
+import '../game.dart';
 import 'dart:html';
 
 class CheckersGame implements Game {
@@ -14,6 +14,7 @@ class CheckersGame implements Game {
   CheckersPiece activePiece = EmptyCheckersPiece(0, 0);
   bool capturedThisTurn = false;
   bool gameOver = false;
+  CheckersFactory factory = CheckersFactory();
 
   CheckersGame(Element container) {
     view = CheckersView(container, this);
@@ -24,14 +25,15 @@ class CheckersGame implements Game {
     return gameOver;
   }
 
-  void startGame() {
-    board.setupPieces();
-    tryLogic();
-    refreshView();
+  GameBoard createBoard() {
+    return CheckersBoard();
   }
 
-  void tryLogic() {
+  void startGame() {
+    board.setupPieces();
+    placePieces();
     logic.findPossibleMoves();
+    refreshView();
   }
 
   String getTurnPlayer() {
@@ -43,46 +45,57 @@ class CheckersGame implements Game {
       return;
     }
 
-    if (processMoveEnd(i, j)) {
-      logic.clearOptions();
-      if (capturedThisTurn) {
-        logic.findCapturesForPiece(activePiece);
-      }
-      if (activePiece.moveOptions.length == 0) {
-        activePiece = EmptyCheckersPiece(0, 0);
-        endTurn();
-      }
+    if (validMoveEnd(i, j)) {
+      processMoveContinuation();
       refreshView();
       return;
-    } else {
-      logic.clearHighlights();
     }
+
+    logic.clearThreats();
 
     processMoveStart(i, j);
     refreshView();
   }
 
-  bool processMoveEnd(int i, int j) {
+  bool validMoveEnd(int i, int j) {
     for (CheckersMove move in activePiece.moveOptions) {
-      BoardPosition endPos = move.end;
-      if (endPos.i == i && endPos.j == j) {
-        movePiece(activePiece, i, j);
-        BoardPosition? cap = move.capture;
-        if (cap is BoardPosition) {
-          board.removePiece(cap.i, cap.j);
-          capturedThisTurn = true;
-        }
+      if (move.end.i == i && move.end.j == j) {
+        makeMove(move);
         return true;
       }
     }
-
     return false;
+  }
+
+  void makeMove(CheckersMove move) {
+    movePiece(activePiece, move.end.i, move.end.j);
+    BoardPosition? capture = move.capture;
+    if (capture is BoardPosition) {
+      board.removePiece(capture.i, capture.j);
+      capturedThisTurn = true;
+    }
+  }
+
+  void processMoveContinuation() {
+    logic.clearOptions();
+    if (capturedThisTurn) {
+      logic.findCapturesForPiece(activePiece);
+    }
+    if (activePiece.moveOptions.length == 0) {
+      endTurn();
+    }
+  }
+
+  void resetActivePiece() {
+    GamePiece piece = factory.createPiece(EmptyCheckersPiece);
+    if (piece is EmptyCheckersPiece) {
+      activePiece = piece;
+    }
   }
 
   bool processMoveStart(int i, int j) {
     GamePiece target = board.getPiece(i, j);
-
-    activePiece = EmptyCheckersPiece(0, 0);
+    resetActivePiece();
 
     if (target is CheckersPiece && target.moveOptions.length > 0) {
       activePiece = target;
@@ -104,10 +117,10 @@ class CheckersGame implements Game {
   void endTurn() {
     turnCount += 1;
     capturedThisTurn = false;
-    activePiece = EmptyCheckersPiece(0, 0);
+    resetActivePiece();
     logic.clearOptions();
     refreshView();
-    tryLogic();
+    logic.findPossibleMoves();
   }
 
   void movePiece(GamePiece piece, int i, int j) {
@@ -125,5 +138,21 @@ class CheckersGame implements Game {
 
   void refreshView() {
     view.displayBoard(board.getBoardState());
+  }
+
+  void placePieces() {
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 8; j++) {
+        if ((i + j) % 2 != 0) {
+          if (i <= 2) {
+            GamePiece piece = factory.createPiece(CreamChecker);
+            board.placePiece(piece, i, j);
+          } else if (i >= 5) {
+            GamePiece piece = factory.createPiece(RedChecker);
+            board.placePiece(piece, i, j);
+          }
+        }
+      }
+    }
   }
 }

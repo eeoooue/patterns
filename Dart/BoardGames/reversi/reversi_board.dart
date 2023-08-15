@@ -1,7 +1,7 @@
 import '../game.dart';
 import 'reversi_pieces.dart';
 
-class ReversiBoard {
+class ReversiBoard implements GameBoard {
   List<List<GamePiece>> pieces = List.empty(growable: true);
 
   void removePiece(int i, int j) {
