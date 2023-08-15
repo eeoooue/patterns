@@ -1,47 +1,20 @@
 import 'connect_board.dart';
-import 'connect_logic.dart';
 import '../game.dart';
 import 'dart:html';
-import 'connect_view.dart';
 
-class ConnectGame implements Game {
-  ConnectBoard board = ConnectBoard();
+class ConnectGame extends Game {
   int turnCount = 0;
-  late ConnectLogic logic;
-  late GameView view;
 
-  ConnectGame(Element container) {
-    view = ConnectView(this, container);
-    logic = ConnectLogic(this, board);
+  ConnectGame(Element container) : super(container) {}
+
+  GameBoard createBoard() {
+    var board = ConnectBoard();
+    board.initialize();
+    return board;
   }
 
-  bool gameIsOver() {
-    return logic.gameOver;
-  }
-
-  void startGame() {
-    board.setupPieces();
+  void setupPieces(GameBoard board) {
+    board.initialize();
     refreshView();
-  }
-
-  String getTurnPlayer() {
-    return (turnCount % 2 == 0) ? "red" : "yellow";
-  }
-
-  void refreshView() {
-    view.displayBoard(board.getBoardState());
-  }
-
-  void endTurn() {
-    turnCount += 1;
-    refreshView();
-  }
-
-  void submitMove(int i, int j) {
-    if (!gameIsOver()) {
-      if (logic.attemptMove(j)) {
-        endTurn();
-      }
-    }
   }
 }

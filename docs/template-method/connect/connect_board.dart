@@ -4,11 +4,10 @@ import '../game.dart';
 class ConnectBoard implements GameBoard {
   List<List<GamePiece>> pieces = List.empty(growable: true);
 
-  void removePiece(int i, int j) {
-    pieces[i][j] = EmptyConnectPiece(i, j);
-  }
+  ConnectBoard() {}
 
-  void setupPieces() {
+  void initialize() {
+    pieces.clear();
     for (int i = 0; i < 6; i++) {
       List<GamePiece> row = List.empty(growable: true);
       for (int j = 0; j < 7; j++) {
@@ -16,6 +15,10 @@ class ConnectBoard implements GameBoard {
       }
       pieces.add(row);
     }
+  }
+
+  void removePiece(int i, int j) {
+    pieces[i][j] = EmptyConnectPiece(i, j);
   }
 
   GamePiece getPiece(int i, int j) {

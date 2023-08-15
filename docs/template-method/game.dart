@@ -1,43 +1,49 @@
 import 'dart:html';
+import 'gameview.dart';
 
 abstract class Game {
-  void startGame();
-  void submitMove(int i, int j);
-  bool gameIsOver();
+  late GameBoard board;
+  late GameView view;
+  Element container;
+
+  Game(this.container) {}
+
+  void startGame() {
+    clearContainer();
+    view = createView(container);
+    board = createBoard();
+    setupPieces(board);
+  }
+
+  void clearContainer() {
+    container.classes.remove("game-view");
+    container.children.clear();
+  }
+
+  GameView createView(Element container) {
+    return GameView(this, container);
+  }
+
+  GameBoard createBoard();
+
+  void setupPieces(GameBoard board);
+
+  void refreshView() {
+    view.displayBoard(board.getBoardState());
+  }
 }
 
 abstract class GameBoard {
+  void initialize();
   void removePiece(int i, int j);
-  void setupPieces();
   GamePiece getPiece(int i, int j);
   void placePiece(GamePiece piece, int i, int j);
   List<List<GamePiece>> getBoardState();
 }
 
-abstract class GameView {
-  void displayBoard(List<List<GamePiece>> boardstate);
-  Element buildTile(GamePiece piece);
-  void rotateBoard();
-}
-
 abstract class GamePiece {
-  late String src;
   int i = 0;
   int j = 0;
 
-  GamePiece() {}
-
-  void setSource(String address) {
-    src = address;
-  }
-
-  Element getElement() {
-    Element img = document.createElement("img");
-    img.classes.add("piece-img");
-    if (img is ImageElement) {
-      img.src = src;
-    }
-
-    return img;
-  }
+  Element createElement();
 }

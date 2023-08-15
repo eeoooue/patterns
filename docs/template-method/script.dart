@@ -9,11 +9,36 @@ class GameSelector {
   Element choicesContainer;
   Element gameContainer;
   late Game game;
+  ControlWidget? widget;
 
   List<String> choices = List.from({"Chess", "Connect", "Draughts", "Reversi"});
 
   GameSelector(this.choicesContainer, this.gameContainer) {
     showChoices();
+  }
+
+  void clearContainer() {
+    game.clearContainer();
+    // game.refreshView();
+  }
+
+  void createView() {
+    game.view = game.createView(game.container);
+    // game.refreshView();
+  }
+
+  void createBoard() {
+    game.board = game.createBoard();
+    game.refreshView();
+  }
+
+  void setupPieces() {
+    game.setupPieces(game.board);
+    game.refreshView();
+  }
+
+  void pairWidget(ControlWidget controlWidget) {
+    widget = controlWidget;
   }
 
   void showChoices() {
@@ -23,6 +48,7 @@ class GameSelector {
 
       if (title == "Chess") {
         choice.activate();
+        game.startGame();
       }
     }
   }
@@ -37,8 +63,8 @@ class GameSelector {
   void selectGame(String title) {
     resetButtons();
     print("'${title}' was chosen.");
-    Game game = getGame(title);
-    game.startGame();
+    game = getGame(title);
+    widget?.setState(0);
   }
 
   Game getGame(String title) {
@@ -86,6 +112,103 @@ class GameChoice {
   }
 }
 
+class ControlWidget {
+  GameSelector selector;
+  ButtonElement startBtn;
+
+  Element? btn1;
+  Element? btn2;
+  Element? btn3;
+  Element? btn4;
+
+  int currentState = 0;
+
+  ControlWidget(this.selector, this.startBtn) {
+    findButtons();
+    armButtons();
+  }
+
+  void findButtons() {
+    btn1 = document.getElementById("clear-container-btn");
+    btn2 = document.getElementById("create-view-btn");
+    btn3 = document.getElementById("create-board-btn");
+    btn4 = document.getElementById("setup-pieces-btn");
+  }
+
+  void armButtons() {
+    startBtn.addEventListener("click", (event) {
+      setState(4);
+    });
+
+    if (btn1 is ButtonElement) {
+      btn1?.addEventListener("click", (event) {
+        if (!btn1!.classes.contains("active")) {
+          setState(1);
+        }
+      });
+    }
+
+    if (btn2 is ButtonElement) {
+      btn2?.addEventListener("click", (event) {
+        if (!btn2!.classes.contains("active")) {
+          setState(2);
+        }
+      });
+    }
+
+    if (btn3 is ButtonElement) {
+      btn3?.addEventListener("click", (event) {
+        if (!btn3!.classes.contains("active")) {
+          setState(3);
+        }
+      });
+    }
+
+    if (btn4 is ButtonElement) {
+      btn4?.addEventListener("click", (event) {
+        if (!btn4!.classes.contains("active")) {
+          setState(4);
+        }
+      });
+    }
+  }
+
+  void clearButtons() {
+    for (Element element in document.querySelectorAll(".method-btn")) {
+      element.classes.remove("active");
+    }
+  }
+
+  void setState(int n) {
+    currentState = n;
+
+    clearButtons();
+
+    print("set state to ${n}");
+
+    if (n > 0) {
+      selector.clearContainer();
+      btn1?.classes.add("active");
+    }
+
+    if (n > 1) {
+      selector.createView();
+      btn2?.classes.add("active");
+    }
+
+    if (n > 2) {
+      selector.createBoard();
+      btn3?.classes.add("active");
+    }
+
+    if (n > 3) {
+      selector.setupPieces();
+      btn4?.classes.add("active");
+      startBtn.classes.add("active");
+    }
+  }
+}
+
 void main() {
   createGameSelector();
 }
@@ -95,6 +218,13 @@ void createGameSelector() {
   Element? gameContainer = document.getElementById("game-container");
 
   if (choicesContainer is Element && gameContainer is Element) {
-    GameSelector(choicesContainer, gameContainer);
+    var selector = GameSelector(choicesContainer, gameContainer);
+
+    Element? startGameBtn = document.getElementById("start-game-btn");
+
+    if (startGameBtn is ButtonElement) {
+      var widget = ControlWidget(selector, startGameBtn);
+      selector.pairWidget(widget);
+    }
   }
 }

@@ -1,20 +1,39 @@
-import 'checkers_logic.dart';
 import '../game.dart';
+import 'dart:html';
 
 class CheckersPiece extends GamePiece {
-  bool threatened = false;
-  bool empty = false;
   String colour;
-  bool king = false;
-  List<CheckersMove> moveOptions = List.empty(growable: true);
+  bool empty = false;
 
-  CheckersPiece(this.colour) {
-    setSource("./assets/checkers/checkers_${colour}.png");
+  CheckersPiece(this.colour) {}
+
+  Element createElement() {
+    Element tile = createTile();
+
+    if (!empty) {
+      Element img = createPieceImage();
+      tile.children.add(img);
+    }
+
+    return tile;
   }
 
-  void makeKing() {
-    king = true;
-    setSource("./assets/checkers/checkers_${colour}_king.png");
+  Element createPieceImage() {
+    ImageElement img = ImageElement();
+    img.classes.add("piece-img");
+    img.src = "./assets/checkers/checkers_${colour}.png";
+    return img;
+  }
+
+  Element createTile() {
+    Element tile = document.createElement("div");
+    tile.classes.add("chess-tile");
+
+    if ((i + j) % 2 != 0) {
+      tile.classes.add("dark");
+    }
+
+    return tile;
   }
 }
 
