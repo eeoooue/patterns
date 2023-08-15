@@ -7,7 +7,7 @@ We might use the Template Method pattern to outline the skeleton of an algorithm
 The template method itself should be in an abstract class and consist of method calls within the class, some of which may be overriden/implemented by children of the class to give child-specific behaviour.
 
 
-### Demo: [Starting a Game](https://eeoooue.github.io/patterns/factory-method/)
+### Demo: [Starting a Game](https://eeoooue.github.io/patterns/template-method/)
 
 Whenever we play a board game, we might find ourselves making these steps:
 
