@@ -1,47 +1,25 @@
 import '../game.dart';
 import 'dart:html';
 import 'reversi_board.dart';
-import 'reversi_logic.dart';
-import 'reversi_view.dart';
+import 'reversi_pieces.dart';
 
-class ReversiGame implements Game {
-  ReversiBoard board = ReversiBoard();
+class ReversiGame extends Game {
   int turnCount = 0;
-  late ReversiLogic logic;
-  late GameView view;
 
-  ReversiGame(Element container) {
-    view = ReversiView(this, container);
-    logic = ReversiLogic(this, board);
+  ReversiGame(Element container) : super(container) {}
+
+  GameBoard createBoard() {
+    var board = ReversiBoard();
+    board.initialize();
+    return board;
   }
 
-  bool gameIsOver() {
-    return logic.gameOver;
-  }
-
-  void startGame() {
-    board.setupPieces();
-    logic.refreshMoveOptions();
+  void setupPieces(GameBoard board) {
+    board.initialize();
+    board.placePiece(ReversiPiece("white"), 3, 3);
+    board.placePiece(ReversiPiece("black"), 3, 4);
+    board.placePiece(ReversiPiece("black"), 4, 3);
+    board.placePiece(ReversiPiece("white"), 4, 4);
     refreshView();
-  }
-
-  String getTurnPlayer() {
-    return (turnCount % 2 == 0) ? "white" : "black";
-  }
-
-  void refreshView() {
-    view.displayBoard(board.getBoardState());
-  }
-
-  void endTurn() {
-    turnCount += 1;
-    logic.refreshMoveOptions();
-    refreshView();
-  }
-
-  void submitMove(int i, int j) {
-    if (!gameIsOver()) {
-      logic.attemptMove(i, j);
-    }
   }
 }

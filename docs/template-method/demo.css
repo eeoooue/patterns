@@ -58,3 +58,47 @@
 .demo-stack {
     width: min(80vh, 80vw);
 }
+
+.game-view {
+    width: min(80vh, 80vw);
+    height: min(80vh, 80vw);
+}
+
+#side-tray {
+    margin: 2vh 2vh;
+    padding: 1vh 1vh;
+    background-color: #ccc;
+    width: 30vh;
+    border-radius: 10px;
+}
+
+.method-box {
+    width: 100%;
+    align-items: start;
+}
+
+.template-method-body {
+    margin: 0 1vw;
+    padding: 0 1vw;
+}
+
+.method-btn {
+    border-radius: 8px;
+    padding: 1vh 1vh;
+    margin: 1vh 1vh;
+    border: none;
+    cursor: pointer;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+}
+
+.method-btn:hover {
+    background-color: #333;
+    color: white;
+}
+
+.method-btn.active {
+    color: #333;
+    background-color: rgba(0, 0, 0, 0.1);
+    box-shadow: none;
+    cursor: default;
+}

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="./reversi/boardgame-reversi.css">
     <link rel="stylesheet" href="./demo.css">
 
-    <title>Template Method Pattern</title>
+    <title>Template Method</title>
     
 </head>
 
@@ -34,6 +34,43 @@
         <div class="demo-stack totempole">
             <div class="container" id="choices-container"></div>
             <div class="container" id="game-container"></div>
+            
+        </div>
+
+        <div class="container totempole" id="side-tray">
+
+            <div class="container method-box totempole" id="template-method-box">
+
+                <button class="method-btn active" id="start-game-btn">StartGame();</button>
+
+                <div class="template-method-body">
+
+                    <div class="method-card">
+                        <button class="method-btn active" id="clear-container-btn">ClearContainer();</button>
+                    </div>
+    
+                    <div class="method-card">
+                        <button class="method-btn active" id="create-view-btn">CreateView(container);</button>
+                    </div>
+    
+                    <div class="method-card">
+                        <button class="method-btn active" id="create-board-btn">CreateBoard();</button>
+                    </div>
+    
+                    <div class="method-card">
+                        <button class="method-btn active" id="setup-pieces-btn">SetupPieces(board);</button>
+                    </div>
+
+                </div>
+
+                
+
+
+
+            </div>
+
+                
+
         </div>
     </div>
     
