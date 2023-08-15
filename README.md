@@ -9,7 +9,7 @@ Interactive static web examples of some 'Gang of Four' design patterns.
 | ```Behavioral``` | Observer | [Gamestate Widgets](/Dart/observer/README.md) |
 | ```Creational``` | Factory Method | [Game Boards](/Dart/factory-method/README.md) |
 | ```Creational``` | Abstract Factory | [Creating Chesspieces](/Dart/abstract-factory/README.md) |
-| ```Structural``` | Decorator | Board Setup |
+| ```Structural``` | Decorator | [Board Setup](/Dart/decorator/README.md) |
 
 -----
 
