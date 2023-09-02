@@ -18,7 +18,7 @@ To introduce the strategy pattern, we could can encapsulate these rules in objec
 
 We don't need the strategy pattern to implement traditional Chess, but in the demo I'm using it to allow us to change how a piece can move at runtime.
 
-![Image](/Dart/strategy/strategy-uml.png)
+![Image](/notes/strategy/strategy-uml.png)
 
 The **MimicPiece** object has a **MoveStrategy** - which it leverages for its ```move()``` behaviour.
 

@@ -12,4 +12,4 @@ Board games often have unique boards which inform the logic of the game.
 
 By creating a **GameBoard** interface, we can create a factory method in the abstract **Game** class, and implement this to instantiate specific boards in the subclasses.
 
-![Image](/Dart/factory-method/factory-method-uml.png)
+![Image](/notes/factory-method/factory-method-uml.png)

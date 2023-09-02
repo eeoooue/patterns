@@ -14,7 +14,7 @@ Rather than checking on the game at intervals, we could devise a way to notify t
 
 For this demo, game-state sensitive widgets are updated whenever a move is made on the board.
 
-![Image](/Dart/observer/observer-uml.png)
+![Image](/notes/observer/observer-uml.png)
 
 
 The **Game** implements the **Subject** interface - maintaining a set of **Observer** objects, which are notified whenever a move is made.

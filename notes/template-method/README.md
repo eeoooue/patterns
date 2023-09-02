@@ -17,7 +17,7 @@ Whenever we play a board game, we might find ourselves making these steps:
 
 In programming, we could reuse the same code for clearing the play area, but creating the game board & setting up the pieces will be specific to the board game.
 
-![Image](/Dart/template-method/template-method-uml.png)
+![Image](/notes/template-method/template-method-uml.png)
 
 We can create a Template Method ```startGame()``` in our abstract class **Game**, which consists of calls to other methods.
 

@@ -16,6 +16,6 @@ While different board games have different pieces, it wouldn't make sense to use
 
 While Draughts pieces and Chess pieces are game pieces, the sets of pieces themselves don't have much in common.
 
-![Image](/Dart/abstract-factory/abstract-factory-uml.png)
+![Image](/notes/abstract-factory/abstract-factory-uml.png)
 
 This example is over-engineered but hopefully illustrates what might constitute a family of objects and how we can swap between factories at runtime.

@@ -13,7 +13,7 @@ This pattern offers high customization without creating huge classes or deep inh
 
 We'll use the Decorator pattern to enable customization of the initial boardstate of a Chess game.
 
-![Image](/Dart/decorator/decorator-uml.png)
+![Image](/notes/decorator/decorator-uml.png)
 
 _**ChessBoardDecorator**_ wraps an instance of **ChessBoard** while also extending the class and making ```setupPieces()``` abstract.
 

@@ -4,12 +4,12 @@ Interactive static web examples of some 'Gang of Four' design patterns.
 
 | Category | Pattern | Example |
 | ----- | ----- | ----- |
-| ```Behavioral``` | Template Method | [Starting a Game](/Dart/template-method/README.md) |
-| ```Behavioral``` | Strategy | [Chess Movement](/Dart/strategy/README.md) |
-| ```Behavioral``` | Observer | [Gamestate Widgets](/Dart/observer/README.md) |
-| ```Creational``` | Factory Method | [Game Boards](/Dart/factory-method/README.md) |
-| ```Creational``` | Abstract Factory | [Creating Chesspieces](/Dart/abstract-factory/README.md) |
-| ```Structural``` | Decorator | [Board Setup](/Dart/decorator/README.md) |
+| ```Behavioral``` | Template Method | [Starting a Game](/notes/template-method/README.md) |
+| ```Behavioral``` | Strategy | [Chess Movement](/notes/strategy/README.md) |
+| ```Behavioral``` | Observer | [Gamestate Widgets](/notes/observer/README.md) |
+| ```Creational``` | Factory Method | [Game Boards](/notes/factory-method/README.md) |
+| ```Creational``` | Abstract Factory | [Creating Chesspieces](/notes/abstract-factory/README.md) |
+| ```Structural``` | Decorator | [Board Setup](/notes/decorator/README.md) |
 
 -----
 
