@@ -14,9 +14,9 @@ This can be useful for:
 
 In Chess, the pieces have different ways of moving around on the board.
 
-To introduce the strategy pattern, we could can encapsulate these rules in objects that implement a common interface.
+To introduce the strategy pattern, we could encapsulate these rules in objects that implement a common interface.
 
-We don't need the strategy pattern to implement traditional Chess, but in the demo I'm using it to allow us to change how a piece can move at runtime.
+We don't need the strategy pattern to implement traditional Chess, but in the demo it allows us to change how a piece can move at runtime.
 
 ![Image](/notes/strategy/strategy-uml.png)
 

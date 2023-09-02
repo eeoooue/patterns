@@ -11,7 +11,7 @@ This pattern offers high customization without creating huge classes or deep inh
 
 ### Demo: [Board Setup](https://eeoooue.github.io/patterns/decorator/)
 
-We'll use the Decorator pattern to enable customization of the initial boardstate of a Chess game.
+We'll use the Decorator pattern to enable customization of the initial board state of a Chess game.
 
 ![Image](/notes/decorator/decorator-uml.png)
 
